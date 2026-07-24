@@ -3,7 +3,7 @@
 import { FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
-type View = "overview" | "people" | "applications" | "checkins" | "delivery" | "system";
+type View = "overview" | "people" | "applications" | "checkins" | "delivery" | "workouts" | "system";
 type Person = {
   id: string;
   kind: "lead" | "client";
@@ -36,6 +36,7 @@ type Person = {
 type Activity = { id: string; person_id: string; type: string; summary: string; created_at: string };
 type CheckIn = { id: string; person_id: string; week_of: string; workouts_completed: number; workouts_planned: number; recovery: string; pain_soreness: string; created_at: string };
 type Assignment = { id: string; person_id: string; full_name?: string; title: string; phase: string; days_per_week: number; status: string; starts_on: string; ends_on: string; athlete_instructions: string; updated_at: string };
+type Workout = { id: string; person_id: string; full_name?: string; workout_date: string; workout_name: string; completion_status: string; duration_minutes: number; effort_rating: number; athlete_note: string; coach_feedback: string; exercise_log: string };
 
 const samplePeople: Person[] = [
   {
@@ -67,6 +68,7 @@ const navItems: { id: View; label: string; icon: string; badge?: string }[] = [
   { id: "applications", label: "Applications", icon: "inbox", badge: "new" },
   { id: "checkins", label: "Check-ins", icon: "pulse" },
   { id: "delivery", label: "Programmes", icon: "clipboard" },
+  { id: "workouts", label: "Workout logs", icon: "pulse" },
   { id: "system", label: "Program system", icon: "layers" },
 ];
 
@@ -114,6 +116,7 @@ export default function CoachDashboard({ coachName, signOutPath }: { coachName: 
   const [adding, setAdding] = useState(false);
   const [notice, setNotice] = useState("");
   const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [addingProgramme, setAddingProgramme] = useState(false);
 
   useEffect(() => {
@@ -136,7 +139,10 @@ export default function CoachDashboard({ coachName, signOutPath }: { coachName: 
   useEffect(() => {
     fetch("/api/coach/operations")
       .then((response) => response.ok ? response.json() : Promise.reject())
-      .then((data: { assignments?: Assignment[] }) => setAssignments(data.assignments ?? []))
+      .then((data: { assignments?: Assignment[]; workouts?: Workout[] }) => {
+        setAssignments(data.assignments ?? []);
+        setWorkouts(data.workouts ?? []);
+      })
       .catch(() => undefined);
   }, []);
 
@@ -246,7 +252,7 @@ export default function CoachDashboard({ coachName, signOutPath }: { coachName: 
             <div>
               <p className="dashboard-eyebrow">Private coaching operations</p>
               <h1>{view === "overview" ? "Command centre" : navItems.find((item) => item.id === view)?.label}</h1>
-              <p>{view === "overview" ? "See what needs your decision, not just what exists." : view === "people" ? "Manage every active, paused and completed coaching relationship." : view === "applications" ? "Move the right prospects from interest to a clear coaching decision." : view === "checkins" ? "Review the signals that should change a coaching decision." : view === "delivery" ? "Assign the clear training experience each athlete receives." : "The private operating logic behind every client experience."}</p>
+              <p>{view === "overview" ? "See what needs your decision, not just what exists." : view === "people" ? "Manage every active, paused and completed coaching relationship." : view === "applications" ? "Move the right prospects from interest to a clear coaching decision." : view === "checkins" ? "Review the signals that should change a coaching decision." : view === "delivery" ? "Assign the clear training experience each athlete receives." : view === "workouts" ? "Review completed work, reported effort and anything needing your attention." : "The private operating logic behind every client experience."}</p>
             </div>
             <div className="heading-actions">
               <span className="last-sync">{loading ? "Syncing…" : "Workspace current"}</span>
@@ -373,6 +379,30 @@ export default function CoachDashboard({ coachName, signOutPath }: { coachName: 
                   ["Access", "Coach operations remain protected by server-side authorisation."],
                 ].map(([title, copy], index) => <div className="delivery-capability" key={title}><span>0{index + 1}</span><div><strong>{title}</strong><p>{copy}</p></div></div>)}
               </aside>
+            </section>
+          )}
+
+          {view === "workouts" && (
+            <section className="coach-panel data-panel">
+              <div className="panel-head"><div><p>Athlete performance</p><h2>Completed workout logs</h2></div><span className="period-chip">{workouts.length} records</span></div>
+              <div className="people-table-wrap">
+                <table className="people-table workout-review-table">
+                  <thead><tr><th>Athlete</th><th>Workout</th><th>Date</th><th>Duration</th><th>RPE</th><th>Signal</th></tr></thead>
+                  <tbody>
+                    {workouts.map((workout) => (
+                      <tr key={workout.id}>
+                        <td><span className="person-avatar">{initials(workout.full_name || "Athlete")}</span><div><strong>{workout.full_name || "Athlete"}</strong><small>{workout.completion_status}</small></div></td>
+                        <td><strong>{workout.workout_name}</strong><small>{(() => { try { return `${JSON.parse(workout.exercise_log || "[]").length} exercises`; } catch { return "Log recorded"; } })()}</small></td>
+                        <td><strong>{formatDate(workout.workout_date)}</strong></td>
+                        <td><strong>{workout.duration_minutes ? `${workout.duration_minutes} min` : "—"}</strong></td>
+                        <td><strong>{workout.effort_rating || "—"} / 10</strong></td>
+                        <td><span className={workout.athlete_note ? "signal alert" : "signal good"}>{workout.athlete_note ? "Review note" : "Logged"}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {!workouts.length && <div className="empty-state large">No completed workout logs yet. Client entries will appear here automatically.</div>}
             </section>
           )}
 

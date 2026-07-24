@@ -46,6 +46,9 @@ export default function Home() {
           <a href="#questions">Questions</a>
         </nav>
         <div className="nav-actions">
+          <Link className="quiet-link" href="/client">
+            Client login
+          </Link>
           <Link className="quiet-link" href="/coach">
             Coach access
           </Link>
@@ -228,6 +231,7 @@ export default function Home() {
           <a href="#method">The method</a>
           <a href="#coaching">Coaching</a>
           <Link href="/apply">Apply</Link>
+          <Link href="/client">Client login</Link>
           <Link href="/coach">Coach access</Link>
         </div>
         <p className="footer-meta">© 2026 Get Divine with Sahmi El</p>
