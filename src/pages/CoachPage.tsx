@@ -1,6 +1,7 @@
 import { FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { dataStore } from "../services/dataStore";
+import { authStore } from "../services/authStore";
 
 type View = "overview" | "people" | "applications" | "checkins" | "delivery" | "workouts" | "system";
 type Person = {
@@ -103,7 +104,8 @@ function hasPainFlag(person: Person) {
   return !/^(none|none reported|no current pain|no pain(\.|$)|no active pain)/.test(note);
 }
 
-export default function CoachDashboard({ coachName = "Sahmi El", signOutPath = "/" }: { coachName?: string; signOutPath?: string }) {
+export default function CoachDashboard({ coachName = "Sahmi El" }: { coachName?: string; signOutPath?: string }) {
+  const navigate = useNavigate();
   const [view, setView] = useState<View>("overview");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -219,7 +221,23 @@ export default function CoachDashboard({ coachName = "Sahmi El", signOutPath = "
         </nav>
         <div className="sidebar-bottom">
           <div className="coach-profile-mini"><span>{initials(coachName)}</span><div><strong>{coachName}</strong><small>Head coach</small></div></div>
-          <a href={signOutPath}>Sign out</a>
+          <button
+            type="button"
+            onClick={() => {
+              authStore.logout();
+              navigate("/");
+            }}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#a1a1aa",
+              cursor: "pointer",
+              fontSize: "0.85rem",
+              padding: 0,
+            }}
+          >
+            Sign out
+          </button>
         </div>
       </aside>
 

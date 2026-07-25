@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { dataStore, Assignment, Workout } from "../services/dataStore";
+import { authStore, AuthState } from "../services/authStore";
 
 type ExerciseSet = { set: number; reps: string; load: string; rir: string };
 type Exercise = { name: string; sets: ExerciseSet[] };
@@ -16,9 +17,12 @@ function dateLabel(value: string) {
 }
 
 export default function ClientPage() {
-  const [clientEmail, setClientEmail] = useState("amara@example.com");
+  const [authState, setAuthState] = useState<AuthState>(authStore.getState());
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginError, setLoginError] = useState("");
+
   const [data, setData] = useState<{
-    person: { full_name: string; phase: string; primary_goal: string; next_check_in: string };
+    person: { id: string; full_name: string; phase: string; primary_goal: string; next_check_in: string };
     assignments: Assignment[];
     workouts: Workout[];
   } | null>(null);
@@ -26,18 +30,28 @@ export default function ClientPage() {
   const [notice, setNotice] = useState("");
   const [exercises, setExercises] = useState<Exercise[]>([newExercise()]);
 
+  useEffect(() => {
+    return authStore.subscribe((state) => {
+      setAuthState(state);
+    });
+  }, []);
+
   function refresh() {
+    if (!authState.person) return;
+    const currentPersonId = authState.person.id;
     const people = dataStore.getPeople();
-    const match = people.find((p) => p.email.toLowerCase() === clientEmail.toLowerCase() && p.kind === "client") || people[0];
-    const assignments = dataStore.getAssignments().filter((a) => a.person_id === match?.id || a.person_id === "sample-1");
-    const workouts = dataStore.getWorkouts().filter((w) => w.person_id === match?.id || w.person_id === "sample-1");
+    const match = people.find((p) => p.id === currentPersonId) || authState.person;
+
+    const assignments = dataStore.getAssignments().filter((a) => a.person_id === match.id);
+    const workouts = dataStore.getWorkouts().filter((w) => w.person_id === match.id);
 
     setData({
       person: {
-        full_name: match ? match.full_name : "Amara O.",
-        phase: match ? match.phase : "Forging the Form",
-        primary_goal: match ? match.primary_goal : "Body recomposition",
-        next_check_in: match ? match.next_check_in : "2026-07-31",
+        id: match.id,
+        full_name: match.full_name,
+        phase: match.phase || "Forging the Form",
+        primary_goal: match.primary_goal || "Body recomposition",
+        next_check_in: match.next_check_in || "2026-07-31",
       },
       assignments,
       workouts,
@@ -45,8 +59,19 @@ export default function ClientPage() {
   }
 
   useEffect(() => {
-    refresh();
-  }, [clientEmail]);
+    if (authState.role === "client" && authState.person) {
+      refresh();
+    }
+  }, [authState]);
+
+  function handleLogin(e: FormEvent) {
+    e.preventDefault();
+    setLoginError("");
+    const res = authStore.loginAsClient(loginEmail);
+    if (!res.success) {
+      setLoginError(res.message);
+    }
+  }
 
   const activeProgramme = data?.assignments.find((item) => item.status === "active") ?? data?.assignments[0];
   const completed = useMemo(() => data?.workouts.filter((item) => item.completion_status === "completed").length ?? 0, [data]);
@@ -80,7 +105,7 @@ export default function ClientPage() {
     }
 
     dataStore.addWorkout({
-      person_id: "sample-1",
+      person_id: data?.person.id || "sample-1",
       full_name: data?.person.full_name,
       workout_date: workoutDate,
       workout_name: workoutName,
@@ -98,13 +123,119 @@ export default function ClientPage() {
     refresh();
   }
 
+  if (authState.role !== "client" || !authState.person) {
+    return (
+      <main className="public-site" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <header className="public-nav shell" style={{ position: "absolute", top: 0, left: 0, right: 0 }}>
+          <Link className="wordmark" to="/">
+            <span>GET</span> DIVINE
+          </Link>
+          <Link className="quiet-link" to="/">
+            Return to site
+          </Link>
+        </header>
+
+        <div className="shell" style={{ maxWidth: "440px", margin: "0 auto", padding: "100px 20px 40px" }}>
+          <div style={{ background: "rgba(18, 18, 20, 0.85)", border: "1px solid rgba(212, 175, 55, 0.2)", borderRadius: "12px", padding: "40px 32px", backdropFilter: "blur(12px)", boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }}>
+            <div style={{ textAlign: "center", marginBottom: "28px" }}>
+              <span className="eyebrow" style={{ color: "#d4af37", fontSize: "0.75rem", letterSpacing: "2px", textTransform: "uppercase" }}>
+                Ascension Program
+              </span>
+              <h1 style={{ fontSize: "1.8rem", margin: "12px 0 8px", fontWeight: "600", letterSpacing: "-0.5px" }}>
+                Client Portal Login
+              </h1>
+              <p style={{ color: "#8a8a93", fontSize: "0.9rem" }}>
+                Access your training logs, programme instructions, and check-ins.
+              </p>
+            </div>
+
+            {loginError && (
+              <div style={{ background: "rgba(220, 38, 38, 0.15)", border: "1px solid rgba(220, 38, 38, 0.4)", color: "#f87171", padding: "12px 16px", borderRadius: "8px", fontSize: "0.88rem", marginBottom: "20px", textAlign: "center" }}>
+                {loginError}
+              </div>
+            )}
+
+            <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div>
+                <label style={{ display: "block", fontSize: "0.82rem", textTransform: "uppercase", letterSpacing: "1px", color: "#a1a1aa", marginBottom: "8px" }}>
+                  Client Email Address
+                </label>
+                <input
+                  type="email"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  placeholder="e.g. amara@example.com"
+                  required
+                  autoFocus
+                  style={{
+                    width: "100%",
+                    padding: "14px 16px",
+                    background: "#09090b",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    borderRadius: "8px",
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    outline: "none",
+                    boxSizing: "border-box"
+                  }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="button button-gold"
+                style={{ width: "100%", padding: "14px", fontSize: "0.95rem", justifyContent: "center", cursor: "pointer", marginTop: "4px" }}
+              >
+                Sign In to Portal →
+              </button>
+            </form>
+
+            <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid rgba(255,255,255,0.06)", fontSize: "0.82rem", color: "#71717a", textAlign: "center" }}>
+              <p style={{ margin: 0 }}>Demo Client Logins:</p>
+              <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => { setLoginEmail("amara@example.com"); authStore.loginAsClient("amara@example.com"); }}
+                  style={{ background: "none", border: "none", color: "#d4af37", textDecoration: "underline", cursor: "pointer", fontSize: "0.82rem" }}
+                >
+                  Amara O.
+                </button>
+                <span>·</span>
+                <button
+                  type="button"
+                  onClick={() => { setLoginEmail("david@example.com"); authStore.loginAsClient("david@example.com"); }}
+                  style={{ background: "none", border: "none", color: "#d4af37", textDecoration: "underline", cursor: "pointer", fontSize: "0.82rem" }}
+                >
+                  David K.
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="client-app">
       <header className="client-nav">
         <Link className="wordmark" to="/"><span>GET</span> DIVINE</Link>
-        <div>
-          <span>{data?.person.full_name || "Client Portal"}</span>
-          <Link to="/" className="quiet-link">Exit</Link>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <span>{data?.person.full_name || authState.person.full_name}</span>
+          <button
+            onClick={() => authStore.logout()}
+            style={{
+              background: "rgba(255, 255, 255, 0.08)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              color: "#fff",
+              padding: "6px 14px",
+              borderRadius: "6px",
+              fontSize: "0.82rem",
+              cursor: "pointer",
+            }}
+          >
+            Sign Out
+          </button>
         </div>
       </header>
 

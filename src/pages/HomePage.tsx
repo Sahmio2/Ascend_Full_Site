@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Arrow = ({ diagonal = false }: { diagonal?: boolean }) => (
   <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
@@ -34,6 +35,35 @@ const phases = [
 ];
 
 export default function HomePage() {
+  const navigate = useNavigate();
+  const [clickCount, setClickCount] = useState(0);
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.altKey && e.shiftKey && (e.key === "C" || e.key === "c")) {
+        e.preventDefault();
+        navigate("/coach-portal");
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [navigate]);
+
+  function handleFooterClick() {
+    setClickCount((prev) => {
+      const next = prev + 1;
+      if (next >= 3) {
+        navigate("/coach-portal");
+        return 0;
+      }
+      return next;
+    });
+
+    setTimeout(() => {
+      setClickCount(0);
+    }, 2000);
+  }
+
   return (
     <main className="public-site">
       <header className="public-nav shell">
@@ -48,9 +78,6 @@ export default function HomePage() {
         <div className="nav-actions">
           <Link className="quiet-link" to="/client">
             Client login
-          </Link>
-          <Link className="quiet-link" to="/coach">
-            Coach access
           </Link>
           <Link className="button button-gold button-small" to="/apply">
             Apply now <Arrow diagonal />
@@ -232,9 +259,8 @@ export default function HomePage() {
           <a href="#coaching">Coaching</a>
           <Link to="/apply">Apply</Link>
           <Link to="/client">Client login</Link>
-          <Link to="/coach">Coach access</Link>
         </div>
-        <p className="footer-meta">© 2026 Get Divine with Sahmi El</p>
+        <p className="footer-meta" onClick={handleFooterClick} style={{ cursor: "default" }}>© 2026 Get Divine with Sahmi El</p>
       </footer>
     </main>
   );
