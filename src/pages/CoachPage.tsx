@@ -1,7 +1,6 @@
-"use client";
-
 import { FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
+import { dataStore } from "../services/dataStore";
 
 type View = "overview" | "people" | "applications" | "checkins" | "delivery" | "workouts" | "system";
 type Person = {
@@ -104,47 +103,35 @@ function hasPainFlag(person: Person) {
   return !/^(none|none reported|no current pain|no pain(\.|$)|no active pain)/.test(note);
 }
 
-export default function CoachDashboard({ coachName, signOutPath }: { coachName: string; signOutPath: string }) {
+export default function CoachDashboard({ coachName = "Sahmi El", signOutPath = "/" }: { coachName?: string; signOutPath?: string }) {
   const [view, setView] = useState<View>("overview");
-  const [people, setPeople] = useState<Person[]>(samplePeople);
-  const [activities, setActivities] = useState<Activity[]>(sampleActivity);
-  const [loading, setLoading] = useState(true);
-  const [usingSamples, setUsingSamples] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selected, setSelected] = useState<Person | null>(null);
-  const [adding, setAdding] = useState(false);
+  const [people, setPeople] = useState<Person[]>(samplePeople);
+  const [activities, setActivities] = useState<Activity[]>(sampleActivity);
+  const [usingSamples, setUsingSamples] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [addingProgramme, setAddingProgramme] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
-    fetch("/api/coach/people")
-      .then(async (response) => {
-        if (!response.ok) throw new Error("Private records could not be loaded.");
-        return response.json();
-      })
-      .then((data: { people?: Person[]; activities?: Activity[]; checkIns?: CheckIn[] }) => {
-        if (data.people?.length) {
-          setPeople(data.people);
-          setActivities(data.activities ?? []);
-          setUsingSamples(false);
-        }
-      })
-      .catch(() => setNotice("The workspace is showing sample records until live data is available."))
-      .finally(() => setLoading(false));
+    const storedPeople = dataStore.getPeople();
+    const storedAssignments = dataStore.getAssignments();
+    const storedWorkouts = dataStore.getWorkouts();
+    if (storedPeople.length) {
+      setPeople(storedPeople);
+      setUsingSamples(false);
+    }
+    setAssignments(storedAssignments);
+    setWorkouts(storedWorkouts);
+    setLoading(false);
   }, []);
 
-  useEffect(() => {
-    fetch("/api/coach/operations")
-      .then((response) => response.ok ? response.json() : Promise.reject())
-      .then((data: { assignments?: Assignment[]; workouts?: Workout[] }) => {
-        setAssignments(data.assignments ?? []);
-        setWorkouts(data.workouts ?? []);
-      })
-      .catch(() => undefined);
-  }, []);
+
 
   const filteredPeople = useMemo(() => {
     const query = search.toLowerCase().trim();
@@ -220,7 +207,7 @@ export default function CoachDashboard({ coachName, signOutPath }: { coachName: 
   return (
     <main className="coach-app">
       <aside className="coach-sidebar">
-        <Link className="coach-wordmark" href="/"><span>GET</span> DIVINE<small>Coach command</small></Link>
+        <Link className="coach-wordmark" to="/"><span>GET</span> DIVINE<small>Coach command</small></Link>
         <nav aria-label="Coach workspace">
           <p>Workspace</p>
           {navItems.map((item) => (

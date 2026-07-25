@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 const Arrow = ({ diagonal = false }: { diagonal?: boolean }) => (
   <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
@@ -33,11 +33,11 @@ const phases = [
   },
 ];
 
-export default function Home() {
+export default function HomePage() {
   return (
     <main className="public-site">
       <header className="public-nav shell">
-        <Link className="wordmark" href="/" aria-label="Get Divine home">
+        <Link className="wordmark" to="/" aria-label="Get Divine home">
           <span>GET</span> DIVINE
         </Link>
         <nav aria-label="Primary navigation">
@@ -46,13 +46,13 @@ export default function Home() {
           <a href="#questions">Questions</a>
         </nav>
         <div className="nav-actions">
-          <Link className="quiet-link" href="/client">
+          <Link className="quiet-link" to="/client">
             Client login
           </Link>
-          <Link className="quiet-link" href="/coach">
+          <Link className="quiet-link" to="/coach">
             Coach access
           </Link>
-          <Link className="button button-gold button-small" href="/apply">
+          <Link className="button button-gold button-small" to="/apply">
             Apply now <Arrow diagonal />
           </Link>
         </div>
@@ -80,7 +80,7 @@ export default function Home() {
               real life.
             </p>
             <div className="hero-ctas">
-              <Link className="button button-ivory" href="/apply">
+              <Link className="button button-ivory" to="/apply">
                 Begin your application <Arrow />
               </Link>
               <a className="text-link" href="#method">
@@ -188,7 +188,7 @@ export default function Home() {
         <div className="faq-heading">
           <p className="eyebrow">Before you apply</p>
           <h2>Questions,<br /><em>answered clearly.</em></h2>
-          <Link className="button button-outline" href="/apply">
+          <Link className="button button-outline" to="/apply">
             Start your application <Arrow />
           </Link>
         </div>
@@ -216,7 +216,7 @@ export default function Home() {
         <div className="shell closing-inner">
           <p className="eyebrow">Your next season can be different</p>
           <h2>Tame what is disordered.<br />Forge what is possible.<br /><em>Ascend through mastery.</em></h2>
-          <Link className="button button-gold" href="/apply">
+          <Link className="button button-gold" to="/apply">
             Apply for coaching <Arrow diagonal />
           </Link>
         </div>
@@ -224,15 +224,15 @@ export default function Home() {
 
       <footer className="public-footer shell">
         <div className="footer-brand">
-          <Link className="wordmark" href="/"><span>GET</span> DIVINE</Link>
+          <Link className="wordmark" to="/"><span>GET</span> DIVINE</Link>
           <p>Train with intention. Progress with structure.</p>
         </div>
         <div className="footer-links">
           <a href="#method">The method</a>
           <a href="#coaching">Coaching</a>
-          <Link href="/apply">Apply</Link>
-          <Link href="/client">Client login</Link>
-          <Link href="/coach">Coach access</Link>
+          <Link to="/apply">Apply</Link>
+          <Link to="/client">Client login</Link>
+          <Link to="/coach">Coach access</Link>
         </div>
         <p className="footer-meta">© 2026 Get Divine with Sahmi El</p>
       </footer>
