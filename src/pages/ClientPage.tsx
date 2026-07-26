@@ -185,12 +185,12 @@ export default function ClientPage() {
   const bmiMeta = useMemo(() => {
     const bmi = bmiValue;
     if (!bmi || isNaN(bmi)) {
-      return { category: "Enter stats", color: "#a1a1aa", text: "Fill in your height and weight.", percent: 0 };
+      return { category: "Enter stats", color: "var(--gd-text-muted)", text: "Fill in your height and weight.", percent: 0 };
     }
     if (bmi < 18.5) {
       return {
         category: "Underweight",
-        color: "#f59e0b",
+        color: "var(--gd-warning)",
         text: "Below standard weight threshold. Focus on a moderate caloric surplus and progressive strength work.",
         percent: Math.min(100, Math.max(5, ((bmi - 12) / (18.5 - 12)) * 25)),
       };
@@ -198,7 +198,7 @@ export default function ClientPage() {
     if (bmi <= 24.9) {
       return {
         category: "Normal weight (Optimal)",
-        color: "#10b981",
+        color: "var(--gd-success)",
         text: "Optimal baseline state. Ideal for targeted body recomposition or lean muscle development.",
         percent: Math.min(100, Math.max(25, 25 + ((bmi - 18.5) / (24.9 - 18.5)) * 25)),
       };
@@ -206,14 +206,14 @@ export default function ClientPage() {
     if (bmi <= 29.9) {
       return {
         category: "Overweight",
-        color: "#f97316",
+        color: "var(--gd-warning)",
         text: "Above baseline. A structured caloric deficit combined with resistance training will accelerate fat loss.",
         percent: Math.min(100, Math.max(50, 50 + ((bmi - 25) / (29.9 - 25)) * 25)),
       };
     }
     return {
       category: "Obese class",
-      color: "#ef4444",
+      color: "var(--gd-danger)",
       text: "Substantial body weight surplus. Prioritize daily step goals, caloric control, and guided resistance work.",
       percent: Math.min(100, Math.max(75, 75 + ((bmi - 30) / (40 - 30)) * 25)),
     };
@@ -324,31 +324,32 @@ export default function ClientPage() {
         </header>
 
         <div className="shell" style={{ maxWidth: "440px", margin: "0 auto", padding: "100px 20px 40px" }}>
-          <div style={{ background: "rgba(18, 18, 20, 0.85)", border: "1px solid rgba(212, 175, 55, 0.2)", borderRadius: "12px", padding: "40px 32px", backdropFilter: "blur(12px)", boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }}>
+          <div style={{ background: "var(--gd-surface)", border: "1px solid var(--gd-line)", borderRadius: "var(--gd-radius-md)", padding: "40px 32px", backdropFilter: "blur(12px)", boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }}>
             <div style={{ textAlign: "center", marginBottom: "28px" }}>
-              <span className="eyebrow" style={{ color: "#d4af37", fontSize: "0.75rem", letterSpacing: "2px", textTransform: "uppercase" }}>
+              <span className="eyebrow" style={{ color: "var(--gd-gold-bright)", fontSize: "0.75rem", letterSpacing: "2px", textTransform: "uppercase" }}>
                 Ascension Program
               </span>
               <h1 style={{ fontSize: "1.8rem", margin: "12px 0 8px", fontWeight: "600", letterSpacing: "-0.5px" }}>
                 Client Portal Login
               </h1>
-              <p style={{ color: "#8a8a93", fontSize: "0.9rem" }}>
+              <p style={{ color: "var(--gd-text-muted)", fontSize: "0.9rem" }}>
                 Access your training logs, Get Divine plan, and health calculators.
               </p>
             </div>
 
             {loginError && (
-              <div style={{ background: "rgba(220, 38, 38, 0.15)", border: "1px solid rgba(220, 38, 38, 0.4)", color: "#f87171", padding: "12px 16px", borderRadius: "8px", fontSize: "0.88rem", marginBottom: "20px", textAlign: "center" }}>
+              <div style={{ background: "rgba(200, 113, 98, 0.15)", border: "1px solid var(--gd-danger)", color: "var(--gd-danger)", padding: "12px 16px", borderRadius: "var(--gd-radius-sm)", fontSize: "0.88rem", marginBottom: "20px", textAlign: "center" }}>
                 {loginError}
               </div>
             )}
 
             <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <div>
-                <label style={{ display: "block", fontSize: "0.82rem", textTransform: "uppercase", letterSpacing: "1px", color: "#a1a1aa", marginBottom: "8px" }}>
-                  Client Email Address
+                <label htmlFor="client-email-input" style={{ display: "block", fontSize: "0.82rem", textTransform: "uppercase", letterSpacing: "1px", color: "var(--gd-text-muted)", marginBottom: "8px" }}>
+                  Client email address
                 </label>
                 <input
+                  id="client-email-input"
                   type="email"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
@@ -357,11 +358,12 @@ export default function ClientPage() {
                   autoFocus
                   style={{
                     width: "100%",
-                    padding: "14px 16px",
-                    background: "#09090b",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    borderRadius: "8px",
-                    color: "#fff",
+                    minHeight: "44px",
+                    padding: "12px 16px",
+                    background: "var(--gd-ink)",
+                    border: "1px solid var(--gd-line-soft)",
+                    borderRadius: "var(--gd-radius-sm)",
+                    color: "var(--gd-ivory)",
                     fontSize: "0.95rem",
                     outline: "none",
                     boxSizing: "border-box"
@@ -372,27 +374,27 @@ export default function ClientPage() {
               <button
                 type="submit"
                 className="button button-gold"
-                style={{ width: "100%", padding: "14px", fontSize: "0.95rem", justifyContent: "center", cursor: "pointer", marginTop: "4px" }}
+                style={{ width: "100%", minHeight: "44px", padding: "12px", fontSize: "0.95rem", justifyContent: "center", cursor: "pointer", marginTop: "4px" }}
               >
-                Sign In to Portal →
+                Sign in to portal →
               </button>
             </form>
 
-            <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid rgba(255,255,255,0.06)", fontSize: "0.82rem", color: "#71717a", textAlign: "center" }}>
-              <p style={{ margin: 0 }}>Demo Client Logins:</p>
+            <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid var(--gd-line-soft)", fontSize: "0.82rem", color: "var(--gd-text-faint)", textAlign: "center" }}>
+              <p style={{ margin: 0 }}>Demo client logins:</p>
               <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "8px" }}>
                 <button
                   type="button"
                   onClick={() => { setLoginEmail("amara@example.com"); authStore.loginAsClient("amara@example.com"); }}
-                  style={{ background: "none", border: "none", color: "#d4af37", textDecoration: "underline", cursor: "pointer", fontSize: "0.82rem" }}
+                  style={{ background: "none", border: "none", color: "var(--gd-gold)", textDecoration: "underline", cursor: "pointer", fontSize: "0.82rem", minHeight: "36px" }}
                 >
                   Amara O.
                 </button>
-                <span>·</span>
+                <span style={{ alignSelf: "center" }}>·</span>
                 <button
                   type="button"
                   onClick={() => { setLoginEmail("david@example.com"); authStore.loginAsClient("david@example.com"); }}
-                  style={{ background: "none", border: "none", color: "#d4af37", textDecoration: "underline", cursor: "pointer", fontSize: "0.82rem" }}
+                  style={{ background: "none", border: "none", color: "var(--gd-gold)", textDecoration: "underline", cursor: "pointer", fontSize: "0.82rem", minHeight: "36px" }}
                 >
                   David K.
                 </button>
@@ -415,16 +417,17 @@ export default function ClientPage() {
           <button
             onClick={() => authStore.logout()}
             style={{
-              background: "rgba(255, 255, 255, 0.08)",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              color: "#fff",
-              padding: "6px 14px",
-              borderRadius: "6px",
+              background: "rgba(243, 237, 223, 0.08)",
+              border: "1px solid var(--gd-line-soft)",
+              color: "var(--gd-ivory)",
+              padding: "8px 16px",
+              minHeight: "44px",
+              borderRadius: "var(--gd-radius-sm)",
               fontSize: "0.82rem",
               cursor: "pointer",
             }}
           >
-            Sign Out
+            Sign out
           </button>
         </div>
       </header>
@@ -445,7 +448,7 @@ export default function ClientPage() {
         <div className="client-notice">
           <span>Update</span>
           <p>{notice}</p>
-          <button onClick={() => setNotice("")}>×</button>
+          <button onClick={() => setNotice("")} aria-label="Dismiss notice">×</button>
         </div>
       )}
 
@@ -468,15 +471,16 @@ export default function ClientPage() {
       </section>
 
       {/* --- MAIN CLIENT PORTAL TABS --- */}
-      <div style={{ display: "flex", gap: "12px", borderBottom: "1px solid rgba(255,255,255,0.1)", marginBottom: "28px" }}>
+      <div style={{ display: "flex", gap: "12px", borderBottom: "1px solid var(--gd-line-soft)", marginBottom: "28px", flexWrap: "wrap" }}>
         <button
           onClick={() => setActiveTab("plan")}
           style={{
             padding: "12px 20px",
+            minHeight: "44px",
             background: "none",
             border: "none",
-            borderBottom: activeTab === "plan" ? "2px solid #d4af37" : "2px solid transparent",
-            color: activeTab === "plan" ? "#d4af37" : "#a1a1aa",
+            borderBottom: activeTab === "plan" ? "2px solid var(--gd-gold)" : "2px solid transparent",
+            color: activeTab === "plan" ? "var(--gd-gold)" : "var(--gd-text-muted)",
             fontWeight: activeTab === "plan" ? "600" : "400",
             fontSize: "0.95rem",
             cursor: "pointer",
@@ -485,16 +489,17 @@ export default function ClientPage() {
             gap: "8px",
           }}
         >
-          📋 Get Divine Plan
+          📋 Get Divine plan
         </button>
         <button
           onClick={() => setActiveTab("calculators")}
           style={{
             padding: "12px 20px",
+            minHeight: "44px",
             background: "none",
             border: "none",
-            borderBottom: activeTab === "calculators" ? "2px solid #d4af37" : "2px solid transparent",
-            color: activeTab === "calculators" ? "#d4af37" : "#a1a1aa",
+            borderBottom: activeTab === "calculators" ? "2px solid var(--gd-gold)" : "2px solid transparent",
+            color: activeTab === "calculators" ? "var(--gd-gold)" : "var(--gd-text-muted)",
             fontWeight: activeTab === "calculators" ? "600" : "400",
             fontSize: "0.95rem",
             cursor: "pointer",
@@ -503,16 +508,17 @@ export default function ClientPage() {
             gap: "8px",
           }}
         >
-          🧮 Health & Calorie Calculators
+          🧮 Health & calorie calculators
         </button>
         <button
           onClick={() => setActiveTab("logger")}
           style={{
             padding: "12px 20px",
+            minHeight: "44px",
             background: "none",
             border: "none",
-            borderBottom: activeTab === "logger" ? "2px solid #d4af37" : "2px solid transparent",
-            color: activeTab === "logger" ? "#d4af37" : "#a1a1aa",
+            borderBottom: activeTab === "logger" ? "2px solid var(--gd-gold)" : "2px solid transparent",
+            color: activeTab === "logger" ? "var(--gd-gold)" : "var(--gd-text-muted)",
             fontWeight: activeTab === "logger" ? "600" : "400",
             fontSize: "0.95rem",
             cursor: "pointer",
@@ -521,7 +527,7 @@ export default function ClientPage() {
             gap: "8px",
           }}
         >
-          🏋️ Workout Logger & History
+          🏋️ Workout logger & history
         </button>
       </div>
 
@@ -531,17 +537,17 @@ export default function ClientPage() {
       {activeTab === "plan" && (
         <section style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
           {currentPlan ? (
-            <div style={{ background: "#121214", border: "1px solid rgba(212, 175, 55, 0.25)", borderRadius: "12px", padding: "28px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "24px", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "20px" }}>
+            <div style={{ background: "var(--gd-surface)", border: "1px solid var(--gd-line)", borderRadius: "var(--gd-radius-md)", padding: "28px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "24px", borderBottom: "1px solid var(--gd-line-soft)", paddingBottom: "20px" }}>
                 <div>
-                  <span className="eyebrow" style={{ color: "#d4af37", textTransform: "uppercase", fontSize: "0.75rem", letterSpacing: "2px" }}>
+                  <span className="eyebrow" style={{ color: "var(--gd-gold-bright)", textTransform: "uppercase", fontSize: "0.75rem", letterSpacing: "2px" }}>
                     Official Master Plan
                   </span>
-                  <h2 style={{ fontSize: "1.8rem", margin: "6px 0", color: "#fff", fontWeight: "600" }}>
+                  <h2 style={{ fontSize: "1.8rem", margin: "6px 0", color: "var(--gd-ivory)", fontWeight: "600" }}>
                     {currentPlan.title}
                   </h2>
-                  <p style={{ margin: 0, color: "#8a8a93", fontSize: "0.9rem" }}>
-                    Assigned for <strong>{currentPlan.full_name}</strong> · Phase: <span style={{ color: "#d4af37" }}>{currentPlan.phase}</span>
+                  <p style={{ margin: 0, color: "var(--gd-text-muted)", fontSize: "0.9rem" }}>
+                    Assigned for <strong>{currentPlan.full_name}</strong> · Phase: <span style={{ color: "var(--gd-gold)" }}>{currentPlan.phase}</span>
                   </p>
                 </div>
 
@@ -549,11 +555,12 @@ export default function ClientPage() {
                   <button
                     onClick={() => downloadPlanAsFile(currentPlan)}
                     style={{
-                      background: "rgba(212, 175, 55, 0.15)",
-                      border: "1px solid rgba(212, 175, 55, 0.4)",
-                      color: "#d4af37",
+                      background: "rgba(199, 164, 91, 0.15)",
+                      border: "1px solid var(--gd-line)",
+                      color: "var(--gd-gold-bright)",
                       padding: "10px 18px",
-                      borderRadius: "6px",
+                      minHeight: "44px",
+                      borderRadius: "var(--gd-radius-sm)",
                       fontSize: "0.88rem",
                       fontWeight: "500",
                       cursor: "pointer",
@@ -562,16 +569,17 @@ export default function ClientPage() {
                       gap: "8px",
                     }}
                   >
-                    📥 Download Plan (.txt)
+                    📥 Download plan (.txt)
                   </button>
                   <button
                     onClick={() => window.print()}
                     style={{
-                      background: "#d4af37",
+                      background: "var(--gd-gold)",
                       border: "none",
-                      color: "#000",
+                      color: "var(--gd-ink)",
                       padding: "10px 18px",
-                      borderRadius: "6px",
+                      minHeight: "44px",
+                      borderRadius: "var(--gd-radius-sm)",
                       fontSize: "0.88rem",
                       fontWeight: "600",
                       cursor: "pointer",
@@ -580,42 +588,44 @@ export default function ClientPage() {
                       gap: "8px",
                     }}
                   >
-                    🖨️ Print / Save as PDF
+                    🖨️ Print or save as PDF
                   </button>
                 </div>
               </div>
 
               {/* Sub Navigation: Workout Routine vs Nutrition Document */}
-              <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
+              <div style={{ display: "flex", gap: "12px", marginBottom: "24px", flexWrap: "wrap" }}>
                 <button
                   onClick={() => setPlanSubTab("workout")}
                   style={{
-                    padding: "8px 16px",
-                    borderRadius: "20px",
-                    background: planSubTab === "workout" ? "#d4af37" : "rgba(255,255,255,0.06)",
-                    color: planSubTab === "workout" ? "#000" : "#fff",
+                    padding: "10px 18px",
+                    minHeight: "44px",
+                    borderRadius: "var(--gd-radius-pill)",
+                    background: planSubTab === "workout" ? "var(--gd-gold)" : "rgba(243, 237, 223, 0.06)",
+                    color: planSubTab === "workout" ? "var(--gd-ink)" : "var(--gd-ivory)",
                     border: "none",
                     fontSize: "0.85rem",
                     fontWeight: "600",
                     cursor: "pointer",
                   }}
                 >
-                  🏋️ Workout Routine ({currentPlan.workout_days.length} Days)
+                  🏋️ Workout routine ({currentPlan.workout_days.length} Days)
                 </button>
                 <button
                   onClick={() => setPlanSubTab("nutrition")}
                   style={{
-                    padding: "8px 16px",
-                    borderRadius: "20px",
-                    background: planSubTab === "nutrition" ? "#d4af37" : "rgba(255,255,255,0.06)",
-                    color: planSubTab === "nutrition" ? "#000" : "#fff",
+                    padding: "10px 18px",
+                    minHeight: "44px",
+                    borderRadius: "var(--gd-radius-pill)",
+                    background: planSubTab === "nutrition" ? "var(--gd-gold)" : "rgba(243, 237, 223, 0.06)",
+                    color: planSubTab === "nutrition" ? "var(--gd-ink)" : "var(--gd-ivory)",
                     border: "none",
                     fontSize: "0.85rem",
                     fontWeight: "600",
                     cursor: "pointer",
                   }}
                 >
-                  🥗 Nutrition & Caloric Document
+                  🥗 Nutrition & caloric document
                 </button>
               </div>
 
@@ -623,16 +633,16 @@ export default function ClientPage() {
               {planSubTab === "workout" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                   {currentPlan.workout_days.map((day, dIdx) => (
-                    <article key={dIdx} style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "20px" }}>
-                      <div style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "12px", marginBottom: "16px" }}>
-                        <h3 style={{ margin: "0 0 4px", fontSize: "1.15rem", color: "#d4af37" }}>{day.day_title}</h3>
-                        {day.notes && <p style={{ margin: 0, color: "#a1a1aa", fontSize: "0.85rem" }}>Note: {day.notes}</p>}
+                    <article key={dIdx} style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", borderRadius: "var(--gd-radius-sm)", padding: "20px" }}>
+                      <div style={{ borderBottom: "1px solid var(--gd-line-soft)", paddingBottom: "12px", marginBottom: "16px" }}>
+                        <h3 style={{ margin: "0 0 4px", fontSize: "1.15rem", color: "var(--gd-gold-bright)" }}>{day.day_title}</h3>
+                        {day.notes && <p style={{ margin: 0, color: "var(--gd-text-muted)", fontSize: "0.85rem" }}>Note: {day.notes}</p>}
                       </div>
 
                       <div style={{ overflowX: "auto" }}>
                         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.88rem", textAlign: "left" }}>
                           <thead>
-                            <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", color: "#71717a" }}>
+                            <tr style={{ borderBottom: "1px solid var(--gd-line-soft)", color: "var(--gd-text-faint)" }}>
                               <th style={{ padding: "8px 12px" }}>#</th>
                               <th style={{ padding: "8px 12px" }}>Exercise Name</th>
                               <th style={{ padding: "8px 12px" }}>Sets</th>
@@ -643,13 +653,13 @@ export default function ClientPage() {
                           </thead>
                           <tbody>
                             {day.exercises.map((ex, eIdx) => (
-                              <tr key={eIdx} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                                <td style={{ padding: "10px 12px", color: "#d4af37", fontWeight: "600" }}>{eIdx + 1}</td>
-                                <td style={{ padding: "10px 12px", color: "#fff", fontWeight: "500" }}>{ex.name}</td>
-                                <td style={{ padding: "10px 12px", color: "#e4e4e7" }}>{ex.sets}</td>
-                                <td style={{ padding: "10px 12px", color: "#e4e4e7" }}>{ex.reps}</td>
-                                <td style={{ padding: "10px 12px", color: "#10b981", fontWeight: "500" }}>RIR {ex.rir}</td>
-                                <td style={{ padding: "10px 12px", color: "#a1a1aa", fontSize: "0.82rem" }}>{ex.notes || "—"}</td>
+                              <tr key={eIdx} style={{ borderBottom: "1px solid rgba(243,237,223,0.04)" }}>
+                                <td style={{ padding: "10px 12px", color: "var(--gd-gold)", fontWeight: "600" }}>{eIdx + 1}</td>
+                                <td style={{ padding: "10px 12px", color: "var(--gd-ivory)", fontWeight: "500" }}>{ex.name}</td>
+                                <td style={{ padding: "10px 12px", color: "var(--gd-ivory-soft)" }}>{ex.sets}</td>
+                                <td style={{ padding: "10px 12px", color: "var(--gd-ivory-soft)" }}>{ex.reps}</td>
+                                <td style={{ padding: "10px 12px", color: "var(--gd-success)", fontWeight: "500" }}>RIR {ex.rir}</td>
+                                <td style={{ padding: "10px 12px", color: "var(--gd-text-muted)", fontSize: "0.82rem" }}>{ex.notes || "—"}</td>
                               </tr>
                             ))}
                           </tbody>
@@ -665,64 +675,64 @@ export default function ClientPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                   {/* Calorie Cards Grid */}
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
-                    <div style={{ background: "#09090b", border: "1px solid rgba(212, 175, 55, 0.4)", borderRadius: "8px", padding: "18px" }}>
-                      <span style={{ color: "#d4af37", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "1px" }}>Daily Target Calories</span>
-                      <strong style={{ display: "block", fontSize: "1.8rem", color: "#fff", margin: "6px 0 2px" }}>
-                        {currentPlan.nutrition.target_calories} <span style={{ fontSize: "0.9rem", color: "#d4af37" }}>kcal/day</span>
+                    <div style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line)", borderRadius: "var(--gd-radius-sm)", padding: "18px" }}>
+                      <span style={{ color: "var(--gd-gold)", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "1px" }}>Daily Target Calories</span>
+                      <strong style={{ display: "block", fontSize: "1.8rem", color: "var(--gd-ivory)", margin: "6px 0 2px" }}>
+                        {currentPlan.nutrition.target_calories} <span style={{ fontSize: "0.9rem", color: "var(--gd-gold)" }}>kcal/day</span>
                       </strong>
-                      <small style={{ color: "#a1a1aa", fontSize: "0.8rem" }}>Assigned by Coach Sahmi</small>
+                      <small style={{ color: "var(--gd-text-muted)", fontSize: "0.8rem" }}>Assigned by Coach Sahmi</small>
                     </div>
 
-                    <div style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "18px" }}>
-                      <span style={{ color: "#a1a1aa", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "1px" }}>Maintenance Calories</span>
-                      <strong style={{ display: "block", fontSize: "1.5rem", color: "#e4e4e7", margin: "6px 0 2px" }}>
-                        {currentPlan.nutrition.maintenance_calories} <span style={{ fontSize: "0.85rem", color: "#a1a1aa" }}>kcal</span>
+                    <div style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", borderRadius: "var(--gd-radius-sm)", padding: "18px" }}>
+                      <span style={{ color: "var(--gd-text-muted)", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "1px" }}>Maintenance Calories</span>
+                      <strong style={{ display: "block", fontSize: "1.5rem", color: "var(--gd-ivory-soft)", margin: "6px 0 2px" }}>
+                        {currentPlan.nutrition.maintenance_calories} <span style={{ fontSize: "0.85rem", color: "var(--gd-text-muted)" }}>kcal</span>
                       </strong>
-                      <small style={{ color: "#71717a", fontSize: "0.8rem" }}>Estimated TDEE</small>
+                      <small style={{ color: "var(--gd-text-faint)", fontSize: "0.8rem" }}>Estimated TDEE</small>
                     </div>
 
-                    <div style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "18px" }}>
-                      <span style={{ color: "#a1a1aa", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "1px" }}>Deficit Caloric Floor</span>
-                      <strong style={{ display: "block", fontSize: "1.5rem", color: "#f97316", margin: "6px 0 2px" }}>
-                        {currentPlan.nutrition.deficit_calories} <span style={{ fontSize: "0.85rem", color: "#a1a1aa" }}>kcal</span>
+                    <div style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", borderRadius: "var(--gd-radius-sm)", padding: "18px" }}>
+                      <span style={{ color: "var(--gd-text-muted)", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "1px" }}>Deficit Caloric Floor</span>
+                      <strong style={{ display: "block", fontSize: "1.5rem", color: "var(--gd-warning)", margin: "6px 0 2px" }}>
+                        {currentPlan.nutrition.deficit_calories} <span style={{ fontSize: "0.85rem", color: "var(--gd-text-muted)" }}>kcal</span>
                       </strong>
-                      <small style={{ color: "#71717a", fontSize: "0.8rem" }}>Fat loss baseline</small>
+                      <small style={{ color: "var(--gd-text-faint)", fontSize: "0.8rem" }}>Fat loss baseline</small>
                     </div>
 
-                    <div style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "18px" }}>
-                      <span style={{ color: "#a1a1aa", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "1px" }}>Surplus Target</span>
-                      <strong style={{ display: "block", fontSize: "1.5rem", color: "#10b981", margin: "6px 0 2px" }}>
-                        {currentPlan.nutrition.surplus_calories} <span style={{ fontSize: "0.85rem", color: "#a1a1aa" }}>kcal</span>
+                    <div style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", borderRadius: "var(--gd-radius-sm)", padding: "18px" }}>
+                      <span style={{ color: "var(--gd-text-muted)", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "1px" }}>Surplus Target</span>
+                      <strong style={{ display: "block", fontSize: "1.5rem", color: "var(--gd-success)", margin: "6px 0 2px" }}>
+                        {currentPlan.nutrition.surplus_calories} <span style={{ fontSize: "0.85rem", color: "var(--gd-text-muted)" }}>kcal</span>
                       </strong>
-                      <small style={{ color: "#71717a", fontSize: "0.8rem" }}>Muscle gain baseline</small>
+                      <small style={{ color: "var(--gd-text-faint)", fontSize: "0.8rem" }}>Muscle gain baseline</small>
                     </div>
                   </div>
 
                   {/* Daily Macro Targets */}
-                  <div style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "20px" }}>
-                    <h3 style={{ margin: "0 0 16px", fontSize: "1.1rem", color: "#d4af37" }}>Macronutrient Distribution</h3>
+                  <div style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", borderRadius: "var(--gd-radius-sm)", padding: "20px" }}>
+                    <h3 style={{ margin: "0 0 16px", fontSize: "1.1rem", color: "var(--gd-gold-bright)" }}>Macronutrient distribution</h3>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "16px" }}>
-                      <div style={{ background: "rgba(255,255,255,0.03)", padding: "12px 16px", borderRadius: "6px" }}>
-                        <span style={{ color: "#a1a1aa", fontSize: "0.8rem" }}>Protein</span>
-                        <strong style={{ display: "block", fontSize: "1.3rem", color: "#fff", marginTop: "4px" }}>
+                      <div style={{ background: "rgba(243,237,223,0.03)", padding: "12px 16px", borderRadius: "var(--gd-radius-sm)" }}>
+                        <span style={{ color: "var(--gd-text-muted)", fontSize: "0.8rem" }}>Protein</span>
+                        <strong style={{ display: "block", fontSize: "1.3rem", color: "var(--gd-ivory)", marginTop: "4px" }}>
                           {currentPlan.nutrition.protein_g}g
                         </strong>
                       </div>
-                      <div style={{ background: "rgba(255,255,255,0.03)", padding: "12px 16px", borderRadius: "6px" }}>
-                        <span style={{ color: "#a1a1aa", fontSize: "0.8rem" }}>Carbohydrates</span>
-                        <strong style={{ display: "block", fontSize: "1.3rem", color: "#fff", marginTop: "4px" }}>
+                      <div style={{ background: "rgba(243,237,223,0.03)", padding: "12px 16px", borderRadius: "var(--gd-radius-sm)" }}>
+                        <span style={{ color: "var(--gd-text-muted)", fontSize: "0.8rem" }}>Carbohydrates</span>
+                        <strong style={{ display: "block", fontSize: "1.3rem", color: "var(--gd-ivory)", marginTop: "4px" }}>
                           {currentPlan.nutrition.carbs_g}g
                         </strong>
                       </div>
-                      <div style={{ background: "rgba(255,255,255,0.03)", padding: "12px 16px", borderRadius: "6px" }}>
-                        <span style={{ color: "#a1a1aa", fontSize: "0.8rem" }}>Healthy Fats</span>
-                        <strong style={{ display: "block", fontSize: "1.3rem", color: "#fff", marginTop: "4px" }}>
+                      <div style={{ background: "rgba(243,237,223,0.03)", padding: "12px 16px", borderRadius: "var(--gd-radius-sm)" }}>
+                        <span style={{ color: "var(--gd-text-muted)", fontSize: "0.8rem" }}>Healthy fats</span>
+                        <strong style={{ display: "block", fontSize: "1.3rem", color: "var(--gd-ivory)", marginTop: "4px" }}>
                           {currentPlan.nutrition.fats_g}g
                         </strong>
                       </div>
-                      <div style={{ background: "rgba(255,255,255,0.03)", padding: "12px 16px", borderRadius: "6px" }}>
-                        <span style={{ color: "#a1a1aa", fontSize: "0.8rem" }}>Hydration</span>
-                        <strong style={{ display: "block", fontSize: "1.3rem", color: "#38bdf8", marginTop: "4px" }}>
+                      <div style={{ background: "rgba(243,237,223,0.03)", padding: "12px 16px", borderRadius: "var(--gd-radius-sm)" }}>
+                        <span style={{ color: "var(--gd-text-muted)", fontSize: "0.8rem" }}>Hydration</span>
+                        <strong style={{ display: "block", fontSize: "1.3rem", color: "var(--gd-info)", marginTop: "4px" }}>
                           {currentPlan.nutrition.hydration_liters} Liters
                         </strong>
                       </div>
@@ -731,22 +741,22 @@ export default function ClientPage() {
 
                   {/* Meal Structure & Guidelines */}
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
-                    <div style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "20px" }}>
-                      <h3 style={{ margin: "0 0 12px", fontSize: "1rem", color: "#fff" }}>Meal Schedule & Timing</h3>
-                      <ul style={{ margin: 0, paddingLeft: "20px", color: "#d4d4d8", fontSize: "0.88rem", lineHeight: "1.7" }}>
+                    <div style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", borderRadius: "var(--gd-radius-sm)", padding: "20px" }}>
+                      <h3 style={{ margin: "0 0 12px", fontSize: "1rem", color: "var(--gd-ivory)" }}>Meal schedule & timing</h3>
+                      <ul style={{ margin: 0, paddingLeft: "20px", color: "var(--gd-ivory-soft)", fontSize: "0.88rem", lineHeight: "1.7" }}>
                         {currentPlan.nutrition.meal_structure.map((meal, idx) => (
                           <li key={idx} style={{ marginBottom: "8px" }}>{meal}</li>
                         ))}
                       </ul>
                     </div>
 
-                    <div style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "20px" }}>
-                      <h3 style={{ margin: "0 0 12px", fontSize: "1rem", color: "#fff" }}>Supplements & Guidelines</h3>
-                      <p style={{ margin: "0 0 12px", color: "#d4af37", fontSize: "0.85rem", fontStyle: "italic" }}>
+                    <div style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", borderRadius: "var(--gd-radius-sm)", padding: "20px" }}>
+                      <h3 style={{ margin: "0 0 12px", fontSize: "1rem", color: "var(--gd-ivory)" }}>Supplements & guidelines</h3>
+                      <p style={{ margin: "0 0 12px", color: "var(--gd-gold)", fontSize: "0.85rem", fontStyle: "italic" }}>
                         "{currentPlan.nutrition.guidelines}"
                       </p>
-                      <h4 style={{ margin: "16px 0 8px", fontSize: "0.88rem", color: "#a1a1aa", textTransform: "uppercase", letterSpacing: "1px" }}>Supplements Protocol:</h4>
-                      <ul style={{ margin: 0, paddingLeft: "20px", color: "#d4d4d8", fontSize: "0.88rem", lineHeight: "1.7" }}>
+                      <h4 style={{ margin: "16px 0 8px", fontSize: "0.88rem", color: "var(--gd-text-muted)", textTransform: "uppercase", letterSpacing: "1px" }}>Supplements Protocol:</h4>
+                      <ul style={{ margin: 0, paddingLeft: "20px", color: "var(--gd-ivory-soft)", fontSize: "0.88rem", lineHeight: "1.7" }}>
                         {currentPlan.nutrition.supplements.map((supp, idx) => (
                           <li key={idx}>{supp}</li>
                         ))}
@@ -757,9 +767,9 @@ export default function ClientPage() {
               )}
             </div>
           ) : (
-            <div style={{ background: "#121214", border: "1px dashed rgba(255,255,255,0.15)", borderRadius: "12px", padding: "40px 20px", textAlign: "center" }}>
-              <h3 style={{ margin: "0 0 8px", color: "#fff" }}>Master Plan Pending</h3>
-              <p style={{ color: "#8a8a93", maxWidth: "480px", margin: "0 auto 20px" }}>
+            <div style={{ background: "var(--gd-surface)", border: "1px dashed var(--gd-line)", borderRadius: "var(--gd-radius-md)", padding: "40px 20px", textAlign: "center" }}>
+              <h3 style={{ margin: "0 0 8px", color: "var(--gd-ivory)" }}>Master plan pending</h3>
+              <p style={{ color: "var(--gd-text-muted)", maxWidth: "480px", margin: "0 auto 20px" }}>
                 Your coach has not yet finalized your custom Get Divine Workout & Nutrition Plan Document. Once uploaded by Coach Sahmi, it will appear here for instant viewing and downloading.
               </p>
             </div>
@@ -771,22 +781,23 @@ export default function ClientPage() {
       {/* TAB 2: HEALTH & CALORIE CALCULATORS */}
       {/* ========================================================================= */}
       {activeTab === "calculators" && (
-        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: "28px" }}>
+        <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "28px" }}>
           {/* CALCULATOR 1: BMI CALCULATOR */}
-          <article style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", padding: "24px" }}>
+          <article style={{ background: "var(--gd-surface)", border: "1px solid var(--gd-line-soft)", borderRadius: "var(--gd-radius-md)", padding: "24px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <div>
-                <span className="eyebrow" style={{ color: "#d4af37", fontSize: "0.72rem" }}>Body Composition</span>
-                <h2 style={{ fontSize: "1.3rem", margin: "4px 0 0", color: "#fff" }}>BMI Calculator</h2>
+                <span className="eyebrow" style={{ color: "var(--gd-gold-bright)", fontSize: "0.72rem" }}>Body Composition</span>
+                <h2 style={{ fontSize: "1.3rem", margin: "4px 0 0", color: "var(--gd-ivory)" }}>BMI calculator</h2>
               </div>
-              <div style={{ display: "flex", background: "#09090b", borderRadius: "20px", padding: "3px", border: "1px solid rgba(255,255,255,0.1)" }}>
+              <div style={{ display: "flex", background: "var(--gd-ink)", borderRadius: "var(--gd-radius-pill)", padding: "3px", border: "1px solid var(--gd-line-soft)" }}>
                 <button
                   onClick={() => setBmiUnit("metric")}
                   style={{
-                    padding: "4px 12px",
-                    borderRadius: "16px",
-                    background: bmiUnit === "metric" ? "#d4af37" : "none",
-                    color: bmiUnit === "metric" ? "#000" : "#a1a1aa",
+                    padding: "6px 12px",
+                    minHeight: "36px",
+                    borderRadius: "var(--gd-radius-pill)",
+                    background: bmiUnit === "metric" ? "var(--gd-gold)" : "none",
+                    color: bmiUnit === "metric" ? "var(--gd-ink)" : "var(--gd-text-muted)",
                     border: "none",
                     fontSize: "0.75rem",
                     fontWeight: "600",
@@ -798,10 +809,11 @@ export default function ClientPage() {
                 <button
                   onClick={() => setBmiUnit("imperial")}
                   style={{
-                    padding: "4px 12px",
-                    borderRadius: "16px",
-                    background: bmiUnit === "imperial" ? "#d4af37" : "none",
-                    color: bmiUnit === "imperial" ? "#000" : "#a1a1aa",
+                    padding: "6px 12px",
+                    minHeight: "36px",
+                    borderRadius: "var(--gd-radius-pill)",
+                    background: bmiUnit === "imperial" ? "var(--gd-gold)" : "none",
+                    color: bmiUnit === "imperial" ? "var(--gd-ink)" : "var(--gd-text-muted)",
                     border: "none",
                     fontSize: "0.75rem",
                     fontWeight: "600",
@@ -815,83 +827,88 @@ export default function ClientPage() {
 
             {bmiUnit === "metric" ? (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "24px" }}>
-                <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                  <span style={{ fontSize: "0.8rem", color: "#a1a1aa", textTransform: "uppercase" }}>Height (cm)</span>
+                <label htmlFor="bmi-height-cm" style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  <span style={{ fontSize: "0.8rem", color: "var(--gd-text-muted)", textTransform: "uppercase" }}>Height (cm)</span>
                   <input
+                    id="bmi-height-cm"
                     type="number"
                     value={heightCm}
                     onChange={(e) => setHeightCm(Number(e.target.value))}
                     min="100"
                     max="230"
-                    style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.12)", padding: "10px", borderRadius: "6px", color: "#fff" }}
+                    style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", minHeight: "44px", padding: "10px", borderRadius: "var(--gd-radius-sm)", color: "var(--gd-ivory)" }}
                   />
                 </label>
-                <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                  <span style={{ fontSize: "0.8rem", color: "#a1a1aa", textTransform: "uppercase" }}>Weight (kg)</span>
+                <label htmlFor="bmi-weight-kg" style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  <span style={{ fontSize: "0.8rem", color: "var(--gd-text-muted)", textTransform: "uppercase" }}>Weight (kg)</span>
                   <input
+                    id="bmi-weight-kg"
                     type="number"
                     value={weightKg}
                     onChange={(e) => setWeightKg(Number(e.target.value))}
                     min="30"
                     max="220"
-                    style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.12)", padding: "10px", borderRadius: "6px", color: "#fff" }}
+                    style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", minHeight: "44px", padding: "10px", borderRadius: "var(--gd-radius-sm)", color: "var(--gd-ivory)" }}
                   />
                 </label>
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "24px" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                  <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <span style={{ fontSize: "0.8rem", color: "#a1a1aa", textTransform: "uppercase" }}>Height (ft)</span>
+                  <label htmlFor="bmi-height-ft" style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <span style={{ fontSize: "0.8rem", color: "var(--gd-text-muted)", textTransform: "uppercase" }}>Height (ft)</span>
                     <input
+                      id="bmi-height-ft"
                       type="number"
                       value={heightFt}
                       onChange={(e) => setHeightFt(Number(e.target.value))}
                       min="3"
                       max="7"
-                      style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.12)", padding: "10px", borderRadius: "6px", color: "#fff" }}
+                      style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", minHeight: "44px", padding: "10px", borderRadius: "var(--gd-radius-sm)", color: "var(--gd-ivory)" }}
                     />
                   </label>
-                  <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <span style={{ fontSize: "0.8rem", color: "#a1a1aa", textTransform: "uppercase" }}>Height (in)</span>
+                  <label htmlFor="bmi-height-in" style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <span style={{ fontSize: "0.8rem", color: "var(--gd-text-muted)", textTransform: "uppercase" }}>Height (in)</span>
                     <input
+                      id="bmi-height-in"
                       type="number"
                       value={heightIn}
                       onChange={(e) => setHeightIn(Number(e.target.value))}
                       min="0"
                       max="11"
-                      style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.12)", padding: "10px", borderRadius: "6px", color: "#fff" }}
+                      style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", minHeight: "44px", padding: "10px", borderRadius: "var(--gd-radius-sm)", color: "var(--gd-ivory)" }}
                     />
                   </label>
                 </div>
-                <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                  <span style={{ fontSize: "0.8rem", color: "#a1a1aa", textTransform: "uppercase" }}>Weight (lbs)</span>
+                <label htmlFor="bmi-weight-lbs" style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  <span style={{ fontSize: "0.8rem", color: "var(--gd-text-muted)", textTransform: "uppercase" }}>Weight (lbs)</span>
                   <input
+                    id="bmi-weight-lbs"
                     type="number"
                     value={weightLbs}
                     onChange={(e) => setWeightLbs(Number(e.target.value))}
                     min="60"
                     max="500"
-                    style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.12)", padding: "10px", borderRadius: "6px", color: "#fff" }}
+                    style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", minHeight: "44px", padding: "10px", borderRadius: "var(--gd-radius-sm)", color: "var(--gd-ivory)" }}
                   />
                 </label>
               </div>
             )}
 
             {/* BMI Result Display */}
-            <div style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "20px", textAlign: "center" }}>
-              <span style={{ color: "#a1a1aa", fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "1px" }}>Your Calculated BMI</span>
-              <div style={{ fontSize: "3rem", fontWeight: "700", color: "#fff", margin: "4px 0" }}>
+            <div style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", borderRadius: "var(--gd-radius-sm)", padding: "20px", textAlign: "center" }}>
+              <span style={{ color: "var(--gd-text-muted)", fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "1px" }}>Your calculated BMI</span>
+              <div style={{ fontSize: "3rem", fontWeight: "700", color: "var(--gd-ivory)", margin: "4px 0" }}>
                 {bmiValue ? bmiValue.toFixed(1) : "0.0"}
               </div>
               <span
                 style={{
                   display: "inline-block",
-                  padding: "4px 14px",
-                  borderRadius: "12px",
-                  background: `${bmiMeta.color}22`,
+                  padding: "6px 16px",
+                  borderRadius: "var(--gd-radius-pill)",
+                  background: "rgba(243,237,223,0.06)",
                   color: bmiMeta.color,
-                  border: `1px solid ${bmiMeta.color}44`,
+                  border: `1px solid ${bmiMeta.color}`,
                   fontWeight: "600",
                   fontSize: "0.82rem",
                   marginBottom: "16px",
@@ -901,7 +918,7 @@ export default function ClientPage() {
               </span>
 
               {/* BMI Range Spectrum Bar */}
-              <div style={{ position: "relative", height: "10px", borderRadius: "5px", background: "linear-gradient(to right, #f59e0b, #10b981 35%, #f97316 70%, #ef4444)", margin: "10px 0 20px" }}>
+              <div style={{ position: "relative", height: "10px", borderRadius: "5px", background: "linear-gradient(to right, #d2a85f, #92ad7a 35%, #f97316 70%, #c87162)", margin: "10px 0 20px" }}>
                 <div
                   style={{
                     position: "absolute",
@@ -917,27 +934,28 @@ export default function ClientPage() {
                 />
               </div>
 
-              <p style={{ margin: 0, color: "#a1a1aa", fontSize: "0.83rem", lineHeight: "1.5" }}>
+              <p style={{ margin: 0, color: "var(--gd-text-muted)", fontSize: "0.83rem", lineHeight: "1.5" }}>
                 {bmiMeta.text}
               </p>
             </div>
           </article>
 
           {/* CALCULATOR 2: MAINTENANCE, DEFICIT & SURPLUS CALORIES CALCULATOR */}
-          <article style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", padding: "24px" }}>
+          <article style={{ background: "var(--gd-surface)", border: "1px solid var(--gd-line-soft)", borderRadius: "var(--gd-radius-md)", padding: "24px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <div>
-                <span className="eyebrow" style={{ color: "#d4af37", fontSize: "0.72rem" }}>Energy & TDEE</span>
-                <h2 style={{ fontSize: "1.3rem", margin: "4px 0 0", color: "#fff" }}>Calorie & Macro Calculator</h2>
+                <span className="eyebrow" style={{ color: "var(--gd-gold-bright)", fontSize: "0.72rem" }}>Energy & TDEE</span>
+                <h2 style={{ fontSize: "1.3rem", margin: "4px 0 0", color: "var(--gd-ivory)" }}>Calorie & macro calculator</h2>
               </div>
-              <div style={{ display: "flex", background: "#09090b", borderRadius: "20px", padding: "3px", border: "1px solid rgba(255,255,255,0.1)" }}>
+              <div style={{ display: "flex", background: "var(--gd-ink)", borderRadius: "var(--gd-radius-pill)", padding: "3px", border: "1px solid var(--gd-line-soft)" }}>
                 <button
                   onClick={() => setCalUnit("metric")}
                   style={{
-                    padding: "4px 10px",
-                    borderRadius: "16px",
-                    background: calUnit === "metric" ? "#d4af37" : "none",
-                    color: calUnit === "metric" ? "#000" : "#a1a1aa",
+                    padding: "6px 12px",
+                    minHeight: "36px",
+                    borderRadius: "var(--gd-radius-pill)",
+                    background: calUnit === "metric" ? "var(--gd-gold)" : "none",
+                    color: calUnit === "metric" ? "var(--gd-ink)" : "var(--gd-text-muted)",
                     border: "none",
                     fontSize: "0.75rem",
                     fontWeight: "600",
@@ -949,10 +967,11 @@ export default function ClientPage() {
                 <button
                   onClick={() => setCalUnit("imperial")}
                   style={{
-                    padding: "4px 10px",
-                    borderRadius: "16px",
-                    background: calUnit === "imperial" ? "#d4af37" : "none",
-                    color: calUnit === "imperial" ? "#000" : "#a1a1aa",
+                    padding: "6px 12px",
+                    minHeight: "36px",
+                    borderRadius: "var(--gd-radius-pill)",
+                    background: calUnit === "imperial" ? "var(--gd-gold)" : "none",
+                    color: calUnit === "imperial" ? "var(--gd-ink)" : "var(--gd-text-muted)",
                     border: "none",
                     fontSize: "0.75rem",
                     fontWeight: "600",
@@ -966,63 +985,68 @@ export default function ClientPage() {
 
             {/* Inputs Grid */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
-              <label style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                <span style={{ fontSize: "0.78rem", color: "#a1a1aa", textTransform: "uppercase" }}>Gender</span>
+              <label htmlFor="cal-gender-select" style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                <span style={{ fontSize: "0.78rem", color: "var(--gd-text-muted)", textTransform: "uppercase" }}>Gender</span>
                 <select
+                  id="cal-gender-select"
                   value={calGender}
                   onChange={(e) => setCalGender(e.target.value as "male" | "female")}
-                  style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.12)", padding: "8px", borderRadius: "6px", color: "#fff", fontSize: "0.85rem" }}
+                  style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", minHeight: "44px", padding: "8px", borderRadius: "var(--gd-radius-sm)", color: "var(--gd-ivory)", fontSize: "0.85rem" }}
                 >
                   <option value="female">Female</option>
                   <option value="male">Male</option>
                 </select>
               </label>
 
-              <label style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                <span style={{ fontSize: "0.78rem", color: "#a1a1aa", textTransform: "uppercase" }}>Age (years)</span>
+              <label htmlFor="cal-age-input" style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                <span style={{ fontSize: "0.78rem", color: "var(--gd-text-muted)", textTransform: "uppercase" }}>Age (years)</span>
                 <input
+                  id="cal-age-input"
                   type="number"
                   value={calAge}
                   onChange={(e) => setCalAge(Number(e.target.value))}
                   min="16"
                   max="90"
-                  style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.12)", padding: "8px", borderRadius: "6px", color: "#fff", fontSize: "0.85rem" }}
+                  style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", minHeight: "44px", padding: "8px", borderRadius: "var(--gd-radius-sm)", color: "var(--gd-ivory)", fontSize: "0.85rem" }}
                 />
               </label>
 
-              <label style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                <span style={{ fontSize: "0.78rem", color: "#a1a1aa", textTransform: "uppercase" }}>Weight ({calUnit === "metric" ? "kg" : "lbs"})</span>
+              <label htmlFor="cal-weight-input" style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                <span style={{ fontSize: "0.78rem", color: "var(--gd-text-muted)", textTransform: "uppercase" }}>Weight ({calUnit === "metric" ? "kg" : "lbs"})</span>
                 <input
+                  id="cal-weight-input"
                   type="number"
                   value={calWeight}
                   onChange={(e) => setCalWeight(Number(e.target.value))}
-                  style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.12)", padding: "8px", borderRadius: "6px", color: "#fff", fontSize: "0.85rem" }}
+                  style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", minHeight: "44px", padding: "8px", borderRadius: "var(--gd-radius-sm)", color: "var(--gd-ivory)", fontSize: "0.85rem" }}
                 />
               </label>
 
-              <label style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                <span style={{ fontSize: "0.78rem", color: "#a1a1aa", textTransform: "uppercase" }}>Height ({calUnit === "metric" ? "cm" : "in"})</span>
+              <label htmlFor="cal-height-input" style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                <span style={{ fontSize: "0.78rem", color: "var(--gd-text-muted)", textTransform: "uppercase" }}>Height ({calUnit === "metric" ? "cm" : "in"})</span>
                 <input
+                  id="cal-height-input"
                   type="number"
                   value={calHeight}
                   onChange={(e) => setCalHeight(Number(e.target.value))}
-                  style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.12)", padding: "8px", borderRadius: "6px", color: "#fff", fontSize: "0.85rem" }}
+                  style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", minHeight: "44px", padding: "8px", borderRadius: "var(--gd-radius-sm)", color: "var(--gd-ivory)", fontSize: "0.85rem" }}
                 />
               </label>
             </div>
 
-            <label style={{ display: "flex", flexDirection: "column", gap: "4px", marginBottom: "20px" }}>
-              <span style={{ fontSize: "0.78rem", color: "#a1a1aa", textTransform: "uppercase" }}>Daily Activity Level</span>
+            <label htmlFor="cal-activity-select" style={{ display: "flex", flexDirection: "column", gap: "4px", marginBottom: "20px" }}>
+              <span style={{ fontSize: "0.78rem", color: "var(--gd-text-muted)", textTransform: "uppercase" }}>Daily activity level</span>
               <select
+                id="cal-activity-select"
                 value={calActivity}
                 onChange={(e) => setCalActivity(Number(e.target.value))}
-                style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.12)", padding: "10px", borderRadius: "6px", color: "#fff", fontSize: "0.85rem" }}
+                style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", minHeight: "44px", padding: "10px", borderRadius: "var(--gd-radius-sm)", color: "var(--gd-ivory)", fontSize: "0.85rem" }}
               >
                 <option value={1.2}>Sedentary (desk job, minimal movement)</option>
-                <option value={1.375}>Lightly Active (1–3 gym sessions / week)</option>
-                <option value={1.55}>Moderately Active (3–5 intense sessions / week)</option>
-                <option value={1.725}>Very Active (6–7 sessions / week)</option>
-                <option value={1.9}>Extra Active (heavy physical job or 2x daily training)</option>
+                <option value={1.375}>Lightly active (1–3 gym sessions / week)</option>
+                <option value={1.55}>Moderately active (3–5 intense sessions / week)</option>
+                <option value={1.725}>Very active (6–7 sessions / week)</option>
+                <option value={1.9}>Extra active (heavy physical job or 2x daily training)</option>
               </select>
             </label>
 
@@ -1032,76 +1056,79 @@ export default function ClientPage() {
                 type="button"
                 onClick={() => setCalGoal("deficit")}
                 style={{
-                  background: calGoal === "deficit" ? "rgba(249, 115, 22, 0.18)" : "#09090b",
-                  border: calGoal === "deficit" ? "1px solid #f97316" : "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: "8px",
+                  background: calGoal === "deficit" ? "rgba(249, 115, 22, 0.18)" : "var(--gd-ink)",
+                  border: calGoal === "deficit" ? "1px solid #f97316" : "1px solid var(--gd-line-soft)",
+                  borderRadius: "var(--gd-radius-sm)",
                   padding: "12px 8px",
+                  minHeight: "54px",
                   textAlign: "center",
                   cursor: "pointer",
                 }}
               >
-                <span style={{ display: "block", color: "#f97316", fontSize: "0.72rem", textTransform: "uppercase", fontWeight: "600" }}>Fat Loss (Deficit)</span>
-                <strong style={{ display: "block", color: "#fff", fontSize: "1.2rem", marginTop: "2px" }}>{caloriesCalc.deficitMod}</strong>
-                <small style={{ color: "#a1a1aa", fontSize: "0.72rem" }}>kcal/day (-20%)</small>
+                <span style={{ display: "block", color: "#f97316", fontSize: "0.72rem", textTransform: "uppercase", fontWeight: "600" }}>Fat loss (deficit)</span>
+                <strong style={{ display: "block", color: "var(--gd-ivory)", fontSize: "1.2rem", marginTop: "2px" }}>{caloriesCalc.deficitMod}</strong>
+                <small style={{ color: "var(--gd-text-muted)", fontSize: "0.72rem" }}>kcal/day (-20%)</small>
               </button>
 
               <button
                 type="button"
                 onClick={() => setCalGoal("maintenance")}
                 style={{
-                  background: calGoal === "maintenance" ? "rgba(212, 175, 55, 0.18)" : "#09090b",
-                  border: calGoal === "maintenance" ? "1px solid #d4af37" : "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: "8px",
+                  background: calGoal === "maintenance" ? "rgba(199, 164, 91, 0.18)" : "var(--gd-ink)",
+                  border: calGoal === "maintenance" ? "1px solid var(--gd-gold)" : "1px solid var(--gd-line-soft)",
+                  borderRadius: "var(--gd-radius-sm)",
                   padding: "12px 8px",
+                  minHeight: "54px",
                   textAlign: "center",
                   cursor: "pointer",
                 }}
               >
-                <span style={{ display: "block", color: "#d4af37", fontSize: "0.72rem", textTransform: "uppercase", fontWeight: "600" }}>Maintenance</span>
-                <strong style={{ display: "block", color: "#fff", fontSize: "1.2rem", marginTop: "2px" }}>{caloriesCalc.tdee}</strong>
-                <small style={{ color: "#a1a1aa", fontSize: "0.72rem" }}>kcal/day (TDEE)</small>
+                <span style={{ display: "block", color: "var(--gd-gold)", fontSize: "0.72rem", textTransform: "uppercase", fontWeight: "600" }}>Maintenance</span>
+                <strong style={{ display: "block", color: "var(--gd-ivory)", fontSize: "1.2rem", marginTop: "2px" }}>{caloriesCalc.tdee}</strong>
+                <small style={{ color: "var(--gd-text-muted)", fontSize: "0.72rem" }}>kcal/day (TDEE)</small>
               </button>
 
               <button
                 type="button"
                 onClick={() => setCalGoal("surplus")}
                 style={{
-                  background: calGoal === "surplus" ? "rgba(16, 185, 129, 0.18)" : "#09090b",
-                  border: calGoal === "surplus" ? "1px solid #10b981" : "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: "8px",
+                  background: calGoal === "surplus" ? "rgba(146, 173, 122, 0.18)" : "var(--gd-ink)",
+                  border: calGoal === "surplus" ? "1px solid var(--gd-success)" : "1px solid var(--gd-line-soft)",
+                  borderRadius: "var(--gd-radius-sm)",
                   padding: "12px 8px",
+                  minHeight: "54px",
                   textAlign: "center",
                   cursor: "pointer",
                 }}
               >
-                <span style={{ display: "block", color: "#10b981", fontSize: "0.72rem", textTransform: "uppercase", fontWeight: "600" }}>Muscle Gain (Surplus)</span>
-                <strong style={{ display: "block", color: "#fff", fontSize: "1.2rem", marginTop: "2px" }}>{caloriesCalc.surplusLean}</strong>
-                <small style={{ color: "#a1a1aa", fontSize: "0.72rem" }}>kcal/day (+10%)</small>
+                <span style={{ display: "block", color: "var(--gd-success)", fontSize: "0.72rem", textTransform: "uppercase", fontWeight: "600" }}>Muscle gain (surplus)</span>
+                <strong style={{ display: "block", color: "var(--gd-ivory)", fontSize: "1.2rem", marginTop: "2px" }}>{caloriesCalc.surplusLean}</strong>
+                <small style={{ color: "var(--gd-text-muted)", fontSize: "0.72rem" }}>kcal/day (+10%)</small>
               </button>
             </div>
 
             {/* Selected Target Macro Breakdown */}
-            <div style={{ background: "#09090b", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "16px" }}>
+            <div style={{ background: "var(--gd-ink)", border: "1px solid var(--gd-line-soft)", borderRadius: "var(--gd-radius-sm)", padding: "16px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                <span style={{ fontSize: "0.8rem", color: "#a1a1aa", textTransform: "uppercase" }}>Recommended Macros for {calGoal.toUpperCase()} Target</span>
-                <strong style={{ color: "#d4af37", fontSize: "0.95rem" }}>{caloriesCalc.activeTarget} kcal</strong>
+                <span style={{ fontSize: "0.8rem", color: "var(--gd-text-muted)", textTransform: "uppercase" }}>Recommended macros for {calGoal.toUpperCase()} target</span>
+                <strong style={{ color: "var(--gd-gold)", fontSize: "0.95rem" }}>{caloriesCalc.activeTarget} kcal</strong>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", textAlign: "center" }}>
-                <div style={{ background: "rgba(255,255,255,0.03)", padding: "10px", borderRadius: "6px" }}>
-                  <span style={{ fontSize: "0.75rem", color: "#a1a1aa" }}>Protein</span>
-                  <strong style={{ display: "block", color: "#fff", fontSize: "1.1rem", marginTop: "2px" }}>{caloriesCalc.macros.proteinG}g</strong>
-                  <small style={{ color: "#71717a", fontSize: "0.7rem" }}>{caloriesCalc.macros.proteinKcal} kcal</small>
+                <div style={{ background: "rgba(243,237,223,0.03)", padding: "10px", borderRadius: "var(--gd-radius-sm)" }}>
+                  <span style={{ fontSize: "0.75rem", color: "var(--gd-text-muted)" }}>Protein</span>
+                  <strong style={{ display: "block", color: "var(--gd-ivory)", fontSize: "1.1rem", marginTop: "2px" }}>{caloriesCalc.macros.proteinG}g</strong>
+                  <small style={{ color: "var(--gd-text-faint)", fontSize: "0.7rem" }}>{caloriesCalc.macros.proteinKcal} kcal</small>
                 </div>
-                <div style={{ background: "rgba(255,255,255,0.03)", padding: "10px", borderRadius: "6px" }}>
-                  <span style={{ fontSize: "0.75rem", color: "#a1a1aa" }}>Carbs</span>
-                  <strong style={{ display: "block", color: "#fff", fontSize: "1.1rem", marginTop: "2px" }}>{caloriesCalc.macros.carbG}g</strong>
-                  <small style={{ color: "#71717a", fontSize: "0.7rem" }}>{caloriesCalc.macros.carbKcal} kcal</small>
+                <div style={{ background: "rgba(243,237,223,0.03)", padding: "10px", borderRadius: "var(--gd-radius-sm)" }}>
+                  <span style={{ fontSize: "0.75rem", color: "var(--gd-text-muted)" }}>Carbs</span>
+                  <strong style={{ display: "block", color: "var(--gd-ivory)", fontSize: "1.1rem", marginTop: "2px" }}>{caloriesCalc.macros.carbG}g</strong>
+                  <small style={{ color: "var(--gd-text-faint)", fontSize: "0.7rem" }}>{caloriesCalc.macros.carbKcal} kcal</small>
                 </div>
-                <div style={{ background: "rgba(255,255,255,0.03)", padding: "10px", borderRadius: "6px" }}>
-                  <span style={{ fontSize: "0.75rem", color: "#a1a1aa" }}>Fats</span>
-                  <strong style={{ display: "block", color: "#fff", fontSize: "1.1rem", marginTop: "2px" }}>{caloriesCalc.macros.fatG}g</strong>
-                  <small style={{ color: "#71717a", fontSize: "0.7rem" }}>{caloriesCalc.macros.fatKcal} kcal</small>
+                <div style={{ background: "rgba(243,237,223,0.03)", padding: "10px", borderRadius: "var(--gd-radius-sm)" }}>
+                  <span style={{ fontSize: "0.75rem", color: "var(--gd-text-muted)" }}>Fats</span>
+                  <strong style={{ display: "block", color: "var(--gd-ivory)", fontSize: "1.1rem", marginTop: "2px" }}>{caloriesCalc.macros.fatG}g</strong>
+                  <small style={{ color: "var(--gd-text-faint)", fontSize: "0.7rem" }}>{caloriesCalc.macros.fatKcal} kcal</small>
                 </div>
               </div>
             </div>

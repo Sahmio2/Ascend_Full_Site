@@ -58,6 +58,45 @@
   --muted: #a7a093;
   --danger: #c87162;
   --success: #92ad7a;
+
+  /* Official GET DIVINE Style Guide Design Tokens (GET_DIVINE_STYLE_GUIDE.md) */
+  --gd-font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --gd-font-ceremonial: "Cinzel", Georgia, serif;
+  --gd-font-sans: "DM Sans", Arial, sans-serif;
+
+  --gd-ink: #090907;
+  --gd-ink-soft: #11100d;
+  --gd-charcoal: #1a1814;
+  --gd-surface: #15130f;
+  --gd-surface-raised: #1d1a15;
+  --gd-paper: #f7f3ea;
+
+  --gd-ivory: #f3eddf;
+  --gd-ivory-soft: #e8dfcd;
+  --gd-text-muted: #a7a093;
+  --gd-text-faint: #777168;
+
+  --gd-gold: #c7a45b;
+  --gd-gold-bright: #dfbf77;
+  --gd-gold-deep: #8e6a1d;
+  --gd-gold-muted: #8c713e;
+
+  --gd-line: rgba(199, 164, 91, 0.34);
+  --gd-line-soft: rgba(243, 237, 223, 0.12);
+  --gd-overlay: rgba(9, 9, 7, 0.72);
+
+  --gd-success: #92ad7a;
+  --gd-warning: #d2a85f;
+  --gd-danger: #c87162;
+  --gd-info: #8fa8b8;
+
+  --gd-radius-sm: 0.375rem;
+  --gd-radius-md: 0.625rem;
+  --gd-radius-lg: 1rem;
+  --gd-radius-pill: 999px;
+  --gd-content: 1200px;
+  --gd-reading: 720px;
+  --gd-control-height: 44px;
 }
 
 * { box-sizing: border-box; }
