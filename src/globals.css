@@ -571,3 +571,20 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 480px) {
   .metric-grid { grid-template-columns: 1fr; }.workspace-heading h1 { font-size: 40px; }.last-sync { display: none; }.coach-primary { min-height: 39px; }.panel-head { padding-inline: 15px; }.application-row { padding-inline: 13px; }.drawer-form-grid, .add-form-grid, .drawer-facts { grid-template-columns: 1fr; }.drawer-form-grid label.wide, .add-form-grid label.wide { grid-column: auto; }.person-drawer > footer { padding-inline: 15px; }
 }
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: Arial, sans-serif !important;
+  }
+  header, nav, button, .client-nav, .client-hero, .client-metrics, .client-notice, .drawer-backdrop {
+    display: none !important;
+  }
+  .client-app {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+  }
+}
+

@@ -1,6 +1,6 @@
 import { FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { dataStore } from "../services/dataStore";
+import { dataStore, PlanDocument } from "../services/dataStore";
 import { authStore } from "../services/authStore";
 
 type View = "overview" | "people" | "applications" | "checkins" | "delivery" | "workouts" | "system";
@@ -119,6 +119,7 @@ export default function CoachDashboard({ coachName = "Sahmi El" }: { coachName?:
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [addingProgramme, setAddingProgramme] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [buildingPlan, setBuildingPlan] = useState(false);
 
   useEffect(() => {
     const storedPeople = dataStore.getPeople();
@@ -151,59 +152,164 @@ export default function CoachDashboard({ coachName = "Sahmi El" }: { coachName?:
 
   function openPerson(person: Person) { setSelected({ ...person }); }
 
-  async function savePerson() {
+  function savePerson() {
     if (!selected) return;
-    if (selected.sample) {
-      setPeople((current) => current.map((person) => person.id === selected.id ? selected : person));
-      setNotice("Sample record updated for this review session.");
-      setSelected(null);
+    const updatedPeople = people.map((p) => (p.id === selected.id ? selected : p));
+    setPeople(updatedPeople);
+    dataStore.savePeople(updatedPeople);
+    setSelected(null);
+    setNotice(`Record saved for ${selected.full_name}.`);
+  }
+
+  function addClient(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const fullName = (form.get("fullName") as string) || "";
+    const email = (form.get("email") as string) || "";
+    if (!fullName || !email) {
+      setNotice("Name and email are required.");
       return;
     }
-    const response = await fetch(`/api/coach/people/${selected.id}`, {
-      method: "PATCH",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        status: selected.status,
-        kind: selected.kind,
-        phase: selected.phase,
-        trainingLevel: selected.training_level,
-        nextCheckIn: selected.next_check_in,
-        coachNote: selected.coach_note,
-      }),
-    });
-    const result = (await response.json()) as { person?: Person; error?: string };
-    if (!response.ok || !result.person) { setNotice(result.error || "Could not save changes."); return; }
-    setPeople((current) => current.map((person) => person.id === result.person?.id ? result.person : person));
-    setSelected(null);
-    setNotice("Athlete record saved.");
-  }
 
-  async function addClient(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const payload = Object.fromEntries(form.entries());
-    const response = await fetch("/api/coach/people", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
-    const result = (await response.json()) as { person?: Person; error?: string };
-    if (!response.ok || !result.person) { setNotice(result.error || "Could not add athlete."); return; }
-    setPeople((current) => [result.person as Person, ...current.filter((person) => !person.sample)]);
+    const id = dataStore.addApplication({
+      full_name: fullName,
+      email,
+      whatsapp: (form.get("whatsapp") as string) || "",
+      primary_goal: (form.get("primaryGoal") as string) || "",
+      phase: (form.get("phase") as string) || "Unassigned",
+      training_level: (form.get("trainingLevel") as string) || "To assess",
+      next_check_in: (form.get("nextCheckIn") as string) || "",
+      coach_note: (form.get("coachNote") as string) || "",
+    });
+
+    const refreshedPeople = dataStore.getPeople();
+    setPeople(refreshedPeople);
     setUsingSamples(false);
     setAdding(false);
-    setNotice("Athlete added to the active roster.");
+    setNotice(`Athlete ${fullName} added to roster (${id}).`);
   }
 
-  async function addProgramme(event: FormEvent<HTMLFormElement>) {
+  function addProgramme(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const response = await fetch("/api/coach/operations", {
-      method: "POST", headers: { "content-type": "application/json" },
-      body: JSON.stringify(Object.fromEntries(form.entries())),
-    });
-    const result = (await response.json()) as { assignment?: Assignment; error?: string };
-    if (!response.ok || !result.assignment) { setNotice(result.error || "Could not create programme."); return; }
-    const athlete = people.find((person) => person.id === result.assignment?.person_id);
-    setAssignments((current) => [{ ...result.assignment as Assignment, full_name: athlete?.full_name }, ...current]);
+    const personId = form.get("personId") as string;
+    const title = form.get("title") as string;
+    const athlete = people.find((p) => p.id === personId);
+
+    const newAssign: Assignment = {
+      id: crypto.randomUUID(),
+      person_id: personId,
+      full_name: athlete?.full_name || "Athlete",
+      title: title || "Ascension Programme",
+      phase: (form.get("phase") as string) || "Forging the Form",
+      days_per_week: Number(form.get("daysPerWeek")) || 4,
+      status: (form.get("status") as string) || "active",
+      starts_on: (form.get("startsOn") as string) || new Date().toISOString().slice(0, 10),
+      ends_on: (form.get("endsOn") as string) || "",
+      athlete_instructions: (form.get("athleteInstructions") as string) || "Execute exercises with controlled tempo and track every set.",
+      updated_at: new Date().toISOString(),
+    };
+
+    const currentAssignments = dataStore.getAssignments();
+    currentAssignments.unshift(newAssign);
+    dataStore.saveAssignments(currentAssignments);
+    setAssignments(currentAssignments);
     setAddingProgramme(false);
-    setNotice("Programme created and saved.");
+    setNotice(`Programme "${newAssign.title}" created and assigned to ${newAssign.full_name}.`);
+  }
+
+  function savePlanDocument(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const personId = form.get("personId") as string;
+    const athlete = people.find((p) => p.id === personId);
+    if (!athlete) {
+      setNotice("Please select an active athlete.");
+      return;
+    }
+
+    const title = (form.get("title") as string) || "Get Divine Master Plan";
+    const phase = (form.get("phase") as string) || athlete.phase || "Forging the Form";
+
+    const maintenance_calories = Number(form.get("maintenanceCalories")) || 2100;
+    const target_calories = Number(form.get("targetCalories")) || 1700;
+    const deficit_calories = Number(form.get("deficitCalories")) || 1700;
+    const surplus_calories = Number(form.get("surplusCalories")) || 2300;
+
+    const protein_g = Number(form.get("proteinG")) || 140;
+    const carbs_g = Number(form.get("carbsG")) || 175;
+    const fats_g = Number(form.get("fatsG")) || 55;
+    const hydration_liters = Number(form.get("hydrationLiters")) || 3.5;
+
+    const mealRaw = (form.get("mealStructure") as string) || "";
+    const suppRaw = (form.get("supplements") as string) || "";
+    const guidelines = (form.get("guidelines") as string) || "Hit protein targets consistently and prioritize recovery.";
+
+    const meal_structure = mealRaw.split("\n").map((s) => s.trim()).filter(Boolean);
+    const supplements = suppRaw.split("\n").map((s) => s.trim()).filter(Boolean);
+
+    const day1Title = (form.get("day1Title") as string) || "Day 1 — Upper Body Hypertrophy";
+    const day1Notes = (form.get("day1Notes") as string) || "Focus on controlled rep execution.";
+    const day2Title = (form.get("day2Title") as string) || "Day 2 — Lower Body & Core";
+    const day2Notes = (form.get("day2Notes") as string) || "Ensure thorough warm-up before working sets.";
+
+    const newPlan: PlanDocument = {
+      id: `plan-${personId}`,
+      person_id: personId,
+      full_name: athlete.full_name,
+      title,
+      phase,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      workout_days: [
+        {
+          day_title: day1Title,
+          notes: day1Notes,
+          exercises: [
+            { name: "Incline Dumbbell Press", sets: "4", reps: "8–10", rir: "2", notes: "Controlled 3-sec lowering" },
+            { name: "Chest-Supported Row", sets: "4", reps: "10–12", rir: "2", notes: "Squeeze upper back" },
+            { name: "Cable Lateral Raises", sets: "3", reps: "12–15", rir: "1", notes: "Lead with elbows" },
+            { name: "Overhead Tricep Extension", sets: "3", reps: "12–15", rir: "1", notes: "Keep elbows fixed" },
+          ],
+        },
+        {
+          day_title: day2Title,
+          notes: day2Notes,
+          exercises: [
+            { name: "Barbell Hip Thrust / Squat", sets: "4", reps: "8–10", rir: "2", notes: "Brace core tightly" },
+            { name: "Romanian Deadlift", sets: "3", reps: "10–12", rir: "2", notes: "Hinge deep at hips" },
+            { name: "Walking Lunges", sets: "3", reps: "10 per leg", rir: "2", notes: "Upright torso" },
+            { name: "Hanging Leg Raises", sets: "3", reps: "15", rir: "2", notes: "No swinging momentum" },
+          ],
+        },
+      ],
+      nutrition: {
+        maintenance_calories,
+        target_calories,
+        deficit_calories,
+        surplus_calories,
+        protein_g,
+        carbs_g,
+        fats_g,
+        hydration_liters,
+        meal_structure: meal_structure.length ? meal_structure : [
+          "Meal 1: 3 eggs + 60g oats + berries",
+          "Meal 2: 160g chicken breast + 160g rice + greens",
+          "Meal 3: 1 scoop whey + 1 banana + almonds",
+          "Meal 4: 170g salmon / steak + sweet potato + salad",
+        ],
+        supplements: supplements.length ? supplements : [
+          "Creatine Monohydrate — 5g daily",
+          "Omega-3 Fish Oil — 2,000mg daily",
+          "Magnesium Glycinate — 300mg night",
+        ],
+        guidelines,
+      },
+    };
+
+    dataStore.savePlan(newPlan);
+    setNotice(`Master Plan Document created for ${athlete.full_name}.`);
+    setBuildingPlan(false);
   }
 
   return (
@@ -362,7 +468,15 @@ export default function CoachDashboard({ coachName = "Sahmi El" }: { coachName?:
           {view === "delivery" && (
             <section className="delivery-workspace">
               <article className="coach-panel programme-list">
-                <div className="panel-head"><div><p>Client delivery</p><h2>Assigned programmes</h2></div><button onClick={() => setAddingProgramme(true)}><Icon name="plus" /> New programme</button></div>
+                <div className="panel-head">
+                  <div><p>Client delivery</p><h2>Assigned programmes</h2></div>
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <button onClick={() => setBuildingPlan(true)} style={{ background: "rgba(212, 175, 55, 0.15)", border: "1px solid rgba(212, 175, 55, 0.4)", color: "#d4af37", borderRadius: "6px", padding: "6px 14px", fontSize: "0.85rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                      + Create Workout & Nutrition Plan
+                    </button>
+                    <button onClick={() => setAddingProgramme(true)}><Icon name="plus" /> New programme</button>
+                  </div>
+                </div>
                 <div className="programme-table">
                   {assignments.map((assignment) => <div className="programme-row" key={assignment.id}>
                     <span className="person-avatar">{initials(assignment.full_name || "Athlete")}</span>
@@ -458,6 +572,127 @@ export default function CoachDashboard({ coachName = "Sahmi El" }: { coachName?:
               <label className="wide"><span>Private coach instructions</span><textarea name="coachInstructions" rows={4} placeholder="Internal progression logic, tolerances and review conditions." /></label>
             </div>
             <footer><button type="button" className="drawer-secondary" onClick={() => setAddingProgramme(false)}>Cancel</button><button className="coach-primary" type="submit">Create programme</button></footer>
+          </form>
+        </div>
+      )}
+
+      {buildingPlan && (
+        <div className="drawer-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) setBuildingPlan(false); }}>
+          <form className="add-modal" style={{ maxWidth: "720px", width: "90%" }} onSubmit={savePlanDocument}>
+            <header>
+              <div>
+                <p className="dashboard-eyebrow">Master Delivery</p>
+                <h2>Create Workout & Nutrition Plan</h2>
+              </div>
+              <button type="button" aria-label="Close" onClick={() => setBuildingPlan(false)}><Icon name="close" /></button>
+            </header>
+            <div className="add-form-grid" style={{ maxHeight: "70vh", overflowY: "auto", paddingRight: "6px" }}>
+              <label className="wide">
+                <span>Select Athlete *</span>
+                <select name="personId" required defaultValue="">
+                  <option value="" disabled>Select an athlete</option>
+                  {people.map((person) => (
+                    <option value={person.id} key={person.id}>{person.full_name} ({person.email})</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="wide">
+                <span>Plan Title *</span>
+                <input name="title" required placeholder="e.g. Get Divine Master Plan — Body Recomposition" />
+              </label>
+
+              <label>
+                <span>Phase</span>
+                <select name="phase">
+                  <option>Forging the Form</option>
+                  <option>Taming the Flesh</option>
+                  <option>Ascension</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Target Daily Calories (kcal)</span>
+                <input name="targetCalories" type="number" defaultValue="1800" required />
+              </label>
+
+              <label>
+                <span>Maintenance Calories (kcal)</span>
+                <input name="maintenanceCalories" type="number" defaultValue="2200" required />
+              </label>
+
+              <label>
+                <span>Deficit Floor (kcal)</span>
+                <input name="deficitCalories" type="number" defaultValue="1700" required />
+              </label>
+
+              <label>
+                <span>Surplus Ceiling (kcal)</span>
+                <input name="surplusCalories" type="number" defaultValue="2400" required />
+              </label>
+
+              <label>
+                <span>Protein Target (g)</span>
+                <input name="proteinG" type="number" defaultValue="140" required />
+              </label>
+
+              <label>
+                <span>Carbohydrates Target (g)</span>
+                <input name="carbsG" type="number" defaultValue="180" required />
+              </label>
+
+              <label>
+                <span>Fats Target (g)</span>
+                <input name="fatsG" type="number" defaultValue="55" required />
+              </label>
+
+              <label>
+                <span>Daily Hydration (Liters)</span>
+                <input name="hydrationLiters" type="number" step="0.5" defaultValue="3.5" required />
+              </label>
+
+              <label className="wide">
+                <span>Meal Schedule (1 meal per line)</span>
+                <textarea
+                  name="mealStructure"
+                  rows={4}
+                  defaultValue={"Meal 1: 3 eggs + 60g oats + 1/2 avocado\nMeal 2: 160g chicken breast + 160g jasmine rice + broccoli\nMeal 3: 1 scoop whey protein + 1 banana + 15g almonds\nMeal 4: 170g salmon / steak + sweet potato + salad"}
+                />
+              </label>
+
+              <label className="wide">
+                <span>Supplements Protocol (1 per line)</span>
+                <textarea
+                  name="supplements"
+                  rows={3}
+                  defaultValue={"Creatine Monohydrate — 5g daily\nOmega-3 Fish Oil — 2,000mg daily\nMagnesium Glycinate — 300mg before bed"}
+                />
+              </label>
+
+              <label className="wide">
+                <span>Coach Guidelines</span>
+                <textarea
+                  name="guidelines"
+                  rows={3}
+                  defaultValue="Prioritize hitting protein target (+/- 5g). Drink 1L water before noon. Maintain 7.5+ hours sleep."
+                />
+              </label>
+
+              <label className="wide">
+                <span>Day 1 Workout Routine Title</span>
+                <input name="day1Title" defaultValue="Day 1 — Upper Body Hypertrophy" />
+              </label>
+
+              <label className="wide">
+                <span>Day 2 Workout Routine Title</span>
+                <input name="day2Title" defaultValue="Day 2 — Lower Body & Glutes" />
+              </label>
+            </div>
+
+            <footer>
+              <button type="button" className="drawer-secondary" onClick={() => setBuildingPlan(false)}>Cancel</button>
+              <button className="coach-primary" type="submit">Save Plan Document</button>
+            </footer>
           </form>
         </div>
       )}
