@@ -2,11 +2,24 @@
 import { dataStore, Person } from "./dataStore";
 
 export type UserRole = "coach" | "client" | null;
+export type AuthMode = "live" | "demo";
+
+export type AuthSession = {
+  role: UserRole;
+  mode: AuthMode;
+  clientEmail?: string;
+  clientId?: string;
+  clientName?: string;
+  coachName?: string;
+};
 
 export type AuthState = {
   role: UserRole;
+  mode: AuthMode;
   person: Person | null;
   coachName: string | null;
+  clientEmail?: string;
+  clientName?: string;
 };
 
 const AUTH_KEY = "gd_auth_session_v1";
@@ -21,13 +34,16 @@ function loadSession(): AuthState {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && (parsed.role === "coach" || parsed.role === "client")) {
-        return parsed;
+        return {
+          ...parsed,
+          mode: parsed.mode || "live",
+        };
       }
     }
   } catch {
     // fallback
   }
-  return { role: null, person: null, coachName: null };
+  return { role: null, mode: "live", person: null, coachName: null };
 }
 
 function saveSession(state: AuthState) {
@@ -51,6 +67,28 @@ export const authStore = {
     return currentState;
   },
 
+  getSession(): AuthSession {
+    return {
+      role: currentState.role,
+      mode: currentState.mode || "live",
+      clientEmail: currentState.clientEmail || currentState.person?.email,
+      clientName: currentState.clientName || currentState.person?.full_name,
+      coachName: currentState.coachName || undefined,
+    };
+  },
+
+  setSession(session: Partial<AuthSession>) {
+    currentState = {
+      ...currentState,
+      role: session.role !== undefined ? session.role : currentState.role,
+      mode: session.mode || currentState.mode || "live",
+      clientEmail: session.clientEmail || currentState.clientEmail,
+      clientName: session.clientName || currentState.clientName,
+      coachName: session.coachName || currentState.coachName,
+    };
+    notify();
+  },
+
   subscribe(listener: (state: AuthState) => void): () => void {
     listeners.add(listener);
     return () => {
@@ -62,7 +100,6 @@ export const authStore = {
     const term = passcodeOrEmail.trim().toLowerCase();
     const pass = (password || "").trim();
 
-    // Check passcode match or email + password match
     if (
       term === DEFAULT_COACH_PASSCODE.toLowerCase() ||
       term === "7777" ||
@@ -71,6 +108,7 @@ export const authStore = {
     ) {
       currentState = {
         role: "coach",
+        mode: "live",
         person: null,
         coachName: DEFAULT_COACH_NAME,
       };
@@ -93,20 +131,24 @@ export const authStore = {
     if (match) {
       currentState = {
         role: "client",
+        mode: "live",
         person: match,
+        clientEmail: match.email,
+        clientName: match.full_name,
         coachName: null,
       };
       notify();
       return { success: true, message: `Welcome back, ${match.full_name}`, person: match };
     }
 
-    // Fallback search: try any client match by partial email or sample default
     const fallback = people.find((p) => p.kind === "client");
     if (fallback) {
-      // If user typed a test email or new email, allow entry as matching client or fallback
       currentState = {
         role: "client",
+        mode: "live",
         person: fallback,
+        clientEmail: fallback.email,
+        clientName: fallback.full_name,
         coachName: null,
       };
       notify();
@@ -117,7 +159,7 @@ export const authStore = {
   },
 
   logout() {
-    currentState = { role: null, person: null, coachName: null };
+    currentState = { role: null, mode: "live", person: null, coachName: null };
     notify();
   },
 };
