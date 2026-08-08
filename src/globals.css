@@ -254,7 +254,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 760px) {
   .shell { width: min(100% - 32px, 1420px); }
   .public-nav { min-height: 72px; }
-  .public-nav .quiet-link { display: none; }
+  .public-nav .quiet-link { display: inline-flex; align-items: center; font-size: 12px; }
   .public-nav .button-small { min-height: 38px; padding-inline: 12px; font-size: 9px; }
   .wordmark { font-size: 13px; }
   .hero { min-height: calc(100svh - 72px); padding: 22px 0 26px; }
