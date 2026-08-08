@@ -1,39 +1,15 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { GetDivineIcon, GetDivineIconName } from "../components/GetDivineIcons";
 
 export type PortalSection = "dashboard" | "plan" | "nutrition" | "logger" | "progress";
 
-const navItems: { id: PortalSection; label: string; path: string; icon: React.ReactNode }[] = [
-  {
-    id: "dashboard",
-    label: "Today",
-    path: "",
-    icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" /></svg>,
-  },
-  {
-    id: "plan",
-    label: "My plan",
-    path: "/plan",
-    icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12a2 2 0 0 1 2 2v16H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 14h14M8 7h8M8 11h6" /></svg>,
-  },
-  {
-    id: "nutrition",
-    label: "Nutrition",
-    path: "/nutrition",
-    icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21c4-3 6-7 6-11a6 6 0 0 0-12 0c0 4 2 8 6 11Zm0-14v8M8.5 11.5h7" /></svg>,
-  },
-  {
-    id: "logger",
-    label: "Workout",
-    path: "/workout-logger",
-    icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4M7 7v10M17 7v10M21 10v4M7 12h10" /></svg>,
-  },
-  {
-    id: "progress",
-    label: "Progress",
-    path: "/progress",
-    icon: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 17 5-5 4 3 7-9M16 6h4v4" /></svg>,
-  },
+const navItems: { id: PortalSection; label: string; path: string; icon: GetDivineIconName }[] = [
+  { id: "dashboard", label: "Today", path: "", icon: "today" },
+  { id: "plan", label: "My plan", path: "/plan", icon: "plan" },
+  { id: "nutrition", label: "Nutrition", path: "/nutrition", icon: "nutrition" },
+  { id: "logger", label: "Workout", path: "/workout-logger", icon: "workout" },
+  { id: "progress", label: "Progress", path: "/progress", icon: "progress" },
 ];
 
 export default function PortalShell({
@@ -57,7 +33,6 @@ export default function PortalShell({
   const dashboardPath = isDemoPath ? "/demo/dashboard" : "/client/dashboard";
   const initials = clientName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("");
 
-  // Determine current active section from location pathname if not explicitly passed
   let activeSection = current;
   if (location.pathname.includes("/plan")) activeSection = "plan";
   else if (location.pathname.includes("/nutrition")) activeSection = "nutrition";
@@ -80,7 +55,8 @@ export default function PortalShell({
         <nav aria-label="Client portal">
           {navItems.map((item) => (
             <Link key={item.id} className={activeSection === item.id ? "active" : ""} to={destination(item.path)}>
-              {item.icon}<span>{item.label}</span>
+              <GetDivineIcon name={item.icon} />
+              <span>{item.label}</span>
             </Link>
           ))}
         </nav>
@@ -88,7 +64,7 @@ export default function PortalShell({
           <span>◆</span>
           <p>Train with intention.<br />Progress with structure.</p>
         </div>
-        <Link className="portal-signout" to={signOutPath}>{isDemoPath ? "Exit demo" : "Sign out"} <span>↗</span></Link>
+        <Link className="portal-signout" to={signOutPath}>{isDemoPath ? "Exit demo" : "Sign out"} <GetDivineIcon name="arrow-up-right" width={14} height={14} /></Link>
       </aside>
 
       <div className="portal-frame">
@@ -106,7 +82,8 @@ export default function PortalShell({
       <nav className="portal-bottom-nav" aria-label="Client portal mobile navigation">
         {navItems.map((item) => (
           <Link key={item.id} className={activeSection === item.id ? "active" : ""} to={destination(item.path)}>
-            {item.icon}<span>{item.label}</span>
+            <GetDivineIcon name={item.icon} />
+            <span>{item.label}</span>
           </Link>
         ))}
       </nav>

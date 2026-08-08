@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./globals.css";
+import "./styles/get-divine-mobile-type.css";
 import "./styles/get-divine-fonts.css";
 import "./styles/get-divine-chatgpt.css";
 import "./styles/get-divine-patch-02.css";

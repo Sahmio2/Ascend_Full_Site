@@ -1,0 +1,167 @@
+/* Import this after the existing Get Divine globals.css. */
+@media (max-width: 760px) {
+  .public-site p,
+  .application-page p,
+  .application-page li,
+  .application-page label,
+  .application-page input,
+  .application-page select,
+  .application-page textarea {
+    font-size: 16px;
+  }
+
+  .eyebrow,
+  .public-nav a,
+  .public-site .button,
+  .principles-grid p,
+  .signature-rule p,
+  .index-label,
+  .application-header > p,
+  .application-back,
+  .form-progress-head span,
+  .form-progress-head strong,
+  .field > span,
+  .choice-fieldset legend,
+  .field small,
+  .choice b,
+  .day,
+  .form-actions .button,
+  .back-button,
+  .reference-card span {
+    font-size: 12px;
+  }
+
+  .choice,
+  .consent-box,
+  .form-message {
+    font-size: 14px;
+  }
+
+  .portal-welcome > div:first-child > p:last-child,
+  .portal-page-heading > div > p:last-child,
+  .portal-plan-day header p,
+  .portal-plan-aside > article > p:last-child,
+  .portal-empty-state p,
+  .portal-empty-copy,
+  .portal-nutrition-side ul,
+  .portal-notice p,
+  .portal-week-card > p,
+  .portal-checkin-card > p:not(.portal-kicker),
+  .portal-coach-note blockquote,
+  .portal-history-table em {
+    font-size: 15px;
+  }
+
+  .portal-mobile-brand {
+    font-size: 14px;
+  }
+
+  .portal-mobile-brand b,
+  .portal-bottom-nav a,
+  .portal-kicker,
+  .portal-journey-strip span,
+  .portal-journey-strip small,
+  .portal-streak-count span,
+  .portal-overview span,
+  .portal-overview small,
+  .portal-calorie-ring span,
+  .portal-calorie-action span,
+  .portal-macro-grid b,
+  .portal-macro-grid small,
+  .portal-status,
+  .portal-workout-meta span,
+  .portal-exercise-preview > div > span,
+  .portal-exercise-preview small,
+  .portal-primary-action,
+  .portal-week-days i,
+  .portal-week-days small,
+  .portal-coach-note header > span,
+  .portal-coach-note strong,
+  .portal-coach-note small,
+  .portal-checkin-card > div small,
+  .portal-checkin-card > a,
+  .portal-notice span,
+  .portal-page-action,
+  .portal-section-heading > span,
+  .portal-plan-day > header span,
+  .portal-plan-day header > strong,
+  .portal-plan-exercises > div > span,
+  .portal-plan-exercises > div > b,
+  .portal-document-list strong,
+  .portal-document-list small,
+  .portal-document-list b,
+  .portal-document-list a,
+  .portal-empty-state span,
+  .portal-target-grid span,
+  .portal-target-grid small,
+  .portal-target-grid p,
+  .portal-food-log header > strong,
+  .portal-food-quickadd button,
+  .portal-meal-list > div > span,
+  .portal-meal-list small,
+  .portal-meal-list > div > b,
+  .portal-target-list span,
+  .portal-meal-plan span,
+  .portal-chart-labels,
+  .portal-checkin-summary > div span,
+  .portal-checkin-summary > div b,
+  .portal-checkin-summary button,
+  .portal-history-panel header > strong,
+  .portal-history-table article > span,
+  .portal-history-table small,
+  .portal-history-table article > b {
+    font-size: 11px;
+  }
+
+  .portal-plan-exercises small,
+  .portal-plan-exercises em,
+  .portal-food-quickadd input,
+  .portal-meal-list small,
+  .portal-target-list span,
+  .portal-meal-plan span,
+  .portal-checkin-summary > div span,
+  .portal-history-table small {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .portal-food-quickadd input {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .portal-page-action,
+  .portal-primary-action,
+  .portal-food-quickadd button,
+  .portal-checkin-summary button {
+    min-height: 48px;
+    font-size: 12px;
+  }
+
+  .coach-sidebar nav button span,
+  .workspace-heading > div > p:last-child,
+  .workspace-notice p,
+  .metric-grid article > div span,
+  .metric-grid article > p,
+  .panel-head p,
+  .panel-head > button,
+  .person-main strong,
+  .person-main span,
+  .person-meta span,
+  .person-meta small,
+  .attention-list strong,
+  .attention-list p,
+  .activity-list p,
+  .activity-list small,
+  .people-table th,
+  .people-table td strong,
+  .people-table td small,
+  .lead-card > p,
+  .lead-card li,
+  .lead-card footer,
+  .checkin-row strong,
+  .checkin-row small,
+  .checkin-row div > span {
+    font-size: 11px;
+  }
+}
