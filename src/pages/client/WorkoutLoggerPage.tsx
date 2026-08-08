@@ -1,9 +1,10 @@
 import { FormEvent, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PortalShell from "../../layouts/ClientPortalLayout";
-import { ClientData, Exercise, ExerciseSet, ProgrammeExercise, ProgrammeWorkout, Workout, dateLabel, parseWorkoutPlan } from "../../types/getDivine";
+import { Exercise, ExerciseSet, ProgrammeExercise, ProgrammeWorkout, Workout, dateLabel, parseWorkoutPlan } from "../../types/getDivine";
 import { authStore } from "../../services/authStore";
-import { DEMO_CLIENT } from "../../data/demoSeed";
+import { useClientPortalData } from "../../features/get-divine/data/useClientPortalData";
+import { clientPortalAdapter } from "../../features/get-divine/data/clientPortalAdapter";
 
 type SavedSet = { set?: number; reps?: string; load?: string };
 type SavedExercise = { name?: string; sets?: SavedSet[] };
@@ -52,70 +53,24 @@ export default function WorkoutLoggerPage() {
   const location = useLocation();
   const session = authStore.getSession();
   const demo = location.pathname.startsWith("/demo") || session.mode === "demo";
-  const clientName = session.clientName || DEMO_CLIENT.full_name;
-  const signOutPath = "/login";
+  const scope = demo ? "demo" : "live";
+  const { clientData } = useClientPortalData(scope);
 
-  const [data, setData] = useState<ClientData | null>({
-    person: {
-      full_name: clientName,
-      phase: "Phase II — Forging the Form",
-      primary_goal: "Build visible shoulder & glute shape while maintaining low body fat.",
-      next_check_in: "2026-08-10",
-    },
-    assignments: [
-      {
-        id: "assign-1",
-        title: "Ascension Block 01 — Hypertrophy & Density",
-        phase: "Phase II — Forging the Form",
-        days_per_week: 4,
-        starts_on: "2026-07-20",
-        ends_on: "2026-08-16",
-        athlete_instructions: "Record every working set. Control 2-second eccentrics.",
-        primary_workouts: "",
-        optional_workouts: "",
-        workout_plan: JSON.stringify([
-          {
-            id: "d1",
-            name: "Upper Body Hypertrophy & Density",
-            focus: "Upper Body (Chest, Back, Delts)",
-            optional: false,
-            exercises: [
-              { id: "e1", name: "Incline Dumbbell Bench Press", type: "Primary Compound", prescribedSets: 4, setPrescription: "4", reps: "8–10", rest: "90s", tempo: "2-0-1-0", notes: "Retract scapula" },
-              { id: "e2", name: "Chest Supported Row", type: "Primary Compound", prescribedSets: 4, setPrescription: "4", reps: "10–12", rest: "90s", tempo: "2-0-1-0", notes: "Pause at contraction" },
-              { id: "e3", name: "Standing Cable Lateral Raise", type: "Accessory", prescribedSets: 4, setPrescription: "4", reps: "12–15", rest: "60s", tempo: "1-0-1-0", notes: "Lead with elbows" },
-            ],
-          },
-          {
-            id: "d2",
-            name: "Lower Body Quad & Glute Focus",
-            focus: "Lower Body (Quads, Glutes, Calves)",
-            optional: false,
-            exercises: [
-              { id: "e4", name: "Barbell Back Squat", type: "Primary Compound", prescribedSets: 4, setPrescription: "4", reps: "6–8", rest: "120s", tempo: "3-0-1-0", notes: "Hit parallel with balance" },
-              { id: "e5", name: "Romanian Deadlift", type: "Posterior Chain", prescribedSets: 3, setPrescription: "3", reps: "8–10", rest: "90s", tempo: "3-1-1-0", notes: "Push hips back to wall" },
-            ],
-          },
-        ]),
-        status: "active",
-      },
-    ],
-    workouts: [
-      { id: "w1", workout_date: "2026-08-04", workout_name: "Upper Body Hypertrophy & Density", completion_status: "completed", duration_minutes: 60, effort_rating: 8, athlete_note: "Felt strong on incline press", coach_feedback: "Great control, let reps dictate progression.", exercise_log: "" },
-    ],
-    documents: [],
-  });
+  const clientName = session.clientName || clientData.person.full_name;
+  const signOutPath = "/login";
 
   const [notice, setNotice] = useState("");
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [selectedWorkoutId, setSelectedWorkoutId] = useState("");
-  const activeProgramme = data?.assignments.find((item) => item.status === "active") ?? data?.assignments[0];
+
+  const activeProgramme = clientData.assignments.find((item) => item.status === "active") ?? clientData.assignments[0];
   const workoutPlan = useMemo(() => parseWorkoutPlan(activeProgramme?.workout_plan), [activeProgramme?.workout_plan]);
   const selectedWorkout = workoutPlan.find((workout) => workout.id === selectedWorkoutId);
   const recordedSets = exercises.reduce((total, exercise) => total + exercise.sets.filter((set) => set.completed || set.reps || set.load).length, 0);
 
   function selectWorkout(workout: ProgrammeWorkout) {
     setSelectedWorkoutId(workout.id);
-    setExercises(workout.exercises.map((exercise) => sessionExercise(exercise, data?.workouts ?? [])));
+    setExercises(workout.exercises.map((exercise) => sessionExercise(exercise, clientData.workouts)));
     setNotice("");
   }
 
@@ -142,30 +97,29 @@ export default function WorkoutLoggerPage() {
       name: exercise.name,
       sets: exercise.sets.filter((set) => set.completed || set.reps || set.load),
     })).filter((exercise) => exercise.sets.length);
+
     if (!completedExercises.length) {
       setNotice("Record at least one working set before completing the workout.");
       return;
     }
-    const newWorkout: Workout = {
-      id: `w-${Date.now()}`,
-      workout_date: (form.get("workoutDate") as string) || new Date().toISOString().split("T")[0],
-      workout_name: selectedWorkout.name,
-      completion_status: "completed",
-      duration_minutes: Number(form.get("durationMinutes")) || 60,
-      effort_rating: Number(form.get("effortRating")) || 8,
-      athlete_note: (form.get("athleteNote") as string) || "",
-      coach_feedback: "",
-      exercise_log: JSON.stringify(completedExercises),
-    };
-    setData((current) => current ? { ...current, workouts: [newWorkout, ...current.workouts] } : null);
-    setNotice(demo ? "Demo workout completed. No real client record was changed." : "Workout completed and sent to your coach.");
+
+    clientPortalAdapter.saveWorkout(scope, {
+      workoutDate: (form.get("workoutDate") as string) || new Date().toISOString().split("T")[0],
+      workoutName: selectedWorkout.name,
+      durationMinutes: Number(form.get("durationMinutes")) || 60,
+      effortRating: Number(form.get("effortRating")) || 8,
+      athleteNote: (form.get("athleteNote") as string) || "",
+      exercises: completedExercises,
+    });
+
+    setNotice(demo ? "Demo workout completed and updated in history." : "Workout completed and sent to your coach.");
     setExercises([]);
     setSelectedWorkoutId("");
     formElement.reset();
   }
 
   return (
-    <PortalShell clientName={clientName} signOutPath={signOutPath} demo={demo} current="logger" phase={data?.person.phase}>
+    <PortalShell clientName={clientName} signOutPath={signOutPath} demo={demo} current="logger" phase={clientData.person.phase}>
       <section className="portal-page-heading logger-hero">
         <div><p className="portal-kicker">Programme-powered logger</p><h1>Your workout is already here.</h1><p>Choose today’s programme day. Your exercises, targets and last performance load automatically—record only what you do now.</p></div>
         <div className="logger-hero-stat"><span>Current programme</span><strong>{activeProgramme?.title || "Awaiting upload"}</strong><small>{workoutPlan.length ? `${workoutPlan.length} workout days loaded` : "Your coach will load this"}</small></div>
@@ -218,7 +172,7 @@ export default function WorkoutLoggerPage() {
         </form>
         <aside className="client-side">
           <article><p className="eyebrow">Programme direction</p><h2>{activeProgramme?.title || "Your programme"}</h2><p>{activeProgramme?.athlete_instructions || "Move with control, record every working set and stop any movement that creates sharp pain."}</p>{activeProgramme && <small>{dateLabel(activeProgramme.starts_on)} — {dateLabel(activeProgramme.ends_on)}</small>}</article>
-          <article><p className="eyebrow">Workout history</p><div className="history-list">{data?.workouts.slice(0, 8).map((workout) => <div key={workout.id}><span>{new Date(workout.workout_date).getDate()}</span><div><strong>{workout.workout_name}</strong><small>{dateLabel(workout.workout_date)} · RPE {workout.effort_rating || "—"}</small>{workout.coach_feedback && <p>Coach: {workout.coach_feedback}</p>}</div></div>)}{!data?.workouts.length && <p className="client-empty">Your completed workouts will appear here.</p>}</div></article>
+          <article><p className="eyebrow">Workout history</p><div className="history-list">{clientData.workouts.slice(0, 8).map((workout) => <div key={workout.id}><span>{new Date(workout.workout_date).getDate()}</span><div><strong>{workout.workout_name}</strong><small>{dateLabel(workout.workout_date)} · RPE {workout.effort_rating || "—"}</small>{workout.coach_feedback && <p>Coach: {workout.coach_feedback}</p>}</div></div>)}{!clientData.workouts.length && <p className="client-empty">Your completed workouts will appear here.</p>}</div></article>
         </aside>
       </section>}
     </PortalShell>

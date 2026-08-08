@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
-import { authStore, AuthState, UserRole } from "../services/authStore";
-import CoachLoginPage from "../pages/CoachLoginPage";
+import { authStore } from "../services/authStore";
+import { AuthSession, UserRole } from "../types/getDivine";
+import CoachLoginPage from "../pages/auth/CoachLoginPage";
 
 type ProtectedRouteProps = {
   children: ReactNode;
@@ -8,15 +9,15 @@ type ProtectedRouteProps = {
 };
 
 export default function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
-  const [authState, setAuthState] = useState<AuthState>(authStore.getState());
+  const [session, setSession] = useState<AuthSession>(authStore.getSession());
 
   useEffect(() => {
-    return authStore.subscribe((state) => {
-      setAuthState(state);
+    return authStore.subscribe(() => {
+      setSession(authStore.getSession());
     });
   }, []);
 
-  if (authState.role !== requiredRole) {
+  if (session.role !== requiredRole) {
     if (requiredRole === "coach") {
       return <CoachLoginPage />;
     }
