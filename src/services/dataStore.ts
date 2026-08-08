@@ -1,4 +1,6 @@
-// In-memory & LocalStorage Data Store for Get Divine Single-Page Application
+import { registerGetDivineLiveBridge } from "../features/get-divine/data/clientPortalAdapter";
+import { createGetDivineDemoSeed } from "../features/get-divine/data/demoSeed";
+import type { ClientPortalData, FoodEntryInput, WorkoutSessionInput, CheckInInput } from "../features/get-divine/data/types";
 
 export type Person = {
   id: string;
@@ -257,4 +259,37 @@ export const dataStore = {
     }
     saveStored(STORAGE_KEYS.PLANS, plans);
   },
+
+  getClientPortalSnapshot(): ClientPortalData {
+    const seed = createGetDivineDemoSeed();
+    const people = this.getPeople();
+    const client = people.find((p) => p.kind === "client") || people[0];
+    if (client) {
+      seed.client.fullName = client.full_name;
+      seed.client.email = client.email;
+      seed.client.primaryGoal = client.primary_goal || seed.client.primaryGoal;
+    }
+    return seed;
+  },
+
+  addFood(_input: FoodEntryInput) {
+    notify();
+  },
+
+  saveWorkout(_input: WorkoutSessionInput) {
+    notify();
+  },
+
+  saveCheckIn(_input: CheckInInput) {
+    notify();
+  },
 };
+
+// Register live bridge immediately
+registerGetDivineLiveBridge({
+  getSnapshot: () => dataStore.getClientPortalSnapshot(),
+  subscribe: (listener) => dataStore.subscribe(listener),
+  addFood: (input) => dataStore.addFood(input),
+  saveWorkout: (input) => dataStore.saveWorkout(input),
+  saveCheckIn: (input) => dataStore.saveCheckIn(input),
+});

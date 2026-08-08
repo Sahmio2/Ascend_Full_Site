@@ -1,182 +1,192 @@
-import { createFreshDemoState, DemoPortalState, FoodMeal } from "../../../data/demoSeed";
-import { dataStore } from "../../../services/dataStore";
-import { ClientData, Workout } from "../../../types/getDivine";
+import { createGetDivineDemoSeed } from "./demoSeed";
+import type {
+  CheckInInput,
+  ClientPortalData,
+  ExerciseSet,
+  FoodEntryInput,
+  PortalScope,
+  WorkoutSessionInput,
+} from "./types";
+import { normalizedExerciseKey } from "./types";
 
-export type PortalScope = "live" | "demo";
+export const GET_DIVINE_DEMO_KEY = "gd_demo_data_v2";
+export const GET_DIVINE_AUTH_KEY = "gd_auth_session_v1";
 
-export type FoodEntryInput = {
-  name: string;
-  calories: number;
-  protein?: number;
-};
+type Listener = () => void;
 
-export type WorkoutSessionInput = {
-  workoutDate: string;
-  workoutName: string;
-  durationMinutes: number;
-  effortRating: number;
-  athleteNote: string;
-  exercises: { name: string; sets: { set: number; reps: string; load: string; completed?: boolean }[] }[];
-};
-
-export type CheckInInput = {
-  bodyweight?: number;
-  photosUploaded?: boolean;
-  reflectionNotes?: string;
-};
-
-const DEMO_STORAGE_KEY = "gd_demo_data_v1";
-
-function loadDemoState(): DemoPortalState {
-  try {
-    const raw = sessionStorage.getItem(DEMO_STORAGE_KEY) || localStorage.getItem(DEMO_STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && parsed.clientData && parsed.nutrition && Array.isArray(parsed.meals)) {
-        return parsed;
-      }
-    }
-  } catch {
-    // fallback
-  }
-  const fresh = createFreshDemoState();
-  saveDemoState(fresh);
-  return fresh;
+export interface LivePortalBridge {
+  getSnapshot(): ClientPortalData;
+  subscribe(listener: Listener): () => void;
+  addFood(input: FoodEntryInput): void;
+  saveWorkout(input: WorkoutSessionInput): void;
+  saveCheckIn(input: CheckInInput): void;
 }
 
-function saveDemoState(state: DemoPortalState) {
-  try {
-    const serialized = JSON.stringify(state);
-    sessionStorage.setItem(DEMO_STORAGE_KEY, serialized);
-    localStorage.setItem(DEMO_STORAGE_KEY, serialized);
-  } catch {
-    // ignore
-  }
+let liveBridge: LivePortalBridge | null = null;
+let demoSnapshot: ClientPortalData | null = null;
+const demoListeners = new Set<Listener>();
+
+function browserSessionStorage() {
+  return typeof window === "undefined" ? null : window.sessionStorage;
 }
 
-let currentDemoState: DemoPortalState = loadDemoState();
-const demoListeners: Set<() => void> = new Set();
-
-function notifyDemo() {
-  saveDemoState(currentDemoState);
+function persistDemo(next: ClientPortalData) {
+  demoSnapshot = next;
+  browserSessionStorage()?.setItem(GET_DIVINE_DEMO_KEY, JSON.stringify(next));
   demoListeners.forEach((listener) => listener());
 }
 
+function hydrateDemo() {
+  if (demoSnapshot) return demoSnapshot;
+  const storage = browserSessionStorage();
+  if (storage) {
+    try {
+      const parsed = JSON.parse(storage.getItem(GET_DIVINE_DEMO_KEY) || "null") as ClientPortalData | null;
+      if (parsed?.schemaVersion === 2 && parsed.client?.email === "demo@getdivine.co") {
+        demoSnapshot = parsed;
+        return parsed;
+      }
+    } catch {
+      storage.removeItem(GET_DIVINE_DEMO_KEY);
+    }
+  }
+  const seed = createGetDivineDemoSeed();
+  demoSnapshot = seed;
+  storage?.setItem(GET_DIVINE_DEMO_KEY, JSON.stringify(seed));
+  return seed;
+}
+
+function mutateDemo(mutator: (draft: ClientPortalData) => void) {
+  const draft = structuredClone(hydrateDemo());
+  mutator(draft);
+  persistDemo(draft);
+}
+
+function nowId(prefix: string) {
+  const unique = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  return `${prefix}-${unique}`;
+}
+
+export function registerGetDivineLiveBridge(bridge: LivePortalBridge) {
+  liveBridge = bridge;
+  return () => {
+    if (liveBridge === bridge) liveBridge = null;
+  };
+}
+
 export const clientPortalAdapter = {
-  getSnapshot(scope: PortalScope): DemoPortalState {
-    if (scope === "demo") {
-      return currentDemoState;
+  getSnapshot(scope: PortalScope): ClientPortalData {
+    if (scope === "demo") return hydrateDemo();
+    if (!liveBridge) {
+      throw new Error("Register the existing dataStore through registerGetDivineLiveBridge before rendering live client routes.");
     }
-
-    const people = dataStore.getPeople();
-    const liveClient = people.find((p) => p.kind === "client") || people[0];
-    const liveName = liveClient?.full_name || "Client Athlete";
-    const liveWorkouts = dataStore.getWorkouts();
-    const liveAssignments = dataStore.getAssignments();
-
-    const freshDemo = createFreshDemoState();
-
-    const clientData: ClientData = {
-      person: {
-        full_name: liveName,
-        phase: liveClient?.phase || "Phase II — Forging the Form",
-        primary_goal: liveClient?.primary_goal || "Body recomposition",
-        next_check_in: liveClient?.next_check_in || "2026-08-10",
-      },
-      assignments: liveAssignments.length ? (liveAssignments as unknown as ClientData["assignments"]) : freshDemo.clientData.assignments,
-      workouts: liveWorkouts.length ? (liveWorkouts as unknown as ClientData["workouts"]) : freshDemo.clientData.workouts,
-      documents: freshDemo.clientData.documents,
-    };
-
-    return {
-      ...freshDemo,
-      clientData,
-    };
+    return liveBridge.getSnapshot();
   },
 
-  subscribe(scope: PortalScope, listener: () => void): () => void {
-    if (scope === "demo") {
-      demoListeners.add(listener);
-      return () => {
-        demoListeners.delete(listener);
-      };
-    } else {
-      return dataStore.subscribe(listener);
+  subscribe(scope: PortalScope, listener: Listener) {
+    if (scope === "live") {
+      if (!liveBridge) return () => undefined;
+      return liveBridge.subscribe(listener);
     }
+    demoListeners.add(listener);
+    return () => demoListeners.delete(listener);
   },
 
-  addFood(scope: PortalScope, input: FoodEntryInput) {
-    const newMeal: FoodMeal = {
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      name: input.name.trim(),
-      calories: Number(input.calories) || 0,
-      protein: Number(input.protein) || 0,
-    };
-
-    if (scope === "demo") {
-      const newMeals = [...currentDemoState.meals, newMeal];
-      const newLoggedCalories = newMeals.reduce((sum, m) => sum + m.calories, 0);
-      const newLoggedProtein = newMeals.reduce((sum, m) => sum + m.protein, 0);
-
-      currentDemoState = {
-        ...currentDemoState,
-        meals: newMeals,
-        nutrition: {
-          ...currentDemoState.nutrition,
-          calories: { ...currentDemoState.nutrition.calories, logged: newLoggedCalories },
-          protein: { ...currentDemoState.nutrition.protein, logged: newLoggedProtein },
-        },
-      };
-      notifyDemo();
-    }
-  },
-
-  saveWorkout(scope: PortalScope, input: WorkoutSessionInput) {
-    const newWorkout: Workout = {
-      id: `w-${Date.now()}`,
-      workout_date: input.workoutDate || new Date().toISOString().split("T")[0],
-      workout_name: input.workoutName,
-      completion_status: "completed",
-      duration_minutes: Number(input.durationMinutes) || 60,
-      effort_rating: Number(input.effortRating) || 8,
-      athlete_note: input.athleteNote || "",
-      coach_feedback: "",
-      exercise_log: JSON.stringify(input.exercises),
-    };
-
-    if (scope === "demo") {
-      currentDemoState = {
-        ...currentDemoState,
-        clientData: {
-          ...currentDemoState.clientData,
-          workouts: [newWorkout, ...currentDemoState.clientData.workouts],
-        },
-      };
-      notifyDemo();
-    } else {
-      dataStore.addWorkout({
-        person_id: "client-1",
-        full_name: "Client Athlete",
-        workout_date: newWorkout.workout_date,
-        workout_name: newWorkout.workout_name,
-        completion_status: newWorkout.completion_status,
-        duration_minutes: newWorkout.duration_minutes,
-        effort_rating: newWorkout.effort_rating,
-        athlete_note: newWorkout.athlete_note,
-        coach_feedback: "",
-        exercise_log: newWorkout.exercise_log,
-      });
-    }
-  },
-
-  saveCheckIn(scope: PortalScope, _input: CheckInInput) {
-    if (scope === "demo") {
-      notifyDemo();
-    }
+  initializeDemo() {
+    return hydrateDemo();
   },
 
   resetDemo() {
-    currentDemoState = createFreshDemoState();
-    notifyDemo();
+    demoSnapshot = null;
+    browserSessionStorage()?.removeItem(GET_DIVINE_DEMO_KEY);
+    const next = hydrateDemo();
+    demoListeners.forEach((listener) => listener());
+    return next;
+  },
+
+  addFood(scope: PortalScope, input: FoodEntryInput) {
+    if (scope === "live") {
+      if (!liveBridge) throw new Error("Live dataStore bridge is not registered.");
+      liveBridge.addFood(input);
+      return;
+    }
+    mutateDemo((draft) => {
+      draft.nutrition.meals.push({
+        id: nowId("meal"),
+        time: input.time || new Intl.DateTimeFormat("en", { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()),
+        name: input.name.trim(),
+        calories: input.calories,
+        protein: input.protein || 0,
+        carbs: input.carbs || 0,
+        fats: input.fats || 0,
+      });
+    });
+  },
+
+  saveWorkout(scope: PortalScope, input: WorkoutSessionInput) {
+    if (scope === "live") {
+      if (!liveBridge) throw new Error("Live dataStore bridge is not registered.");
+      liveBridge.saveWorkout(input);
+      return;
+    }
+    mutateDemo((draft) => {
+      draft.workouts.unshift({
+        id: nowId("workout"),
+        programmeDayId: input.programmeDayId,
+        workoutName: input.workoutName,
+        workoutDate: input.workoutDate,
+        completionStatus: "completed",
+        durationMinutes: input.durationMinutes,
+        effortRating: input.effortRating,
+        athleteNote: input.athleteNote,
+        painNote: input.painNote,
+        coachFeedback: "",
+        exercises: structuredClone(input.exercises),
+      });
+      draft.client.workoutsThisWeek += 1;
+      draft.client.streakDays += 1;
+    });
+  },
+
+  saveCheckIn(scope: PortalScope, input: CheckInInput) {
+    if (scope === "live") {
+      if (!liveBridge) throw new Error("Live dataStore bridge is not registered.");
+      liveBridge.saveCheckIn(input);
+      return;
+    }
+    mutateDemo((draft) => {
+      draft.checkIns.unshift({
+        id: nowId("checkin"),
+        date: new Date().toISOString().slice(0, 10),
+        status: "submitted",
+        bodyweightKg: input.bodyweightKg,
+        sleep: input.sleep,
+        energy: input.energy,
+        recovery: input.recovery,
+        nutritionAdherence: input.nutritionAdherence,
+        reflection: input.reflection,
+        coachFeedback: "Awaiting coach review.",
+      });
+      if (input.bodyweightKg) {
+        draft.progress.bodyweight.push({ date: new Date().toISOString().slice(0, 10), weightKg: input.bodyweightKg });
+      }
+    });
+  },
+
+  getLastSets(scope: PortalScope, exerciseName: string): ExerciseSet[] {
+    const data = clientPortalAdapter.getSnapshot(scope);
+    const key = normalizedExerciseKey(exerciseName);
+    for (const workout of data.workouts) {
+      const match = workout.exercises.find((exercise) => normalizedExerciseKey(exercise.name) === key);
+      if (match?.sets.length) return structuredClone(match.sets);
+    }
+    return [];
   },
 };
+
+export function beginGetDivineDemoSession() {
+  clientPortalAdapter.initializeDemo();
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(GET_DIVINE_AUTH_KEY, JSON.stringify({ role: "client", mode: "demo", email: "demo@getdivine.co", signedInAt: new Date().toISOString() }));
+  }
+}
