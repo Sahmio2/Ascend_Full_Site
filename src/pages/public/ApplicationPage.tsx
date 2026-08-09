@@ -103,27 +103,41 @@ export default function ApplicationPage() {
     });
   }
 
-  function validateCurrentStep() {
-    if (step === 0 && (!form.fullName || !form.email || !form.whatsapp)) {
-      setMessage("Please complete your name, email and WhatsApp number.");
-      return false;
+  function validateStep() {
+    if (step === 0) {
+      if (!form.fullName.trim()) return "Please enter your full name.";
+      if (!form.email.trim() || !form.email.includes("@")) return "Please enter a valid email address.";
+      if (!form.whatsapp.trim()) return "Please enter your WhatsApp / phone number.";
+      if (!form.cityCountry.trim()) return "Please enter your city and country.";
+      if (!form.age || Number(form.age) < 16) return "Please enter your age (minimum 16).";
     }
-    if (step === 1 && (!form.primaryGoal || !form.goalDetail || !form.trainingAge)) {
-      setMessage("Choose your main goal and tell us a little about your starting point.");
-      return false;
+    if (step === 1) {
+      if (!form.primaryGoal) return "Please select your primary training goal.";
+      if (!form.goalDetail.trim()) return "Please describe what you want to change in your own words.";
     }
-    if (step === 2 && (!form.daysAvailable.length || !form.preferredFrequency || !form.accessType)) {
-      setMessage("Add your realistic availability, preferred frequency and training access.");
-      return false;
+    if (step === 2) {
+      if (!form.trainingAge) return "Please select how long you have been training.";
+      if (!form.daysAvailable.length) return "Please select at least one day you can train.";
+      if (!form.preferredFrequency) return "Please select your preferred weekly training frequency.";
+      if (!form.sessionLength) return "Please select how long you can train per session.";
+      if (!form.accessType) return "Please select your training location / facility type.";
+      if (!form.equipment.length) return "Please select the equipment available to you.";
     }
-    setMessage("");
-    return true;
+    if (step === 3) {
+      if (!form.consistencyBarrier.trim()) return "Please share what usually makes consistency difficult for you.";
+      if (!form.trackingReadiness.length) return "Please select at least one item you are ready to track.";
+    }
+    return null;
   }
 
   function nextStep() {
-    if (!validateCurrentStep()) return;
+    const error = validateStep();
+    if (error) {
+      setMessage(error);
+      return;
+    }
+    setMessage("");
     setStep((current) => Math.min(steps.length - 1, current + 1));
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -147,15 +161,8 @@ export default function ApplicationPage() {
         <Link className="quiet-link" to="/">Return to home</Link>
       </header>
 
-      <div className="shell application-shell">
-        <div className="application-intro">
-          <p className="eyebrow">Coaching intake assessment</p>
-          <h1>Start with clarity.<br /><em>Ascend with purpose.</em></h1>
-          <p>
-            This assessment helps us understand your body, training history, schedule and starting point. Take your time and answer honestly.
-          </p>
-        </div>
-
+      <div className="shell application-layout">
+        {/* Form Card First (Left on desktop, Top/First on mobile) */}
         {status === "success" ? (
           <section className="application-form-card application-success" aria-live="polite">
             <div className="success-mark">◆</div>
@@ -199,19 +206,16 @@ export default function ApplicationPage() {
                       <input type="email" value={form.email} onChange={(e) => setField("email", e.target.value)} autoComplete="email" placeholder="you@example.com" />
                     </label>
                     <label className="field">
-                      <span>WhatsApp *</span>
-                      <input value={form.whatsapp} onChange={(e) => setField("whatsapp", e.target.value)} autoComplete="tel" placeholder="Include country code" />
+                      <span>WhatsApp / Phone *</span>
+                      <input value={form.whatsapp} onChange={(e) => setField("whatsapp", e.target.value)} autoComplete="tel" placeholder="+234..." />
                     </label>
                     <label className="field">
-                      <span>City / country</span>
+                      <span>City & Country *</span>
                       <input value={form.cityCountry} onChange={(e) => setField("cityCountry", e.target.value)} placeholder="Lagos, Nigeria" />
                     </label>
                     <label className="field">
-                      <span>Age</span>
-                      <input type="number" min="16" max="90" value={form.age} onChange={(e) => setField("age", e.target.value)} placeholder="Age" />
-                    </label>
-                    <label className="honeypot" aria-hidden="true">
-                      Website<input tabIndex={-1} autoComplete="off" value={form.website} onChange={(e) => setField("website", e.target.value)} />
+                      <span>Age *</span>
+                      <input type="number" min="16" max="90" value={form.age} onChange={(e) => setField("age", e.target.value)} placeholder="e.g. 28" />
                     </label>
                   </div>
                 </div>
@@ -220,87 +224,103 @@ export default function ApplicationPage() {
               {step === 1 && (
                 <div className="form-step">
                   <div className="form-step-heading">
-                    <p className="eyebrow">02 / Name the direction</p>
-                    <h2>What are you ready to change?</h2>
-                    <p>Choose the single result that matters most right now.</p>
+                    <p className="eyebrow">02 / What you want to change</p>
+                    <h2>Choose your primary direction.</h2>
+                    <p>Be clear about what matters most for your next training block.</p>
                   </div>
                   <fieldset className="choice-fieldset">
-                    <legend>Main goal *</legend>
-                    <div className="choice-grid goal-grid">
-                      {goals.map((goal) => (
-                        <label className={form.primaryGoal === goal ? "choice active" : "choice"} key={goal}>
-                          <input type="radio" name="goal" value={goal} checked={form.primaryGoal === goal} onChange={() => setField("primaryGoal", goal)} />
-                          <span>{goal}</span><b>◆</b>
+                    <legend>Primary goal *</legend>
+                    <div className="choice-grid">
+                      {goals.map((item) => (
+                        <label key={item} className={form.primaryGoal === item ? "choice active" : "choice"}>
+                          <input type="radio" name="primaryGoal" value={item} checked={form.primaryGoal === item} onChange={() => setField("primaryGoal", item)} />
+                          <span>{item}</span>
+                          <b>◆</b>
                         </label>
                       ))}
                     </div>
                   </fieldset>
                   <label className="field field-textarea">
-                    <span>Describe the result you want *</span>
-                    <textarea value={form.goalDetail} onChange={(e) => setField("goalDetail", e.target.value)} rows={4} placeholder="In your own words, what would make this coaching season feel successful?" />
+                    <span>What specific outcome do you want in the next 12–16 weeks? *</span>
+                    <textarea value={form.goalDetail} onChange={(e) => setField("goalDetail", e.target.value)} placeholder="Describe what progress looks like for you..." />
                   </label>
-                  <div className="form-grid">
-                    <label className="field">
-                      <span>Training experience *</span>
-                      <select value={form.trainingAge} onChange={(e) => setField("trainingAge", e.target.value)}>
-                        <option value="">Choose one</option>
-                        <option>Never trained properly</option><option>0–3 months</option><option>3–12 months</option><option>1–2 years</option><option>2+ years</option><option>Returning after a break</option>
-                      </select>
-                    </label>
-                    <label className="field range-field">
-                      <span>How important is this now? <b>{form.goalUrgency}/10</b></span>
-                      <input type="range" min="1" max="10" value={form.goalUrgency} onChange={(e) => setField("goalUrgency", Number(e.target.value))} />
-                      <small><i>Not urgent</i><i>Very urgent</i></small>
-                    </label>
-                  </div>
+                  <label className="field range-field">
+                    <span>How urgent is this change to you right now? <b>{form.goalUrgency} / 10</b></span>
+                    <input type="range" min="1" max="10" value={form.goalUrgency} onChange={(e) => setField("goalUrgency", Number(e.target.value))} />
+                    <small><i>1 = Low priority</i><i>10 = Absolute priority</i></small>
+                  </label>
                 </div>
               )}
 
               {step === 2 && (
                 <div className="form-step">
                   <div className="form-step-heading">
-                    <p className="eyebrow">03 / Build from real life</p>
-                    <h2>What can you actually repeat?</h2>
-                    <p>Honest availability creates a better plan than ideal availability.</p>
+                    <p className="eyebrow">03 / Your training reality</p>
+                    <h2>Where will the work happen?</h2>
+                    <p>We build your plan around your actual gym access and schedule.</p>
                   </div>
                   <fieldset className="choice-fieldset">
-                    <legend>Days available *</legend>
-                    <div className="day-grid">
-                      {days.map((day) => (
-                        <label className={form.daysAvailable.includes(day) ? "day active" : "day"} key={day}>
-                          <input type="checkbox" checked={form.daysAvailable.includes(day)} onChange={() => toggleList("daysAvailable", day)} />
-                          <span>{day}</span>
+                    <legend>Training experience *</legend>
+                    <div className="choice-grid">
+                      {["Never trained properly", "Under 1 year", "1–2 years", "2+ years", "Returning after a break"].map((item) => (
+                        <label key={item} className={form.trainingAge === item ? "choice active" : "choice"}>
+                          <input type="radio" name="trainingAge" value={item} checked={form.trainingAge === item} onChange={() => setField("trainingAge", item)} />
+                          <span>{item}</span>
                         </label>
                       ))}
                     </div>
                   </fieldset>
+
+                  <fieldset className="choice-fieldset">
+                    <legend>Which days can you consistently train? *</legend>
+                    <div className="day-grid">
+                      {days.map((item) => (
+                        <label key={item} className={form.daysAvailable.includes(item) ? "day active" : "day"}>
+                          <input type="checkbox" checked={form.daysAvailable.includes(item)} onChange={() => toggleList("daysAvailable", item)} />
+                          <span>{item}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+
                   <div className="form-grid">
                     <label className="field">
                       <span>Preferred frequency *</span>
                       <select value={form.preferredFrequency} onChange={(e) => setField("preferredFrequency", e.target.value)}>
-                        <option value="">Choose one</option><option>2 days per week</option><option>3 days per week</option><option>4 days per week</option><option>5 days per week</option><option>Coach decides</option>
+                        <option value="">Select frequency</option>
+                        <option value="3 days per week">3 days per week</option>
+                        <option value="4 days per week">4 days per week</option>
+                        <option value="5 days per week">5 days per week</option>
                       </select>
                     </label>
                     <label className="field">
-                      <span>Maximum session length</span>
+                      <span>Session length *</span>
                       <select value={form.sessionLength} onChange={(e) => setField("sessionLength", e.target.value)}>
-                        <option value="">Choose one</option><option>30 minutes</option><option>45 minutes</option><option>60 minutes</option><option>75+ minutes</option>
+                        <option value="">Select duration</option>
+                        <option value="45 minutes">45 minutes</option>
+                        <option value="60 minutes">60 minutes</option>
+                        <option value="75+ minutes">75+ minutes</option>
                       </select>
                     </label>
                     <label className="field field-wide">
-                      <span>Where will you train? *</span>
+                      <span>Training location *</span>
                       <select value={form.accessType} onChange={(e) => setField("accessType", e.target.value)}>
-                        <option value="">Choose one</option><option>Commercial gym</option><option>Home gym</option><option>School gym</option><option>Hotel / travel gym</option><option>Outdoor only</option><option>Mixed access</option>
+                        <option value="">Select facility type</option>
+                        <option value="Commercial gym">Commercial gym (full equipment)</option>
+                        <option value="Private / Apartment gym">Private / Apartment gym</option>
+                        <option value="Home gym">Home gym setup</option>
+                        <option value="Mixed access">Mixed access (gym + home)</option>
                       </select>
                     </label>
                   </div>
-                  <fieldset className="choice-fieldset">
-                    <legend>Equipment you can use</legend>
+
+                  <fieldset className="choice-fieldset" style={{ marginTop: "24px" }}>
+                    <legend>Available equipment *</legend>
                     <div className="choice-grid compact-grid">
                       {equipmentOptions.map((item) => (
-                        <label className={form.equipment.includes(item) ? "choice active" : "choice"} key={item}>
+                        <label key={item} className={form.equipment.includes(item) ? "choice active" : "choice"}>
                           <input type="checkbox" checked={form.equipment.includes(item)} onChange={() => toggleList("equipment", item)} />
-                          <span>{item}</span><b>+</b>
+                          <span>{item}</span>
                         </label>
                       ))}
                     </div>
@@ -311,30 +331,33 @@ export default function ApplicationPage() {
               {step === 3 && (
                 <div className="form-step">
                   <div className="form-step-heading">
-                    <p className="eyebrow">04 / Readiness and care</p>
-                    <h2>What must coaching respect?</h2>
-                    <p>You do not need to sound perfect. Clear information helps us coach responsibly.</p>
+                    <p className="eyebrow">04 / Readiness & feedback</p>
+                    <h2>What gets in your way?</h2>
+                    <p>Honesty here allows your coach to build a plan that survives real life.</p>
                   </div>
+
                   <label className="field field-textarea">
-                    <span>What usually breaks your consistency?</span>
-                    <textarea value={form.consistencyBarrier} onChange={(e) => setField("consistencyBarrier", e.target.value)} rows={3} placeholder="Schedule, confidence, pain, motivation, food access, travel…" />
+                    <span>What usually breaks your consistency or stops you from sticking to a plan? *</span>
+                    <textarea value={form.consistencyBarrier} onChange={(e) => setField("consistencyBarrier", e.target.value)} placeholder="Work schedule, travel, lack of structure, nutrition slipping..." />
                   </label>
+
                   <label className="field field-textarea">
-                    <span>Any current pain, old injury or movement concern?</span>
-                    <textarea value={form.painContext} onChange={(e) => setField("painContext", e.target.value)} rows={3} placeholder="Briefly describe where, what triggers it and whether you have professional guidance." />
-                    <small>This does not diagnose pain or replace qualified medical assessment.</small>
+                    <span>Any active pain, joint discomfort or old injury we should know about?</span>
+                    <textarea value={form.painContext} onChange={(e) => setField("painContext", e.target.value)} placeholder="e.g. Right shoulder discomfort with deep benching, previous lower back strain..." />
                   </label>
-                  <fieldset className="choice-fieldset">
-                    <legend>What can you track weekly?</legend>
-                    <div className="choice-grid compact-grid">
+
+                  <fieldset className="choice-fieldset" style={{ marginTop: "24px" }}>
+                    <legend>What are you ready to track consistently? *</legend>
+                    <div className="choice-grid">
                       {trackingOptions.map((item) => (
-                        <label className={form.trackingReadiness.includes(item) ? "choice active" : "choice"} key={item}>
+                        <label key={item} className={form.trackingReadiness.includes(item) ? "choice active" : "choice"}>
                           <input type="checkbox" checked={form.trackingReadiness.includes(item)} onChange={() => toggleList("trackingReadiness", item)} />
-                          <span>{item}</span><b>+</b>
+                          <span>{item}</span>
                         </label>
                       ))}
                     </div>
                   </fieldset>
+
                   <label className={form.consent ? "consent-box active" : "consent-box"}>
                     <input type="checkbox" checked={form.consent} onChange={(e) => setField("consent", e.target.checked)} />
                     <span className="consent-check">✓</span>
@@ -358,6 +381,15 @@ export default function ApplicationPage() {
             </form>
           </section>
         )}
+
+        {/* Intro Card Second (Right on desktop, Bottom/Stacked on mobile) */}
+        <div className="application-intro">
+          <p className="eyebrow">Coaching intake assessment</p>
+          <h1>Start with clarity.<br /><em>Ascend with purpose.</em></h1>
+          <p>
+            This assessment helps us understand your body, training history, schedule and starting point. Take your time and answer honestly.
+          </p>
+        </div>
       </div>
     </main>
   );
