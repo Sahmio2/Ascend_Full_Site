@@ -139,6 +139,97 @@ html, body {
     justify-content: center !important;
   }
 
+  /* Compact Application Form Card for Mobile */
+  .application-form-card {
+    min-height: auto !important;
+    padding: 20px 16px 24px !important;
+  }
+
+  .form-card-main-header {
+    margin-bottom: 10px !important;
+  }
+
+  .form-card-main-header .eyebrow {
+    font-size: 10px !important;
+    letter-spacing: .12em !important;
+  }
+
+  .form-progress-track {
+    margin: 8px 0 16px !important;
+  }
+
+  .form-step-heading {
+    margin-bottom: 14px !important;
+  }
+
+  .form-step-heading h2 {
+    margin: 6px 0 4px !important;
+    font-size: 22px !important;
+    line-height: 1.1 !important;
+  }
+
+  .form-step-heading > p:last-child {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+
+  .form-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px 10px !important;
+  }
+
+  .field-wide {
+    grid-column: 1 / -1 !important;
+  }
+
+  .field {
+    gap: 3px !important;
+  }
+
+  .field > span {
+    font-size: 9px !important;
+  }
+
+  .field input,
+  .field select {
+    min-height: 40px !important;
+    padding-inline: 10px !important;
+    font-size: 16px !important;
+  }
+
+  .field textarea {
+    min-height: 80px !important;
+    padding: 10px !important;
+    font-size: 16px !important;
+  }
+
+  .form-actions {
+    margin-top: 14px !important;
+    padding-top: 12px !important;
+  }
+
+  .form-actions .button {
+    min-width: 140px !important;
+    min-height: 42px !important;
+    padding-inline: 14px !important;
+  }
+
+  .application-intro {
+    padding: 24px 16px !important;
+  }
+
+  .application-intro h1 {
+    font-size: 32px !important;
+    margin: 12px 0 10px !important;
+    line-height: 1.05 !important;
+  }
+
+  .application-intro p {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+
   /* Client Portal Mobile Layout */
   .portal-shell {
     padding-bottom: 90px !important;
