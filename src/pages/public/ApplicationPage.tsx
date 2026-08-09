@@ -182,7 +182,6 @@ export default function ApplicationPage() {
             {/* Main Form Card Title directly above Step progress */}
             <div className="form-card-main-header">
               <p className="eyebrow">Coaching intake assessment</p>
-              <h2 className="form-card-title-heading">Coaching Intake Assessment</h2>
             </div>
 
             <div className="form-progress-head">

@@ -142,41 +142,57 @@ html, body {
   /* Compact Application Form Card for Mobile */
   .application-form-card {
     min-height: auto !important;
-    padding: 20px 16px 24px !important;
+    padding: 24px 18px 26px !important;
   }
 
   .form-card-main-header {
-    margin-bottom: 10px !important;
+    margin-bottom: 12px !important;
   }
 
   .form-card-main-header .eyebrow {
+    color: #80632f !important;
     font-size: 10px !important;
-    letter-spacing: .12em !important;
+    font-weight: 700 !important;
+    letter-spacing: .16em !important;
+    text-transform: uppercase !important;
   }
 
   .form-progress-track {
-    margin: 8px 0 16px !important;
+    margin: 8px 0 18px !important;
   }
 
   .form-step-heading {
-    margin-bottom: 14px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .form-step-heading .eyebrow {
+    color: #80632f !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: .14em !important;
+    text-transform: uppercase !important;
   }
 
   .form-step-heading h2 {
     margin: 6px 0 4px !important;
-    font-size: 22px !important;
+    font-family: var(--font-display), serif !important;
+    font-size: 26px !important;
+    font-weight: 500 !important;
+    letter-spacing: -.03em !important;
+    color: var(--ink) !important;
     line-height: 1.1 !important;
   }
 
   .form-step-heading > p:last-child {
-    font-size: 11px !important;
-    line-height: 1.4 !important;
+    color: #7c7366 !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
   }
 
   .form-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 8px 10px !important;
+    gap: 10px 12px !important;
   }
 
   .field-wide {
@@ -184,35 +200,55 @@ html, body {
   }
 
   .field {
-    gap: 3px !important;
+    gap: 5px !important;
   }
 
   .field > span {
-    font-size: 9px !important;
+    color: #706759 !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: .08em !important;
+    text-transform: uppercase !important;
   }
 
   .field input,
   .field select {
-    min-height: 40px !important;
-    padding-inline: 10px !important;
-    font-size: 16px !important;
+    min-height: 46px !important;
+    border: 1px solid #d4c9b5 !important;
+    background: rgba(255,255,255,.65) !important;
+    color: var(--ink) !important;
+    font-size: 14px !important;
+    padding: 0 14px !important;
+    border-radius: 0 !important;
+  }
+
+  .field input::placeholder {
+    color: #aaa08f !important;
+    font-size: 13px !important;
   }
 
   .field textarea {
-    min-height: 80px !important;
-    padding: 10px !important;
-    font-size: 16px !important;
+    min-height: 90px !important;
+    border: 1px solid #d4c9b5 !important;
+    background: rgba(255,255,255,.65) !important;
+    color: var(--ink) !important;
+    font-size: 14px !important;
+    padding: 10px 14px !important;
   }
 
   .form-actions {
-    margin-top: 14px !important;
-    padding-top: 12px !important;
+    margin-top: 18px !important;
+    padding-top: 14px !important;
   }
 
   .form-actions .button {
-    min-width: 140px !important;
-    min-height: 42px !important;
-    padding-inline: 14px !important;
+    min-width: 150px !important;
+    min-height: 46px !important;
+    padding-inline: 18px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    letter-spacing: .08em !important;
+    text-transform: uppercase !important;
   }
 
   .application-intro {
