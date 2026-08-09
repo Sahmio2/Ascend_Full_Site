@@ -1,13 +1,73 @@
-/* Import this after the existing Get Divine globals.css. */
+/* Get Divine Mobile Responsiveness & Typography System */
+
+/* 1. Global Overflow & Box-Sizing Safeguard */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* 2. Responsive Breakpoint: Tablet & Small Screens (<= 1000px) */
+@media (max-width: 1000px) {
+  .public-nav {
+    grid-template-columns: 1fr auto;
+  }
+
+  .public-nav nav {
+    display: none;
+  }
+
+  .principles-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .phase-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .coaching-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+
+  .detail-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .system-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .calculator-suite {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* 3. Responsive Breakpoint: Mobile Viewports (<= 760px) */
 @media (max-width: 760px) {
+  /* Core Mobile Typography & Input Sizing */
   .public-site p,
   .application-page p,
   .application-page li,
   .application-page label,
   .application-page input,
   .application-page select,
-  .application-page textarea {
-    font-size: 16px;
+  .application-page textarea,
+  .portal-shell input,
+  .portal-shell select,
+  .portal-shell textarea {
+    font-size: 16px !important; /* Prevents auto-zoom on mobile WebKit */
+  }
+
+  /* Header & Navigation Fixes */
+  .public-nav {
+    min-height: 64px;
+    padding-inline: 16px;
   }
 
   .public-nav .quiet-link {
@@ -15,12 +75,19 @@
     align-items: center;
     font-size: 12px;
     color: #c9c1b4;
+    white-space: nowrap;
   }
 
   .nav-actions {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
+  }
+
+  .public-nav .button-small {
+    min-height: 38px;
+    padding-inline: 12px;
+    font-size: 9px;
   }
 
   .eyebrow,
@@ -50,6 +117,67 @@
     font-size: 14px;
   }
 
+  /* Hero & Section Fluid Sizing */
+  .hero h1 {
+    font-size: clamp(44px, 14vw, 90px) !important;
+    line-height: 0.88 !important;
+  }
+
+  .hero-promise {
+    width: 100% !important;
+    font-size: 18px !important;
+  }
+
+  .hero-ctas {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .hero-ctas .button {
+    width: 100% !important;
+    min-height: 50px !important;
+    justify-content: center !important;
+  }
+
+  /* Client Portal Mobile Layout */
+  .portal-shell {
+    padding-bottom: 90px !important;
+  }
+
+  .portal-sidebar {
+    display: none !important;
+  }
+
+  .portal-frame {
+    margin-left: 0 !important;
+  }
+
+  .portal-topbar {
+    min-height: 60px;
+    padding: 0 16px;
+  }
+
+  .portal-topbar > p {
+    display: none;
+  }
+
+  .portal-mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-ceremonial), serif;
+    font-size: 13px;
+  }
+
+  .portal-content {
+    width: min(100% - 24px, 1420px) !important;
+    padding: 24px 0 40px !important;
+  }
+
+  .portal-welcome h1 {
+    font-size: clamp(36px, 10vw, 56px) !important;
+  }
+
   .portal-welcome > div:first-child > p:last-child,
   .portal-page-heading > div > p:last-child,
   .portal-plan-day header p,
@@ -65,116 +193,242 @@
     font-size: 15px;
   }
 
-  .portal-mobile-brand {
-    font-size: 14px;
+  .portal-journey-strip {
+    grid-template-columns: 1fr !important;
   }
 
-  .portal-mobile-brand b,
-  .portal-bottom-nav a,
-  .portal-kicker,
-  .portal-journey-strip span,
-  .portal-journey-strip small,
-  .portal-streak-count span,
-  .portal-overview span,
-  .portal-overview small,
-  .portal-calorie-ring span,
-  .portal-calorie-action span,
-  .portal-macro-grid b,
-  .portal-macro-grid small,
-  .portal-status,
-  .portal-workout-meta span,
-  .portal-exercise-preview > div > span,
-  .portal-exercise-preview small,
-  .portal-primary-action,
-  .portal-week-days i,
-  .portal-week-days small,
-  .portal-coach-note header > span,
-  .portal-coach-note strong,
-  .portal-coach-note small,
-  .portal-checkin-card > div small,
-  .portal-checkin-card > a,
-  .portal-notice span,
-  .portal-page-action,
-  .portal-section-heading > span,
-  .portal-plan-day > header span,
-  .portal-plan-day header > strong,
-  .portal-plan-exercises > div > span,
-  .portal-plan-exercises > div > b,
-  .portal-document-list strong,
-  .portal-document-list small,
-  .portal-document-list b,
-  .portal-document-list a,
-  .portal-empty-state span,
-  .portal-target-grid span,
-  .portal-target-grid small,
-  .portal-target-grid p,
-  .portal-food-log header > strong,
-  .portal-food-quickadd button,
-  .portal-meal-list > div > span,
-  .portal-meal-list small,
-  .portal-meal-list > div > b,
-  .portal-target-list span,
-  .portal-meal-plan span,
-  .portal-chart-labels,
-  .portal-checkin-summary > div span,
-  .portal-checkin-summary > div b,
-  .portal-checkin-summary button,
-  .portal-history-panel header > strong,
-  .portal-history-table article > span,
-  .portal-history-table small,
-  .portal-history-table article > b {
-    font-size: 11px;
+  .portal-journey-strip article {
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--portal-line);
   }
 
-  .portal-plan-exercises small,
-  .portal-plan-exercises em,
-  .portal-food-quickadd input,
-  .portal-meal-list small,
-  .portal-target-list span,
-  .portal-meal-plan span,
-  .portal-checkin-summary > div span,
-  .portal-history-table small {
-    font-size: 13px;
-    line-height: 1.5;
+  .portal-journey-strip article:last-child {
+    border-bottom: 0 !important;
+  }
+
+  .portal-overview {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .portal-overview article {
+    min-width: 200px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .portal-dashboard-grid,
+  .portal-lower-grid,
+  .portal-plan-layout,
+  .portal-nutrition-layout,
+  .portal-progress-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .portal-plan-aside,
+  .portal-nutrition-side {
+    grid-template-columns: 1fr !important;
+  }
+
+  .portal-nutrition-card,
+  .portal-workout-card {
+    padding: 20px 16px !important;
+  }
+
+  .portal-nutrition-main {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+    text-align: center;
+    gap: 20px !important;
+  }
+
+  .portal-calorie-action {
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .portal-calorie-action strong {
+    margin: 0 !important;
+  }
+
+  /* Workout Logger Mobile Layout */
+  .programme-day-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .programme-day-grid button {
+    min-height: 120px !important;
+  }
+
+  .prescribed-exercise > header {
+    padding: 16px 12px !important;
+  }
+
+  .prescribed-exercise > header > div:first-child {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  .prescription-tags,
+  .prescribed-exercise > header > p,
+  .last-performance {
+    margin-left: 0 !important;
+  }
+
+  .last-performance {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .prescribed-exercise .set-head {
+    display: none !important;
+  }
+
+  .prescribed-exercise .set-row {
+    grid-template-columns: 28px minmax(0, 1fr) minmax(0, 1fr) 36px !important;
+    gap: 6px !important;
+    padding: 8px !important;
+  }
+
+  .prescribed-exercise .set-row input {
+    min-height: 44px !important;
+  }
+
+  .set-complete {
+    width: 36px !important;
+    height: 44px !important;
+  }
+
+  /* Food Quick Add Form */
+  .portal-food-quickadd {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
   }
 
   .portal-food-quickadd input {
-    min-height: 48px;
-    font-size: 16px;
+    min-height: 44px !important;
+    font-size: 16px !important;
   }
 
-  .portal-page-action,
-  .portal-primary-action,
-  .portal-food-quickadd button,
-  .portal-checkin-summary button {
-    min-height: 48px;
-    font-size: 12px;
+  .portal-food-quickadd button {
+    grid-column: 1 / -1 !important;
+    min-height: 44px !important;
   }
 
-  .coach-sidebar nav button span,
-  .workspace-heading > div > p:last-child,
-  .workspace-notice p,
-  .metric-grid article > div span,
-  .metric-grid article > p,
-  .panel-head p,
-  .panel-head > button,
-  .person-main strong,
-  .person-main span,
-  .person-meta span,
-  .person-meta small,
-  .attention-list strong,
-  .attention-list p,
-  .activity-list p,
-  .activity-list small,
-  .people-table th,
-  .people-table td strong,
-  .people-table td small,
-  .lead-card > p,
-  .lead-card li,
-  .lead-card footer,
-  .checkin-row strong,
-  .checkin-row small,
-  .checkin-row div > span {
-    font-size: 11px;
+  /* Fixed Bottom Mobile Navigation */
+  .portal-bottom-nav {
+    position: fixed !important;
+    z-index: 40 !important;
+    inset: auto 0 0 0 !important;
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    height: 64px !important;
+    padding: 4px 4px env(safe-area-inset-bottom) !important;
+    border-top: 1px solid #2a2822 !important;
+    background: #0b0b09 !important;
+    color: #777168 !important;
+  }
+
+  .portal-bottom-nav a {
+    display: flex !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    border-top: 2px solid transparent !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+  }
+
+  .portal-bottom-nav a.active {
+    border-top-color: var(--gold-bright) !important;
+    color: var(--gold-bright) !important;
+  }
+
+  .portal-bottom-nav svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+/* 4. Responsive Breakpoint: Narrow Phones (<= 480px) */
+@media (max-width: 480px) {
+  .shell {
+    width: min(100% - 24px, 1420px) !important;
+  }
+
+  .public-nav {
+    padding-inline: 12px;
+  }
+
+  .wordmark {
+    font-size: 12px !important;
+  }
+
+  .nav-actions {
+    gap: 8px !important;
+  }
+
+  .public-nav .quiet-link {
+    font-size: 11px !important;
+  }
+
+  .public-nav .button-small {
+    padding-inline: 8px !important;
+    font-size: 9px !important;
+    min-height: 34px !important;
+  }
+
+  .choice-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .day-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .calculator-results {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .calculator-fields {
+    grid-template-columns: 1fr !important;
+  }
+
+  .calculator-fields label.wide {
+    grid-column: auto !important;
+  }
+
+  .portal-history-table article {
+    grid-template-columns: 1fr auto !important;
+  }
+
+  .portal-history-table article > span {
+    grid-column: 1 / -1 !important;
+  }
+
+  .metric-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* 5. Ultra Narrow Devices (<= 360px) */
+@media (max-width: 360px) {
+  .wordmark span {
+    display: none;
+  }
+
+  .public-nav .button-small {
+    padding-inline: 6px !important;
+    font-size: 8px !important;
+  }
+
+  .portal-bottom-nav a {
+    font-size: 9px !important;
   }
 }
