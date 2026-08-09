@@ -179,9 +179,9 @@ export default function ApplicationPage() {
           </section>
         ) : (
           <section className="application-form-card">
-            {/* Main Form Card Title */}
+            {/* Main Form Card Title directly above Step progress */}
             <div className="form-card-main-header">
-              <p className="eyebrow">Get Divine</p>
+              <p className="eyebrow">Coaching intake assessment</p>
               <h2 className="form-card-title-heading">Coaching Intake Assessment</h2>
             </div>
 
