@@ -179,6 +179,12 @@ export default function ApplicationPage() {
           </section>
         ) : (
           <section className="application-form-card">
+            {/* Main Form Card Title */}
+            <div className="form-card-main-header">
+              <p className="eyebrow">Get Divine</p>
+              <h2 className="form-card-title-heading">Coaching Intake Assessment</h2>
+            </div>
+
             <div className="form-progress-head">
               <div>
                 <span>Step {step + 1} of {steps.length}</span>
@@ -384,7 +390,7 @@ export default function ApplicationPage() {
 
         {/* Intro Card Second (Right on desktop, Bottom/Stacked on mobile) */}
         <div className="application-intro">
-          <p className="eyebrow">Coaching intake assessment</p>
+          <p className="eyebrow">The Ascension Program</p>
           <h1>Start with clarity.<br /><em>Ascend with purpose.</em></h1>
           <p>
             This assessment helps us understand your body, training history, schedule and starting point. Take your time and answer honestly.
