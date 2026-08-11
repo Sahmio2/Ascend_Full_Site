@@ -1,0 +1,7 @@
+@import "./ascend-fonts.css";
+@import "../features/ascend/public-apply/components/SpecularButton.css";
+@import "./ascend-latest-build.css";
+
+/* Import this after Tailwind and the target's existing globals during review.
+   Then merge the accepted selectors into the target globals.css instead of
+   keeping two competing global stylesheets. */
