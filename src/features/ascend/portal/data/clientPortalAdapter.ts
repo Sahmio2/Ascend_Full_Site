@@ -10,19 +10,19 @@ import type {
 import { normalizedExerciseKey } from "./types";
 
 export const GET_DIVINE_DEMO_KEY = "gd_demo_data_v2";
-export const GET_DIVINE_AUTH_KEY = "gd_auth_session_v1";
 
 type Listener = () => void;
 
 export interface LivePortalBridge {
   getSnapshot(): ClientPortalData;
   subscribe(listener: Listener): () => void;
-  addFood(input: FoodEntryInput): void;
-  saveWorkout(input: WorkoutSessionInput): void;
-  saveCheckIn(input: CheckInInput): void;
+  addFood(input: FoodEntryInput): void | Promise<void>;
+  saveWorkout(input: WorkoutSessionInput): void | Promise<void>;
+  saveCheckIn(input: CheckInInput): void | Promise<void>;
 }
 
 let liveBridge: LivePortalBridge | null = null;
+let demoAuthStarter: (() => void | Promise<void>) | null = null;
 let demoSnapshot: ClientPortalData | null = null;
 const demoListeners = new Set<Listener>();
 
@@ -42,7 +42,7 @@ function hydrateDemo() {
   if (storage) {
     try {
       const parsed = JSON.parse(storage.getItem(GET_DIVINE_DEMO_KEY) || "null") as ClientPortalData | null;
-      if (parsed?.schemaVersion === 2 && parsed.client?.email === "demo@getdivine.co") {
+      if (parsed?.schemaVersion === 2 && parsed.client?.email === "demo@ascend.co") {
         demoSnapshot = parsed;
         return parsed;
       }
@@ -71,6 +71,15 @@ export function registerGetDivineLiveBridge(bridge: LivePortalBridge) {
   liveBridge = bridge;
   return () => {
     if (liveBridge === bridge) liveBridge = null;
+  };
+}
+
+export function registerGetDivineDemoAuthStarter(
+  starter: () => void | Promise<void>,
+) {
+  demoAuthStarter = starter;
+  return () => {
+    if (demoAuthStarter === starter) demoAuthStarter = null;
   };
 }
 
@@ -104,10 +113,10 @@ export const clientPortalAdapter = {
     return next;
   },
 
-  addFood(scope: PortalScope, input: FoodEntryInput) {
+  async addFood(scope: PortalScope, input: FoodEntryInput) {
     if (scope === "live") {
       if (!liveBridge) throw new Error("Live dataStore bridge is not registered.");
-      liveBridge.addFood(input);
+      await liveBridge.addFood(input);
       return;
     }
     mutateDemo((draft) => {
@@ -123,10 +132,10 @@ export const clientPortalAdapter = {
     });
   },
 
-  saveWorkout(scope: PortalScope, input: WorkoutSessionInput) {
+  async saveWorkout(scope: PortalScope, input: WorkoutSessionInput) {
     if (scope === "live") {
       if (!liveBridge) throw new Error("Live dataStore bridge is not registered.");
-      liveBridge.saveWorkout(input);
+      await liveBridge.saveWorkout(input);
       return;
     }
     mutateDemo((draft) => {
@@ -148,10 +157,10 @@ export const clientPortalAdapter = {
     });
   },
 
-  saveCheckIn(scope: PortalScope, input: CheckInInput) {
+  async saveCheckIn(scope: PortalScope, input: CheckInInput) {
     if (scope === "live") {
       if (!liveBridge) throw new Error("Live dataStore bridge is not registered.");
-      liveBridge.saveCheckIn(input);
+      await liveBridge.saveCheckIn(input);
       return;
     }
     mutateDemo((draft) => {
@@ -184,9 +193,7 @@ export const clientPortalAdapter = {
   },
 };
 
-export function beginGetDivineDemoSession() {
+export async function beginGetDivineDemoSession() {
   clientPortalAdapter.initializeDemo();
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(GET_DIVINE_AUTH_KEY, JSON.stringify({ role: "client", mode: "demo", email: "demo@getdivine.co", signedInAt: new Date().toISOString() }));
-  }
+  await demoAuthStarter?.();
 }

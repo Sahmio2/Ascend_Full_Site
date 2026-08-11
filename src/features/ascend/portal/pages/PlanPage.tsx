@@ -8,7 +8,7 @@ export default function PlanPage({ scope }: { scope: PortalScope }) {
   const basePath = scope === "demo" ? "/demo" : "/client";
   return (
     <PortalShell scope={scope} current="plan" clientName={data.client.fullName} phase={data.client.phaseName}>
-      <section className="portal-page-heading"><div><p className="portal-kicker">Get Divine plan</p><h1>Your week, already decided.</h1><p>Follow the programme your coach assigned—sets, reps, rest, tempo and execution notes are all here.</p></div><Link className="portal-page-action" to={`${basePath}/workout-logger`}>Start a workout <span>→</span></Link></section>
+      <section className="portal-page-heading"><div><p className="portal-kicker">ASCEND plan</p><h1>Your week, already decided.</h1><p>Follow the programme your coach assigned—sets, reps, rest, tempo and execution notes are all here.</p></div><Link className="portal-page-action" to={`${basePath}/workout-logger`}>Start a workout <span>→</span></Link></section>
       <section className="portal-overview portal-page-overview"><article><span>Active programme</span><strong>{data.programme.title}</strong><small>{data.programme.subtitle}</small></article><article><span>Weekly frequency</span><strong>{data.programme.days.length} days</strong><small>Primary sessions</small></article><article><span>Current phase</span><strong>{data.client.phaseName}</strong><small>Coach assigned</small></article></section>
       <section className="portal-plan-layout">
         <div className="portal-plan-days"><div className="portal-section-heading"><div><p className="portal-kicker">Workout routines</p><h2>Programme days</h2></div><span>{data.programme.days.length} days</span></div>

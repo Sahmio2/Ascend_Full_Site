@@ -101,7 +101,7 @@ const seed: ClientPortalData = {
   client: {
     id: "demo-amara-okeke",
     fullName: "Amara Okeke",
-    email: "demo@getdivine.co",
+    email: "demo@ascend.co",
     coachName: "Sahmi El",
     phaseNumber: "II",
     phaseName: "Forging the Form",

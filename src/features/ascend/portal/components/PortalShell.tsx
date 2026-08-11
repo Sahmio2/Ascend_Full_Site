@@ -18,7 +18,7 @@ export default function PortalShell({ scope, current, clientName, phase, childre
   return (
     <div className="portal-shell">
       <aside className="portal-sidebar">
-        <Link className="portal-wordmark" to="/" aria-label="Get Divine home"><span>GET</span> DIVINE</Link>
+        <Link className="portal-wordmark" to="/" aria-label="ASCEND home"><span>ASCEND</span></Link>
         <div className="portal-phase-mark"><span>Current phase</span><strong>{phase}</strong></div>
         <nav aria-label="Client portal">
           {navItems.map((item) => <NavLink key={item.id} className={current === item.id ? "active" : ""} to={`${basePath}/${item.path}`}><i aria-hidden="true">{item.glyph}</i><span>{item.label}</span></NavLink>)}

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import AscendIcon from "../components/AscendIcon";
 import SpecularButton from "../components/SpecularButton";
 import {
-  SAFE_DRAFT_KEY,
   accessOptions,
   buildSubmissionPayload,
   cardioChoices,
@@ -17,7 +16,6 @@ import {
   nonNegotiableOptions,
   nutritionDirections,
   painAreas,
-  parseSafeDraft,
   redFlagOptions,
   restoreSafeDraft,
   reviewSections,
@@ -54,6 +52,7 @@ import {
   UnitField,
 } from "./form-primitives";
 import { submitAscendApplication } from "../data/applicationAdapter";
+import { ascendDraftAdapter } from "../data/draftAdapter";
 
 function formatDraftDate(value: string) {
   try { return new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)); }
@@ -84,22 +83,24 @@ export default function ApplicationForm() {
   const safetyReview = safetyStatus(form) === "review_required";
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setSafeDraft(parseSafeDraft(window.localStorage.getItem(SAFE_DRAFT_KEY))), 0);
-    return () => window.clearTimeout(timer);
+    let active = true;
+    void ascendDraftAdapter.load().then((draft) => {
+      if (active) setSafeDraft(draft);
+    });
+    return () => { active = false; };
   }, []);
 
   useEffect(() => {
     if (!started || step < 2 || status === "success") return;
     const savingTimer = window.setTimeout(() => setSaveStatus("saving"), 0);
     const timer = window.setTimeout(() => {
-      try {
-        const draft = makeSafeDraft(form, step);
-        window.localStorage.setItem(SAFE_DRAFT_KEY, JSON.stringify(draft));
-        setSafeDraft(draft);
-        setSaveStatus("saved");
-      } catch {
-        setSaveStatus("error");
-      }
+      const draft = makeSafeDraft(form, step);
+      void ascendDraftAdapter.save(draft)
+        .then(() => {
+          setSafeDraft(draft);
+          setSaveStatus("saved");
+        })
+        .catch(() => setSaveStatus("error"));
     }, 700);
     return () => { window.clearTimeout(savingTimer); window.clearTimeout(timer); };
   }, [form, started, status, step]);
@@ -188,7 +189,7 @@ export default function ApplicationForm() {
 
   function startNew() {
     if (safeDraft && !window.confirm("Start a new assessment and remove the safe draft stored on this device?")) return;
-    window.localStorage.removeItem(SAFE_DRAFT_KEY);
+    void ascendDraftAdapter.remove();
     setSafeDraft(null);
     setForm(createInitialState());
     setStarted(true);
@@ -247,7 +248,7 @@ export default function ApplicationForm() {
     setMessage("");
     try {
       const result = await submitAscendApplication(buildSubmissionPayload(form, idempotencyKey.current));
-      window.localStorage.removeItem(SAFE_DRAFT_KEY);
+      await ascendDraftAdapter.remove();
       setSafeDraft(null);
       setStatus("success");
       setMessage(result.reference || "Assessment received");

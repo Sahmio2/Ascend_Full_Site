@@ -1,6 +1,9 @@
-export type AscendApplicationResult = {
-  reference: string;
-};
+import type {
+  ApplicationRepository,
+  ApplicationSubmissionResult,
+} from "../../../../repositories/ApplicationRepository";
+
+export type AscendApplicationResult = ApplicationSubmissionResult;
 
 export type AscendApplicationSubmitter = (
   payload: unknown,
@@ -20,6 +23,12 @@ export function registerAscendApplicationSubmitter(
   return () => {
     if (activeSubmitter === submitter) activeSubmitter = null;
   };
+}
+
+export function registerAscendApplicationRepository(
+  repository: ApplicationRepository,
+) {
+  return registerAscendApplicationSubmitter((payload) => repository.create(payload));
 }
 
 export async function submitAscendApplication(payload: unknown) {
