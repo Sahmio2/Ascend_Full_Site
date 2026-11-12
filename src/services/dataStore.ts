@@ -1,6 +1,6 @@
-import { registerGetDivineLiveBridge } from "../features/get-divine/data/clientPortalAdapter";
-import { createGetDivineDemoSeed } from "../features/get-divine/data/demoSeed";
-import type { ClientPortalData, FoodEntryInput, WorkoutSessionInput, CheckInInput } from "../features/get-divine/data/types";
+import { registerGetDivineLiveBridge } from "../features/ascend/portal/data/clientPortalAdapter";
+import { createGetDivineDemoSeed } from "../features/ascend/portal/data/demoSeed";
+import type { ClientPortalData, FoodEntryInput, WorkoutSessionInput, CheckInInput } from "../features/ascend/portal/data/types";
 
 export type Person = {
   id: string;

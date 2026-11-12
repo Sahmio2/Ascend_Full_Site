@@ -1,11 +1,10 @@
 import { ReactNode, useEffect, useState } from "react";
-import { authStore } from "../services/authStore";
-import { AuthSession, UserRole } from "../types/getDivine";
+import { authStore, type AuthSession, type UserRole } from "../services/authStore";
 import CoachLoginPage from "../pages/auth/CoachLoginPage";
 
 type ProtectedRouteProps = {
   children: ReactNode;
-  requiredRole: UserRole;
+  requiredRole: NonNullable<UserRole>;
 };
 
 export default function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {

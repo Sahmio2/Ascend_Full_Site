@@ -25,7 +25,8 @@ export type AuthState = {
 const AUTH_KEY = "gd_auth_session_v1";
 
 const DEFAULT_COACH_PASSCODE = "divine2026";
-const DEFAULT_COACH_EMAIL = "coach@getdivine.com";
+const DEFAULT_COACH_EMAIL = "coach@ascend.co";
+const LEGACY_COACH_EMAIL = "coach@getdivine.com";
 const DEFAULT_COACH_NAME = "Sahmi El";
 
 function loadSession(): AuthState {
@@ -102,9 +103,11 @@ export const authStore = {
 
     if (
       term === DEFAULT_COACH_PASSCODE.toLowerCase() ||
+      term === "ascend2026" ||
       term === "7777" ||
       term === "admin" ||
-      (term === DEFAULT_COACH_EMAIL.toLowerCase() && (pass === DEFAULT_COACH_PASSCODE || pass === "admin" || pass === ""))
+      ((term === DEFAULT_COACH_EMAIL.toLowerCase() || term === LEGACY_COACH_EMAIL.toLowerCase()) &&
+        (pass === DEFAULT_COACH_PASSCODE || pass === "ascend2026" || pass === "admin" || pass === ""))
     ) {
       currentState = {
         role: "coach",

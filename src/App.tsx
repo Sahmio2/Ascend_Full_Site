@@ -6,13 +6,13 @@ import CoachLoginPage from "./pages/auth/CoachLoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CoachPortalPage from "./pages/coach/CoachPortalPage";
 
-import DashboardPage from "./features/get-divine/pages/DashboardPage";
-import PlanPage from "./features/get-divine/pages/PlanPage";
-import NutritionPage from "./features/get-divine/pages/NutritionPage";
-import CalculatorPage from "./features/get-divine/pages/CalculatorPage";
-import WorkoutLoggerPage from "./features/get-divine/pages/WorkoutLoggerPage";
-import ProgressPage from "./features/get-divine/pages/ProgressPage";
-import DemoLoginPage from "./features/get-divine/pages/DemoLoginPage";
+import DashboardPage from "./features/ascend/portal/pages/DashboardPage";
+import PlanPage from "./features/ascend/portal/pages/PlanPage";
+import NutritionPage from "./features/ascend/portal/pages/NutritionPage";
+import CalculatorPage from "./features/ascend/portal/pages/CalculatorPage";
+import WorkoutLoggerPage from "./features/ascend/portal/pages/WorkoutLoggerPage";
+import ProgressPage from "./features/ascend/portal/pages/ProgressPage";
+import DemoLoginPage from "./features/ascend/portal/pages/DemoLoginPage";
 
 export default function App() {
   return (

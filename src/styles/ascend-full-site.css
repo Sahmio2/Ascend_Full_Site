@@ -1,9 +1,0 @@
-@import "./ascend-fonts.css";
-@import "../features/ascend/public-apply/components/SpecularButton.css";
-@import "./ascend-hosted-latest.css";
-
-/*
- * Review entry point. Import after the target Tailwind/global entry while
- * validating parity. During the final merge, reconcile selectors and tokens
- * into the target globals.css instead of retaining competing global resets.
- */

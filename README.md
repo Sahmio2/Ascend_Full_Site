@@ -1,121 +1,118 @@
-# vinext-starter
+# ASCEND — Coaching Platform & Client Workspace
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+A high-performance coaching platform and client workspace for **ASCEND by Sahmi El**. Built with React 19, TypeScript 5.7, Tailwind CSS 4, and reactive typed state stores, configured as a Single Page Application (SPA) ready for Vercel deployment.
 
-## Prerequisites
+---
 
-- Node.js `>=22.13.0`
-- Linux with `flock`, `curl`, and GNU `timeout`
+## Tech Stack & Architecture
 
-## Sites Lifecycle
+- **Frontend Runtime**: [React 19](https://react.dev/) (`react` 19.0.0, `react-dom` 19.0.0)
+- **Language**: [TypeScript 5.7](https://www.typescriptlang.org/) with strict type safety
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) (`@tailwindcss/postcss` 4.0.0) + self-hosted variable typography (Cinzel, Cormorant Garamond, DM Sans)
+- **Routing**: [React Router 7](https://reactrouter.com/) client-side SPA routing
+- **Deployment**: [Vercel SPA](https://vercel.com/) via `vercel.json` rewrite configuration
+- **State Management**: Reactive typed stores (`authStore.ts`, `dataStore.ts`, `clientPortalAdapter.ts`) with LocalStorage persistence and clean repository abstractions (`DraftRepository`, `ApplicationRepository`)
+- **Database Schema**: [Prisma ORM](https://www.prisma.io/) with **MySQL** datasource (`prisma/schema.prisma`) modeling core athletes, check-ins, workouts, and programs
 
-The Sites lifecycle CLI runs the locked dependency install before returning this checkout. Edit the source under `app/`, then checkpoint when a coherent milestone is ready to inspect or share. The remote Sites builder runs `npm run build` against the pushed commit. Do not repeat install or build as a normal pre-checkpoint step.
+---
 
-This starter does not use `wrangler.jsonc`.
+## Route Overview
 
-`install:ci` is intentionally a single, non-retrying `npm ci`. It refuses a concurrent install for the same project, consumes a matching image-seeded npm cache with `--prefer-offline` while retaining registry fallback for a missing cache object, otherwise downloads and verifies the complete vinext tarball recorded in `package-lock.json`, limits npm to one socket, and terminates a stalled install. `build` applies a short timeout and then validates the Sites artifact. These helpers target Linux and use GNU `timeout`; they are not native macOS scripts.
+| Path | Description | Access Guard |
+|---|---|---|
+| `/` | Editorial landing page & brand narrative | Public |
+| `/apply` | 4-step comprehensive coaching intake assessment | Public (Auto-saving draft) |
+| `/login` | Unified client & demo entrance | Public |
+| `/coach` | Hidden coach command access | Coach passcode / credentials |
+| `/coach-portal/*` | Coach command centre, athlete management & programme reviews | Coach only (`ProtectedRoute`) |
+| `/demo/*` | Sandboxed client workspace demo with preloaded athlete data | Demo session |
+| `/client/*` | Live client workspace: plans, nutrition, workouts, check-ins | Authenticated client |
 
-Scripts that need writable project-scoped home, npm, XDG, and temporary paths use `scripts/sites-env.sh`. The `dev` and `start` scripts honor the caller's runtime environment and keep Wrangler logs inside the checkout. The generated `.sites-runtime/` directory is disposable and ignored by Git.
+---
 
-## Included Shape
+## Getting Started
 
-- edit site code under `app/`
-- `app/chatgpt-auth.ts` provides optional dispatch-owned ChatGPT sign-in helpers
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/index.ts` reads the D1 binding from the Cloudflare Worker environment
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+### Prerequisites
+- Node.js `>= 20.0.0`
+- npm `>= 10.0.0`
 
-## Workspace Auth Headers
-
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
-
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+### Installation
+```bash
+npm install
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+### Development
+```bash
+npm run dev
+```
+Starts the Vite development server at `http://localhost:3000`.
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+### Typecheck & Production Build
+```bash
+# Typecheck TypeScript source
+npm run typecheck
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+# Build production bundle
+npm run build
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+# Preview production build locally
+npm run preview
+```
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+---
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+## Database & Prisma (MySQL)
 
-## Diagnostic Commands
+A complete Prisma schema is provided in `prisma/schema.prisma` configured for MySQL:
 
-- `npm run install:ci`: perform the one bounded lockfile install
-- `npm run dev`: start the Vite/Vinext development server
-- `npm run build`: build and validate the deployable Sites artifact
-- `npm run start`: start the built Vinext application
-- `npm test`: build, validate, and verify the rendered development-preview metadata
-- `npm run validate:artifact`: recheck an existing artifact's manifest and ESM `default.fetch` export
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+- **`Person`**: Athlete and lead records, intake assessments, phase status, coach notes
+- **`CheckIn`**: Weekly recovery, bodyweight, compliance tracking, and coach feedback
+- **`ProgramAssignment`**: Periodized blocks, training instructions, and workout schedules
+- **`WorkoutSession`**: Logged workouts, sets, reps, loads, and athlete notes
+- **`Activity`**: Audit trail of athlete and coach interactions
+- **`PlanDocument`**: Training and nutrition documents
 
-Use build and validation commands for targeted diagnosis after a remote failure, not as part of the normal checkpoint path.
+To generate the Prisma client or run migrations against your MySQL database:
+```bash
+# Set your DATABASE_URL in .env
+DATABASE_URL="mysql://USER:PASSWORD@HOST:PORT/DATABASE"
 
-The timeout defaults can be overridden for a controlled canary with `SITES_INSTALL_TIMEOUT`, `SITES_INSTALL_KILL_AFTER`, `SITES_BUILD_TIMEOUT`, and `SITES_BUILD_KILL_AFTER`. A timeout fails the command; the helpers never retry an unchanged install or build.
+# Generate client
+npx prisma generate
 
-## Included Get Divine fonts
+# Push schema to MySQL
+npx prisma db push
+```
 
-The project self-hosts its complete typography system in `public/fonts`, so
-localhost does not need to contact Google Fonts:
+---
 
-- Cormorant Garamond — editorial headings and display type
-- Cinzel — ceremonial labels and wordmarks
-- DM Sans — body copy, forms, and interface text
+## Project Structure
 
-The font faces are declared at the top of `app/globals.css`. Keep the font
-filenames and `/fonts/...` URLs unchanged when moving the project. The
-corresponding open-font licences are included beside the font files.
-
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+```text
+├── public/                 # Static assets and self-hosted WOFF2 fonts
+│   └── fonts/
+├── prisma/
+│   └── schema.prisma       # MySQL schema for core domain entities
+├── src/
+│   ├── components/         # Shared global components (AscendIcon, SpecularButton, ProtectedRoute)
+│   ├── features/
+│   │   └── ascend/         # Core ASCEND feature tree
+│   │       ├── coach/      # Coach command dashboard, review workflows, adapters
+│   │       ├── portal/     # Client workspace (today, plan, nutrition, workout logger, progress)
+│   │       └── public-apply/ # Landing page and 4-step intake assessment
+│   ├── pages/              # Top-level page wrappers and auth routing
+│   │   ├── auth/           # Client and Coach login
+│   │   ├── coach/          # Coach portal entry
+│   │   └── public/         # Home and Apply entry
+│   ├── repositories/       # Abstraction layer for drafts and applications
+│   ├── services/           # Typed reactive state stores (authStore, dataStore)
+│   ├── storage/            # Schema migration and storage key constants
+│   ├── styles/             # Global CSS and typography stylesheets
+│   ├── App.tsx             # Root router configuration
+│   ├── globals.css         # Tailwind 4 and brand root tokens
+│   └── main.tsx            # Application entry point
+├── package.json
+├── tsconfig.json
+├── vercel.json             # Vercel SPA rewrites
+└── vite.config.ts          # Vite configuration
+```

@@ -24,12 +24,12 @@ export default function CoachLoginPage() {
 
   return (
     <main className="demo-login">
-      <Link className="wordmark" to="/"><span>GET</span> DIVINE</Link>
+      <Link className="wordmark" to="/"><span>ASCEND</span></Link>
       <section className="demo-login-card unified-login-card" style={{ maxWidth: "460px", margin: "40px auto" }}>
         <form onSubmit={handleCoachLogin} style={{ width: "100%" }}>
           <span className="demo-lock">◆</span>
           <h2>Coach Command Access</h2>
-          <p>Restricted access for Sahmi El & Get Divine coaching team.</p>
+          <p>Restricted access for Sahmi El & ASCEND coaching team.</p>
           
           {error && <p style={{ color: "var(--gd-error)", fontSize: "0.85rem", marginBottom: "12px" }}>{error}</p>}
 
@@ -39,7 +39,7 @@ export default function CoachLoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="coach@getdivine.co"
+              placeholder="coach@ascend.co"
               required
             />
           </label>
