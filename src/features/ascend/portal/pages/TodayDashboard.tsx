@@ -50,16 +50,85 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
   const totals = nutritionTotals(data);
   const targets = data.nutrition.targets;
 
-  // Next workout calculation from active programme
+  // Active programme days
   const days = data.programme.days;
-  const nextWorkoutIndex = data.workouts.length % (days.length || 1);
-  const nextWorkout = days[nextWorkoutIndex] || days[0];
 
   // Current formatted date
   const now = new Date();
   const dayName = now.toLocaleDateString("en-NG", { weekday: "long" }).toUpperCase();
   const dateFormatted = now.toLocaleDateString("en-NG", { day: "numeric", month: "short" }).toUpperCase();
-  const todayLabel = `${dayName}, ${dateFormatted} · ${nextWorkout ? "TRAINING DAY" : "REST & RECOVERY"}`;
+  const todayIso = now.toISOString().split("T")[0];
+
+  // Detect if a workout session was completed today
+  const completedTodayWorkout = data.workouts.find(
+    (w) =>
+      w.completionStatus === "completed" &&
+      (w.workoutDate === todayIso || w.workoutDate.startsWith(todayIso))
+  );
+
+  // Compute metrics for today's completed workout
+  const completedSetsCount =
+    completedTodayWorkout?.exercises.reduce(
+      (acc, ex) => acc + ex.sets.filter((s) => s.completed).length,
+      0
+    ) || 0;
+
+  const totalTonnageKg =
+    completedTodayWorkout?.exercises.reduce((acc, ex) => {
+      return (
+        acc +
+        ex.sets.reduce((setAcc, s) => {
+          if (!s.completed) return setAcc;
+          const loadNum = parseFloat(s.load) || 0;
+          const repsNum = parseInt(s.reps, 10) || 0;
+          return setAcc + loadNum * repsNum;
+        }, 0)
+      );
+    }, 0) || 0;
+
+  // Calendar-aware Monday-Sunday weekly workouts count
+  const currentWeekWorkoutsCompleted = (() => {
+    const current = new Date(now);
+    const day = current.getDay(); // 0 is Sunday, 1 is Monday
+    const diffToMonday = day === 0 ? -6 : 1 - day;
+    const monday = new Date(current);
+    monday.setDate(current.getDate() + diffToMonday);
+    monday.setHours(0, 0, 0, 0);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59, 999);
+
+    return data.workouts.filter((w) => {
+      if (w.completionStatus !== "completed") return false;
+      const d = new Date(w.workoutDate);
+      return d >= monday && d <= sunday;
+    }).length;
+  })();
+
+  const prescribedDaysPerWeek = days.length || 3;
+
+  // Next workout calculation: if today's session is done, cycle to next programme day
+  const lastCompletedIndex = completedTodayWorkout
+    ? days.findIndex((d) => d.id === completedTodayWorkout.programmeDayId)
+    : -1;
+
+  const nextWorkoutIndex = completedTodayWorkout
+    ? (lastCompletedIndex + 1) % (days.length || 1)
+    : data.workouts.filter((w) => w.completionStatus === "completed").length % (days.length || 1);
+
+  const nextWorkout = days[nextWorkoutIndex] || days[0];
+
+  // Dynamic status pill
+  let statusPillText = "REST & RECOVERY";
+  let statusPillClass = "pill-recovery";
+  if (completedTodayWorkout) {
+    statusPillText = "SESSION COMPLETED";
+    statusPillClass = "pill-completed";
+  } else if (nextWorkout) {
+    statusPillText = "TRAINING DAY";
+    statusPillClass = "pill-training";
+  }
 
   // Modal State
   const [modalData, setModalData] = useState<{
@@ -87,25 +156,66 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
         <div className="today-grid">
           {/* Left Column: Next Action, Direction & Updates */}
           <div className="today-col">
-            <div className="daylabel">{todayLabel}</div>
+            <div className="dayheader-row">
+              <div className="daylabel">{dayName}, {dateFormatted}</div>
+              <span className={`daystatus-pill ${statusPillClass}`}>{statusPillText}</span>
+            </div>
 
-            {/* Next Action Primary Hero Card */}
-            <section className="primary">
-              <div className="kicker">YOUR NEXT ACTION</div>
-              <h1>{nextWorkout ? nextWorkout.name : "Active Recovery & Mobility"}</h1>
-              <div className="meta">
-                {nextWorkout
-                  ? `${nextWorkout.estimatedMinutes} · Gym · ${nextWorkout.exercises.length} prescribed exercises`
-                  : "Prescribed hydration, mobility & nutrition recovery"}
-              </div>
-              <button
-                className="primaryAction"
-                onClick={() => router.push(`${basePath}/workout-logger`)}
-              >
-                <span>{nextWorkout ? "Start Workout" : "Review Programme"}</span>
-                <TodayIcon name="right" />
-              </button>
-            </section>
+            {/* Primary Action / Session Completed Hero Card */}
+            {completedTodayWorkout ? (
+              <section className="primary primary--completed">
+                <div className="kicker kicker--completed">
+                  <span className="kicker-dot" /> SESSION COMPLETED TODAY
+                </div>
+                <h1>{completedTodayWorkout.workoutName}</h1>
+                <div className="meta">
+                  <span>{completedTodayWorkout.durationMinutes || 60} min duration</span>
+                  <span className="dot-sep">·</span>
+                  <span>{completedSetsCount} working sets recorded</span>
+                  {totalTonnageKg > 0 && (
+                    <>
+                      <span className="dot-sep">·</span>
+                      <span>{totalTonnageKg.toLocaleString()} kg total volume</span>
+                    </>
+                  )}
+                </div>
+
+                <div className="completed-recovery-box">
+                  <div className="recovery-lead">Focus until tomorrow: Active recovery & refuel</div>
+                  <p className="recovery-sub">
+                    Prioritise your prescribed protein ({targets.protein}g) and hydration. Give your neuromuscular system adequate rest before your next session.
+                  </p>
+                </div>
+
+                <div className="completed-actions">
+                  <Link href={`${basePath}/nutrition`} className="primaryAction">
+                    <span>Log Nutrition</span>
+                    <TodayIcon name="food" />
+                  </Link>
+                  <Link href={`${basePath}/workout-logger`} className="secondaryAction">
+                    <span>Review Session Sets</span>
+                    <TodayIcon name="right" />
+                  </Link>
+                </div>
+              </section>
+            ) : (
+              <section className="primary">
+                <div className="kicker">YOUR NEXT ACTION</div>
+                <h1>{nextWorkout ? nextWorkout.name : "Active Recovery & Mobility"}</h1>
+                <div className="meta">
+                  {nextWorkout
+                    ? `${nextWorkout.estimatedMinutes} · Gym · ${nextWorkout.exercises.length} prescribed exercises`
+                    : "Prescribed hydration, mobility & nutrition recovery"}
+                </div>
+                <Link
+                  href={`${basePath}/workout-logger`}
+                  className="primaryAction"
+                >
+                  <span>{nextWorkout ? "Start Workout" : "Review Programme"}</span>
+                  <TodayIcon name="right" />
+                </Link>
+              </section>
+            )}
 
             {/* Today's Direction */}
             <section className="direction">
@@ -119,7 +229,12 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
             {/* Latest Coach Update */}
             {latestCoachFeedback && (
               <section className="update">
-                <strong>Latest coach update · {latestCoachFeedback.date}</strong>
+                <div className="update-header">
+                  <strong>Latest coach update · {latestCoachFeedback.date}</strong>
+                  <Link href={`${basePath}/progress`} className="coach-reply-link">
+                    Message Sahmi →
+                  </Link>
+                </div>
                 <p>{latestCoachFeedback.message}</p>
               </section>
             )}
@@ -130,25 +245,27 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
             <section>
               <h2 className="sectionHeader">Your day at a glance</h2>
               <div className="statgrid">
-                <button
+                <Link
+                  href={`${basePath}/workout-logger`}
                   className="stat"
-                  onClick={() => router.push(`${basePath}/workout-logger`)}
-                  style={{ cursor: "pointer" }}
+                  aria-label="View training details"
                 >
                   <span className="statTitle">
                     <TodayIcon name="dumb" /> Training
                   </span>
-                  <strong>{`${data.workouts.length % (days.length || 3)} / ${days.length || 3}`}</strong>
+                  <strong>{`${currentWeekWorkoutsCompleted} / ${prescribedDaysPerWeek}`}</strong>
                   <div className="small">Workouts completed this week</div>
-                  {nextWorkout && (
+                  {completedTodayWorkout ? (
+                    <div className="next next--done">✓ Done today · {nextWorkout.name} next →</div>
+                  ) : (
                     <div className="next">{nextWorkout.name} up next →</div>
                   )}
-                </button>
+                </Link>
 
-                <button
+                <Link
+                  href={`${basePath}/nutrition`}
                   className="stat"
-                  onClick={() => router.push(`${basePath}/nutrition`)}
-                  style={{ cursor: "pointer" }}
+                  aria-label="View nutrition meals and targets"
                 >
                   <span className="statTitle">
                     <TodayIcon name="food" /> Nutrition
@@ -156,15 +273,15 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
                   <strong>{`${totals.calories.toLocaleString()} / ${targets.calories.toLocaleString()} kcal`}</strong>
                   <div className="small">{data.nutrition.meals.length} meal entries recorded today</div>
                   <div className="next">Open Meal Plan →</div>
-                </button>
+                </Link>
               </div>
             </section>
 
             {/* Coaching Review Schedule */}
-            <section
+            <Link
+              href={`${basePath}/progress`}
               className="under"
-              onClick={() => router.push(`${basePath}/progress`)}
-              style={{ cursor: "pointer" }}
+              aria-label="View next coaching review schedule"
             >
               <div>
                 <strong>Next coaching review</strong>
@@ -173,26 +290,35 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
               <span className="right">
                 <TodayIcon name="calendar" />
               </span>
-            </section>
+            </Link>
 
-            {/* Quick Profile / Streak Summary Card */}
-            <section className="direction" style={{ background: "#151413" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            {/* Programme Phase Progression Card (Luxury Coaching Tone) */}
+            <section className="programme-phase-card">
+              <div className="phase-card-top">
                 <div>
-                  <div className="daylabel" style={{ fontSize: "10px", marginBottom: "4px" }}>ACTIVE ATHLETE</div>
-                  <strong style={{ fontSize: "15px", color: "#f5f0e9" }}>{data.client.fullName}</strong>
-                  <p style={{ margin: "4px 0 0", fontSize: "12px", color: "var(--sub)" }}>
+                  <div className="phase-kicker">ACTIVE ATHLETE</div>
+                  <strong className="phase-athlete-name">{data.client.fullName}</strong>
+                  <p className="phase-details">
                     {data.client.phaseName} · {data.client.primaryGoal || "Physique progression"}
                   </p>
                 </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: "22px", fontWeight: 700, color: "var(--gold)" }}>
-                    {data.client.streakDays}d
+                <div className="phase-block-stat">
+                  <div className="phase-week-val">
+                    Week {data.programme.week || 3}
+                    <span className="phase-week-total">/{data.programme.totalWeeks || 8}</span>
                   </div>
-                  <div style={{ fontSize: "10px", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                    Active Streak
+                  <div className="phase-block-label">
+                    Block Cadence
                   </div>
                 </div>
+              </div>
+
+              <div className="phase-card-footer">
+                <div className="adherence-badge">
+                  <span className="adherence-dot" />
+                  <span>{data.client.adherencePercent || 94}% Target Adherence</span>
+                </div>
+                <span className="phase-status-text">Coach Monitored</span>
               </div>
             </section>
           </div>
