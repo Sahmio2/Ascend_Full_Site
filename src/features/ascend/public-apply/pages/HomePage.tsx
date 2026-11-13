@@ -1,266 +1,498 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { SpecularLink } from "../components/SpecularButton";
-
-const Arrow = ({ diagonal = false }: { diagonal?: boolean }) => (
-  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-    <path
-      d={diagonal ? "M7 17 17 7M8 7h9v9" : "M5 12h14m-5-5 5 5-5 5"}
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const phases = [
-  {
-    roman: "I",
-    name: "Taming the Flesh",
-    verb: "Tame",
-    copy: "Build command over inconsistency. Establish the habits, movement quality and self-awareness that make progress repeatable.",
-  },
-  {
-    roman: "II",
-    name: "Forging the Form",
-    verb: "Forge",
-    copy: "Turn disciplined action into visible structure through purposeful training, practical nutrition and measurable progression.",
-  },
-  {
-    roman: "III",
-    name: "Ascension",
-    verb: "Ascend",
-    copy: "Refine the details. Train with precision, manage fatigue intelligently and build the autonomy to sustain what you earn.",
-  },
-];
+import { ThemeToggle } from "../components/ThemeToggle";
+import { RegistrationModal } from "../components/RegistrationModal";
+import "@/styles/ascend-homepage-v2.css";
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openRegistration = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    setIsModalOpen(true);
+  };
+
   return (
-    <main className="public-site">
-      <header className="public-nav shell">
-        <Link className="wordmark" href="/" aria-label="ASCEND home">
-          <span>ASCEND</span>
+    <div id="top" className="ascend-homepage-v2">
+      {/* NAV */}
+      <header
+        className="site-header"
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "25px 32px",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "16px",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Link
+          className="nav-brand"
+          href="#home"
+          style={{
+            fontFamily: "'Cinzel', serif",
+            fontSize: "20px",
+            letterSpacing: ".22em",
+            color: "#7A5F1E",
+          }}
+          aria-label="ASCEND home"
+        >
+          ASCEND{" "}
+          <span
+            style={{
+              display: "block",
+              letterSpacing: ".16em",
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "8px",
+              fontWeight: 500,
+              color: "#716B5E",
+              textAlign: "center",
+            }}
+          >
+            BY SAHMI EL
+          </span>
         </Link>
-        <nav aria-label="Primary navigation">
-          <a href="#method">The method</a>
-          <a href="#coaching">Coaching</a>
-          <a href="#questions">Questions</a>
-        </nav>
-        <div className="nav-actions">
-          <Link className="quiet-link" href="/login">
+        <nav
+          className="nav-items"
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px 24px",
+            alignItems: "center",
+            fontSize: "13px",
+            letterSpacing: ".02em",
+          }}
+          aria-label="Primary"
+        >
+          <a href="#method">The Method</a>
+          <a href="#portal">The Portal</a>
+          <a href="#how">How It Works</a>
+          <a href="#coach">Your Coach</a>
+          <Link href="/login" style={{ color: "#7A5F1E", fontWeight: 600 }}>
             Client Login
           </Link>
-          <SpecularLink
-            className="ascend-specular-cta button-small"
-            href="/apply"
-            size="sm"
-            radius={2}
-            tint="#c7a45b"
-            tintOpacity={1}
-            textColor="#11100d"
-            lineColor="#dfbf77"
-            baseColor="#80632f"
-            intensity={1.25}
-            thickness={1.1}
-            proximity={220}
+          <ThemeToggle />
+          <button
+            type="button"
+            className="nav-cta"
+            onClick={openRegistration}
+            aria-label="Register for Coaching"
           >
-            Apply for Coaching <Arrow diagonal />
-          </SpecularLink>
-        </div>
+            Register for Coaching <span aria-hidden="true">↗</span>
+          </button>
+        </nav>
       </header>
 
-      <section className="hero shell">
-        <div className="hero-grid-lines" aria-hidden="true" />
-        <div className="hero-eyebrow eyebrow">
-          <span>Private physique coaching</span>
-          <span>Structured for the individual</span>
-        </div>
-        <div className="hero-title-wrap">
-          <h1>ASCEND</h1>
-          <p className="hero-subtitle">The Path to Divinity</p>
-          <p className="hero-kicker">Tame the flesh. Forge the form. Ascend.</p>
-          <p className="hero-promise">
-            A structured guide to an aesthetic, powerful physique.
-          </p>
-          <p className="hero-founder">by Sahmi El</p>
-        </div>
-        <div className="hero-bottom">
-          <div className="hero-copy">
-            <p className="hero-join-title">Ready to join ASCEND?</p>
-            <p>
-              Coaching is selective and built around your goals, experience
-              and circumstances.
-            </p>
-            <div className="hero-ctas">
-              <Link className="button button-ivory" href="/apply">
-                Begin Your Assessment <Arrow />
-              </Link>
-              <a className="text-link" href="#method">
-                Explore the Method <span>↓</span>
-              </a>
-            </div>
+      {/* HERO */}
+      <section id="home" className="hero-wrap" style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 32px" }}>
+        <div
+          className="hero"
+          style={{
+            border: "1px solid #C9A24B",
+            padding: "82px 40px 74px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+            gap: "18px",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          <div className="micro" style={{ fontFamily: "'Cinzel', serif", fontSize: "12px", letterSpacing: "0.3em", color: "#7A5F1E" }}>
+            THE PATH TO DIVINITY
           </div>
-          <div className="admission-card">
-            <span className="pulse" />
-            <div>
-              <strong>Applications are open</strong>
-              <p>Coaching places are intentionally limited.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="principles-strip" aria-label="Program principles">
-        <div className="shell principles-grid">
-          <p><span>01</span> Individual by design</p>
-          <p><span>02</span> Progress you can prove</p>
-          <p><span>03</span> Built for longevity</p>
-          <p><span>04</span> Coached with intention</p>
-        </div>
-      </section>
-
-      <section className="method-section shell" id="method">
-        <div className="section-heading">
-          <p className="eyebrow">The transformation architecture</p>
-          <h2>Not another plan.<br /><em>A standard to rise into.</em></h2>
-          <p>
-            The Path to Divinity meets you where you are, then gives your
-            next season a clear mission. You do not graduate because the work
-            looks harder. You advance because your body and behaviour are ready.
-          </p>
-        </div>
-        <div className="phase-grid">
-          {phases.map((phase) => (
-            <article className="phase-card" key={phase.roman}>
-              <div className="phase-number">{phase.roman}</div>
-              <div>
-                <p className="eyebrow">Phase {phase.roman}</p>
-                <h3>{phase.name}</h3>
-                <p>{phase.copy}</p>
-              </div>
-              <span className="phase-verb">{phase.verb}</span>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="coaching-section" id="coaching">
-        <div className="shell coaching-grid">
-          <div className="coaching-manifesto">
-            <p className="eyebrow">The ASCEND standard</p>
-            <p className="manifesto-quote">
-              “The best plan is the one that fits <em>your</em> body, your life
-              and the person you are becoming.”
-            </p>
-            <div className="signature-rule">
-              <span />
-              <p>ASCEND by Sahmi El</p>
-            </div>
-          </div>
-          <div className="coaching-details">
-            <p className="index-label">What coaching holds</p>
-            {[
-              ["01", "A plan with a reason", "Training shaped around your goal, experience, movement comfort, available equipment and schedule."],
-              ["02", "Nutrition made usable", "Clear priorities and flexible meal structure you can apply without turning food into punishment."],
-              ["03", "Progress under review", "Your performance, recovery and consistency guide the adjustments—not random weekly changes."],
-              ["04", "A coach in the loop", "Regular check-ins, honest feedback and a clear place to report what is working or needs attention."],
-            ].map(([number, title, copy]) => (
-              <article className="detail-row" key={number}>
-                <span>{number}</span>
-                <div><h3>{title}</h3><p>{copy}</p></div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="fit-section shell">
-        <div className="fit-card fit-card-dark">
-          <p className="eyebrow">This may be for you if</p>
-          <h2>You want more than motivation.</h2>
-          <ul>
-            <li>You are ready to train with structure instead of guessing.</li>
-            <li>You value an aesthetic physique without sacrificing your joints.</li>
-            <li>You want guidance that respects your schedule and real-life constraints.</li>
-            <li>You are willing to log, communicate and take ownership of the work.</li>
-          </ul>
-        </div>
-        <div className="fit-card fit-card-light">
-          <p className="eyebrow">How admission works</p>
-          <ol>
-            <li><span>01</span><div><strong>Assess</strong><p>Complete the coaching assessment.</p></div></li>
-            <li><span>02</span><div><strong>Review</strong><p>Sahmi El reviews your goals, readiness and coaching fit.</p></div></li>
-            <li><span>03</span><div><strong>Accept</strong><p>Successful applicants receive onboarding and account setup.</p></div></li>
-            <li><span>04</span><div><strong>Ascend</strong><p>Enter the client portal and begin your personalised phase.</p></div></li>
-          </ol>
-        </div>
-      </section>
-
-      <section className="faq-section shell" id="questions">
-        <div className="faq-heading">
-          <p className="eyebrow">Before you apply</p>
-          <h2>Questions,<br /><em>answered clearly.</em></h2>
-          <Link className="button button-outline" href="/apply">
-            Begin Your Assessment <Arrow />
-          </Link>
-        </div>
-        <div className="faq-list">
-          <details open>
-            <summary>Is this only for advanced lifters?<span>−</span></summary>
-            <p>No. The program is adapted to the experience, confidence and capacity you bring. Beginners receive clear, repeatable structure; experienced athletes receive the detail their progress requires.</p>
-          </details>
-          <details>
-            <summary>Do I need a fully equipped gym?<span>+</span></summary>
-            <p>No. Your equipment access is reviewed before your plan is built, so unavailable machines are not treated as requirements.</p>
-          </details>
-          <details>
-            <summary>Can I apply if I have pain or an old injury?<span>+</span></summary>
-            <p>You can apply and disclose it honestly. Coaching does not diagnose or replace medical care; movement choices can be adapted only within safe professional boundaries.</p>
-          </details>
-          <details>
-            <summary>Is a meal plan included?<span>+</span></summary>
-            <p>You receive practical nutrition direction, priorities and flexible meal structure appropriate to your goal. Clinical dietetics and medical nutrition needs require a qualified professional.</p>
-          </details>
-        </div>
-      </section>
-
-      <section className="closing-cta">
-        <div className="shell closing-inner">
-          <p className="eyebrow">Your next season can be different</p>
-          <h2>Tame what is disordered.<br />Forge what is possible.<br /><em>Ascend through mastery.</em></h2>
-          <SpecularLink
-            className="ascend-specular-cta"
-            href="/apply"
-            radius={2}
-            tint="#c7a45b"
-            tintOpacity={1}
-            textColor="#11100d"
-            lineColor="#dfbf77"
-            baseColor="#80632f"
-            intensity={1.25}
-            thickness={1.1}
-            proximity={240}
+          <h1
+            className="hero-wordmark"
+            style={{
+              margin: "2px 0 0",
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 500,
+              fontSize: "clamp(86px, 17vw, 190px)",
+              lineHeight: ".78",
+              letterSpacing: ".055em",
+              color: "#0B0B0A",
+            }}
           >
-            Apply for coaching <Arrow diagonal />
-          </SpecularLink>
+            ASCEND
+          </h1>
+          <div className="hero-line" aria-hidden="true" style={{ height: "1px", width: "70px", background: "#C9A24B", margin: "10px auto 6px" }}></div>
+          <h2
+            style={{
+              margin: 0,
+              maxWidth: "850px",
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 500,
+              fontSize: "clamp(38px, 5vw, 66px)",
+              lineHeight: 1.02,
+              color: "#171715",
+              letterSpacing: "-.018em",
+            }}
+          >
+            Personalised online coaching<br className="desktop-only" /> for gym beginners.
+          </h2>
+          <p style={{ margin: "2px 0 0", maxWidth: "620px", fontSize: "17px", lineHeight: 1.7, color: "#47443E" }}>
+            Build a stronger physique with a training plan that fits your week and nutrition guidance built around the Nigerian meals you already eat.
+          </p>
+          <div className="hero-actions" style={{ display: "flex", flexWrap: "wrap", gap: "12px", justifyContent: "center", marginTop: "16px" }}>
+            <button
+              type="button"
+              className="btn btn-dark"
+              onClick={openRegistration}
+            >
+              REGISTER FOR COACHING <span aria-hidden="true">↗</span>
+            </button>
+            <a className="btn btn-outline" href="#method">
+              EXPLORE THE METHOD <span aria-hidden="true">↓</span>
+            </a>
+          </div>
+          <p className="hero-cap" style={{ margin: "21px 0 0", fontSize: "12px", letterSpacing: ".045em", color: "#6B675C" }}>
+            Founding coaching capacity: 10 active clients. Availability is checked during registration.
+          </p>
+          <div className="method-lockup" style={{ marginTop: "21px", fontFamily: "'Cinzel', serif", fontSize: "11px", letterSpacing: ".19em", color: "#7A5F1E" }}>
+            TAME THE FLESH <span style={{ color: "#B8A98E" }}>·</span> FORGE THE FORM <span style={{ color: "#B8A98E" }}>·</span> ASCEND
+          </div>
         </div>
       </section>
 
-      <footer className="public-footer shell">
-        <div className="footer-brand">
-          <Link className="wordmark" href="/"><span>ASCEND</span></Link>
-          <p>The Path to Divinity</p>
+      {/* PROMISE / WHY */}
+      <section id="why" style={{ maxWidth: "1200px", margin: "0 auto", padding: "115px 32px 0" }}>
+        <div className="intro-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px", alignItems: "start" }}>
+          <div>
+            <div className="kicker">THE ASCEND SYSTEM</div>
+            <h2 className="section-title" style={{ maxWidth: "630px" }}>
+              Structure turns effort<br /><em>into form.</em>
+            </h2>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "18px", paddingTop: "29px" }}>
+            <p style={{ margin: 0, fontSize: "20px", lineHeight: 1.55, color: "#24221D" }}>
+              Build a visibly stronger, better-shaped physique with a personalised training and nutrition system you can consistently follow.
+            </p>
+            <p style={{ margin: 0, color: "#514D44" }}>
+              ASCEND gives complete gym beginners and inconsistent early-stage lifters a personalised system for building a stronger, better-shaped physique. Structured training, practical Nigerian nutrition and progress tracking replace guesswork with a clear direction.
+            </p>
+            <p style={{ margin: 0, color: "#6B675C", fontSize: "14px" }}>
+              Personalised online physique coaching with structured training, practical Nigerian nutrition, progress tracking and two personal reviews each billing month.
+            </p>
+          </div>
         </div>
-        <div className="footer-links">
-          <a href="#method">The method</a>
-          <a href="#coaching">Coaching</a>
-          <Link href="/apply">Apply for Coaching</Link>
-          <Link href="/login">Client Login</Link>
+      </section>
+
+      {/* METHOD */}
+      <section id="method" style={{ maxWidth: "1200px", margin: "0 auto", padding: "124px 32px 0" }}>
+        <div style={{ maxWidth: "680px", display: "flex", flexDirection: "column", gap: "14px" }}>
+          <div className="kicker">01 / THE METHOD</div>
+          <h2 className="section-title">Three phases. One direction.</h2>
+          <p style={{ margin: 0, color: "#514D44" }}>
+            Your plan evolves with the evidence—not with an arbitrary 30-day transformation promise. Each phase builds on what came before.
+          </p>
         </div>
-        <p className="footer-meta">© 2026 ASCEND by Sahmi El</p>
+        <div className="phase-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "24px", marginTop: "47px" }}>
+          <article className="phase" style={{ borderTop: "2px solid #C9A24B", paddingTop: "23px" }}>
+            <div className="phase-index">PHASE I / FOUNDATION</div>
+            <h3 className="phase-name">Tame the Flesh</h3>
+            <p className="phase-lead">Build control through consistent habits—not punishment.</p>
+            <p className="phase-copy">Learn the movements, establish your baseline and make showing up part of your routine.</p>
+          </article>
+          <article className="phase" style={{ borderTop: "2px solid #C9A24B", paddingTop: "23px" }}>
+            <div className="phase-index">PHASE II / PROGRESSION</div>
+            <h3 className="phase-name">Forge the Form</h3>
+            <p className="phase-lead">Turn consistency into measurable progress.</p>
+            <p className="phase-copy">Develop strength, technique and nutritional consistency through structured, reviewed adjustments.</p>
+          </article>
+          <article className="phase" style={{ borderTop: "2px solid #C9A24B", paddingTop: "23px" }}>
+            <div className="phase-index">PHASE III / MASTERY</div>
+            <h3 className="phase-name">Ascend</h3>
+            <p className="phase-lead">Build confidence in your own process.</p>
+            <p className="phase-copy">Refine your physique and develop more independence as your coaching and progress support it.</p>
+          </article>
+        </div>
+      </section>
+
+      {/* PORTAL (Inverted contrast band) */}
+      <section id="portal" style={{ marginTop: "126px", background: "#0B0B0A", color: "#F4EFE3" }}>
+        <div
+          className="portal-grid"
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "104px 32px",
+            display: "grid",
+            gridTemplateColumns: "1fr .9fr",
+            gap: "72px",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <div className="kicker light-kicker">02 / INSIDE ASCEND</div>
+            <h2 className="section-title section-title-light" style={{ marginTop: "18px" }}>
+              Your next action.<br /><em>Always clear.</em>
+            </h2>
+            <p style={{ maxWidth: "510px", margin: "0 0 25px", color: "#CFC8B8", lineHeight: 1.75 }}>
+              One private mobile-friendly coaching portal. Your current training plan, Nigerian meal guidance, progress and messages with Sahmi stay together—without competing documents.
+            </p>
+            <div className="feature-list">
+              <div className="feature">
+                <span className="feature-num">01</span>
+                <div>
+                  <strong>Today</strong>
+                  <span>Your one most useful action, your coach-approved direction and a calm daily snapshot.</span>
+                </div>
+              </div>
+              <div className="feature">
+                <span className="feature-num">02</span>
+                <div>
+                  <strong>Workouts</strong>
+                  <span>Exercise animations, set logging, previous performance, automatic rest and approved swaps.</span>
+                </div>
+              </div>
+              <div className="feature">
+                <span className="feature-num">03</span>
+                <div>
+                  <strong>Nutrition</strong>
+                  <span>Nigerian meals and approved swaps in grams, with logging detail suited to your programme.</span>
+                </div>
+              </div>
+              <div className="feature">
+                <span className="feature-num">04</span>
+                <div>
+                  <strong>Progress</strong>
+                  <span>See the evidence and understand what changes at your scheduled coaching reviews.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="portal-preview" aria-label="Illustrative private portal preview">
+            <div className="device-top">
+              <span>ASCEND</span>
+              <span>◌ &nbsp; ◯</span>
+            </div>
+            <div className="device-sub">YOUR DAILY DIRECTION</div>
+            <div className="mock-rule"></div>
+            <div className="mock-day">MONDAY · EXAMPLE TRAINING DAY</div>
+            <div className="mock-card">
+              <div className="mock-kicker">YOUR NEXT ACTION</div>
+              <div className="mock-title">Full Body A</div>
+              <div className="mock-detail">55 min &nbsp;·&nbsp; Gym</div>
+              <div className="mock-button">
+                Start Workout <span aria-hidden="true">↗</span>
+              </div>
+            </div>
+            <div className="mock-direction">
+              <strong>Today&apos;s direction</strong>
+              <p>Keep your repetitions controlled. Focus on consistent technique.</p>
+            </div>
+            <div className="mock-stats">
+              <div>
+                <span>Training</span>
+                <strong>1 / 3</strong>
+                <small>Sessions recorded this week</small>
+              </div>
+              <div>
+                <span>Nutrition</span>
+                <strong>1 / 3</strong>
+                <small>Meal updates recorded today</small>
+              </div>
+            </div>
+            <div className="mock-footer">Today &nbsp; &nbsp; Workouts &nbsp; &nbsp; Nutrition &nbsp; &nbsp; Progress</div>
+            <div className="mock-caption">Illustrative client information · not a live account</div>
+          </div>
+        </div>
+      </section>
+
+      {/* NUTRITION */}
+      <section id="nutrition" style={{ maxWidth: "1200px", margin: "0 auto", padding: "124px 32px 0" }}>
+        <div className="nutrition-grid" style={{ display: "grid", gridTemplateColumns: ".95fr 1.05fr", gap: "80px", alignItems: "start" }}>
+          <div>
+            <div className="kicker">03 / BUILT FOR YOUR REAL LIFE</div>
+            <h2 className="section-title">
+              Nigerian food.<br /><em>Actual structure.</em>
+            </h2>
+          </div>
+          <div style={{ paddingTop: "30px" }}>
+            <p style={{ fontSize: "19px", color: "#292720", lineHeight: 1.6, margin: "0 0 17px" }}>
+              Your meal plan should work with the food you eat—not ask you to live on unfamiliar recipes.
+            </p>
+            <p style={{ margin: 0, color: "#514D44", lineHeight: 1.8 }}>
+              ASCEND builds practical meal plans around familiar Nigerian foods, availability and realistic budgets. Every prescribed portion and approved swap is specified in grams, with its preparation state clearly labelled.
+            </p>
+            <div className="nutrition-tags">
+              <span>Practical protein sources</span>
+              <span>Approved food swaps</span>
+              <span>Gram-based portions</span>
+              <span>Flexible tracking detail</span>
+            </div>
+            <p className="tiny-note">
+              Simple, Structured and Precision are coaching methods—not paid tiers. Sahmi confirms the appropriate tracking approach for each client.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* HOW COACHING WORKS */}
+      <section id="how" style={{ maxWidth: "1200px", margin: "0 auto", padding: "124px 32px 0" }}>
+        <div className="kicker">04 / HOW IT WORKS</div>
+        <h2 className="section-title" style={{ maxWidth: "760px" }}>
+          Start with clarity.<br /><em>Keep moving with support.</em>
+        </h2>
+        <div className="steps-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "20px", marginTop: "45px" }}>
+          <div className="step">
+            <span className="step-index">01</span>
+            <h3>Register once</h3>
+            <p>Answer ten short, goal-first questions. Registration is not a separate coaching application.</p>
+          </div>
+          <div className="step">
+            <span className="step-index">02</span>
+            <h3>Choose your membership</h3>
+            <p>If the practical safety, readiness and capacity checks allow it, you&apos;ll see the recurring offer and payment details.</p>
+          </div>
+          <div className="step">
+            <span className="step-index">03</span>
+            <h3>Build your foundation</h3>
+            <p>Complete your private nine-stage assessment. Sahmi reviews and delivers your plan within five business days of a complete submission.</p>
+          </div>
+          <div className="step">
+            <span className="step-index">04</span>
+            <h3>Follow. Log. Review.</h3>
+            <p>Use the portal day by day. Sahmi personally reviews your progress twice per billing month and adjusts the plan when needed.</p>
+          </div>
+        </div>
+        <div className="how-note">
+          Coaching is limited to 10 active founding clients, with up to three new onboardings each week. If capacity is full, a separate opt-in waitlist may be offered. Safety and guardian requirements can delay coaching activation.
+        </div>
+      </section>
+
+      {/* COACH */}
+      <section
+        id="coach"
+        className="coach-grid"
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "124px 32px 0",
+          display: "grid",
+          gridTemplateColumns: ".8fr 1.2fr",
+          gap: "70px",
+          alignItems: "center",
+        }}
+      >
+        <div className="coach-visual" aria-label="Sahmi El founder portrait area">
+          <div className="coach-monogram">SE</div>
+          <div className="coach-visual-meta">
+            FOUNDER &amp; COACH <span>·</span> ASCEND BY SAHMI EL
+          </div>
+        </div>
+        <div>
+          <div className="kicker">05 / YOUR COACH</div>
+          <h2 className="section-title">Sahmi El</h2>
+          <p style={{ margin: "0 0 14px", color: "#26231E", fontSize: "20px", lineHeight: 1.6 }}>
+            One coach. A deliberately small client group. A programme built around your actual life.
+          </p>
+          <p style={{ margin: 0, color: "#514D44", lineHeight: 1.8 }}>
+            Sahmi reviews your assessment, personally approves your training and nutrition programme, and uses the evidence you log to decide what to maintain, adjust or progress. AI may help organise information, but it does not independently approve your plan.
+          </p>
+          <div className="coach-meta">
+            <span>2 personal reviews / billing month</span>
+            <span>10 founding-client capacity</span>
+          </div>
+        </div>
+      </section>
+
+      {/* EVIDENCE */}
+      <section id="evidence" style={{ maxWidth: "1200px", margin: "0 auto", padding: "124px 32px 0" }}>
+        <div className="kicker">06 / THE EVIDENCE</div>
+        <h2 className="section-title" style={{ maxWidth: "770px" }}>
+          Progress you can see.<br /><em>Decisions you can understand.</em>
+        </h2>
+        <p style={{ maxWidth: "640px", color: "#514D44", margin: "0 0 38px" }}>
+          We won&apos;t fill this space with made-up transformations or anonymous testimonials. ASCEND is designed to make progress traceable—from completed training to coaching decisions based on your real records.
+        </p>
+        <div className="evidence-grid">
+          <div>
+            <span>01 / TRAINING</span>
+            <strong>Log what happened</strong>
+            <p>Weights, repetitions, completed sessions and your own notes.</p>
+          </div>
+          <div>
+            <span>02 / NUTRITION</span>
+            <strong>Record your reality</strong>
+            <p>What you actually ate, including changes and meals you didn&apos;t log.</p>
+          </div>
+          <div>
+            <span>03 / REVIEWS</span>
+            <strong>See what changes</strong>
+            <p>Sahmi&apos;s dated decisions—and the reasons behind them.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* REGISTER / FINAL CTA */}
+      <section id="register" style={{ maxWidth: "1200px", margin: "0 auto", padding: "124px 32px 0" }}>
+        <div
+          className="final-cta"
+          style={{
+            border: "1px solid #C9A24B",
+            padding: "64px 48px",
+            background: "#FBF9F3",
+            display: "grid",
+            gridTemplateColumns: "1.3fr .7fr",
+            gap: "44px",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <div className="kicker">07 / BEGIN WITH STRUCTURE</div>
+            <h2 className="section-title" style={{ marginBottom: "18px" }}>
+              Ready to build<br /><em>with direction?</em>
+            </h2>
+            <p style={{ margin: 0, maxWidth: "630px", color: "#514D44" }}>
+              Register for coaching with a short, one-time questionnaire. Eligible adults can review membership details immediately afterwards; if a place isn&apos;t available, you can choose whether to join the waitlist.
+            </p>
+          </div>
+          <div className="final-cta-action">
+            <button
+              type="button"
+              className="btn btn-dark"
+              onClick={openRegistration}
+            >
+              REGISTER FOR COACHING <span aria-hidden="true">↗</span>
+            </button>
+            <p style={{ margin: "14px 0 0", fontSize: "12px", color: "#716D63" }}>
+              Age and safety safeguards apply. No payment is taken during the registration questions.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer
+        className="footer"
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "37px 32px 56px",
+          display: "flex",
+          gap: "18px",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          alignItems: "center",
+          fontSize: "13px",
+          color: "#706A5F",
+        }}
+      >
+        <div style={{ fontFamily: "'Cinzel', serif", letterSpacing: ".17em", color: "#7A5F1E" }}>
+          ASCEND BY SAHMI EL
+        </div>
+        <div>Personalised online physique coaching · Nigeria-first</div>
+        <div>Training guidance is not medical care.</div>
       </footer>
-    </main>
+
+      {/* INTERACTIVE REGISTRATION MODAL */}
+      <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </div>
   );
 }

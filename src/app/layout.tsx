@@ -6,9 +6,9 @@ import "@/styles/get-divine-mobile-type.css";
 import "@/styles/get-divine-patch-02.css";
 
 export const metadata: Metadata = {
-  title: "ASCEND — Coaching Platform & Client Workspace",
+  title: "ASCEND — Personalised Online Physique Coaching",
   description:
-    "Personalised physique coaching built around structure, progression and longevity. ASCEND by Sahmi El.",
+    "Personalised online coaching for gym beginners. Structured workouts, practical Nigerian nutrition, progress tracking and twice-monthly reviews with Sahmi El.",
   icons: {
     icon: "/favicon.svg",
   },
@@ -17,6 +17,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#F4EFE3",
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({
@@ -25,9 +27,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var m=localStorage.getItem('ascend_public_theme')==='dark'?'dark':'light';document.documentElement.setAttribute('data-theme',m);}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
 }
-
