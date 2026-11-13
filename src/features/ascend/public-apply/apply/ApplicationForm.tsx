@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import AscendIcon from "../components/AscendIcon";
 import SpecularButton from "../components/SpecularButton";
 import {
@@ -269,7 +271,7 @@ export default function ApplicationForm() {
         <p>Thank you, {form.fullName.split(" ")[0]}. ASCEND will review your answers and use the contact details you provided for next steps.</p>
         {safetyReview && <p className="intake-note">Your application includes information that needs a safety or scope review before hard training is considered.</p>}
         <div className="reference-card"><span>Assessment reference</span><strong>{message}</strong></div>
-        <Link className="button button-gold" to="/">Return to ASCEND</Link>
+        <Link className="button button-gold" href="/">Return to ASCEND</Link>
       </section>
     );
   }

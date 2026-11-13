@@ -1,9 +1,12 @@
+"use client";
+
 import { FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { authStore } from "../../services/authStore";
 
 export default function CoachLoginPage() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,7 +19,7 @@ export default function CoachLoginPage() {
         mode: "live",
         coachName: "Sahmi El",
       });
-      navigate("/coach-portal");
+      router.push("/coach-portal");
     } else {
       setError("Please enter your coach credentials.");
     }
@@ -24,7 +27,7 @@ export default function CoachLoginPage() {
 
   return (
     <main className="demo-login">
-      <Link className="wordmark" to="/"><span>ASCEND</span></Link>
+      <Link className="wordmark" href="/"><span>ASCEND</span></Link>
       <section className="demo-login-card unified-login-card" style={{ maxWidth: "460px", margin: "40px auto" }}>
         <form onSubmit={handleCoachLogin} style={{ width: "100%" }}>
           <span className="demo-lock">◆</span>

@@ -1,14 +1,16 @@
-import { Link } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
 import ApplicationForm from "../apply/ApplicationForm";
 
 export default function ApplyPage() {
   return (
     <main className="application-page">
       <header className="application-header">
-        <Link className="wordmark" to="/" aria-label="ASCEND home">
+        <Link className="wordmark" href="/" aria-label="ASCEND home">
           <span>ASCEND</span>
         </Link>
-        <Link className="application-back" to="/">← Return home</Link>
+        <Link className="application-back" href="/">← Return home</Link>
       </header>
       <div className="application-layout">
         <ApplicationForm />

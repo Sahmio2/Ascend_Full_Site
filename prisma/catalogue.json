@@ -1,0 +1,1006 @@
+{
+  "groups": [
+    {
+      "id": "group-1",
+      "name": "The Iron Total",
+      "position": 1
+    },
+    {
+      "id": "group-2",
+      "name": "Forge",
+      "position": 2
+    },
+    {
+      "id": "group-3",
+      "name": "Rise",
+      "position": 3
+    },
+    {
+      "id": "group-4",
+      "name": "Balance",
+      "position": 4
+    },
+    {
+      "id": "group-5",
+      "name": "Beyond",
+      "position": 5
+    },
+    {
+      "id": "group-6",
+      "name": "The Practice",
+      "position": 6
+    },
+    {
+      "id": "group-7",
+      "name": "Mastery",
+      "position": 7
+    },
+    {
+      "id": "group-8",
+      "name": "The Path",
+      "position": 8
+    }
+  ],
+  "definitions": [
+    {
+      "id": "iron-initiate",
+      "groupId": "group-1",
+      "name": "Iron Initiate",
+      "subtitle": "Qualifying squat + bench + deadlift singles",
+      "threshold": 500,
+      "unit": "lb",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "iron-disciple",
+      "groupId": "group-1",
+      "name": "Iron Disciple",
+      "subtitle": "Qualifying squat + bench + deadlift singles",
+      "threshold": 750,
+      "unit": "lb",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "iron-ascendant",
+      "groupId": "group-1",
+      "name": "Iron Ascendant",
+      "subtitle": "Qualifying squat + bench + deadlift singles",
+      "threshold": 1000,
+      "unit": "lb",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "iron-titan",
+      "groupId": "group-1",
+      "name": "Iron Titan",
+      "subtitle": "Qualifying squat + bench + deadlift singles",
+      "threshold": 1250,
+      "unit": "lb",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "iron-colossus",
+      "groupId": "group-1",
+      "name": "Iron Colossus",
+      "subtitle": "Qualifying squat + bench + deadlift singles",
+      "threshold": 1500,
+      "unit": "lb",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "pillar-i",
+      "groupId": "group-2",
+      "name": "Pillar I",
+      "subtitle": "Barbell flat bench press",
+      "threshold": 40,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "pillar-ii",
+      "groupId": "group-2",
+      "name": "Pillar II",
+      "subtitle": "Barbell flat bench press",
+      "threshold": 60,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "pillar-iii",
+      "groupId": "group-2",
+      "name": "Pillar III",
+      "subtitle": "Barbell flat bench press",
+      "threshold": 80,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "pillar-iv",
+      "groupId": "group-2",
+      "name": "Pillar IV",
+      "subtitle": "Barbell flat bench press",
+      "threshold": 100,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "pillar-v",
+      "groupId": "group-2",
+      "name": "Pillar V",
+      "subtitle": "Barbell flat bench press",
+      "threshold": 120,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "pillar-vi",
+      "groupId": "group-2",
+      "name": "Pillar VI",
+      "subtitle": "Barbell flat bench press",
+      "threshold": 140,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "titan-i",
+      "groupId": "group-2",
+      "name": "Titan I",
+      "subtitle": "Barbell back squat",
+      "threshold": 60,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "titan-ii",
+      "groupId": "group-2",
+      "name": "Titan II",
+      "subtitle": "Barbell back squat",
+      "threshold": 80,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "titan-iii",
+      "groupId": "group-2",
+      "name": "Titan III",
+      "subtitle": "Barbell back squat",
+      "threshold": 100,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "titan-iv",
+      "groupId": "group-2",
+      "name": "Titan IV",
+      "subtitle": "Barbell back squat",
+      "threshold": 140,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "titan-v",
+      "groupId": "group-2",
+      "name": "Titan V",
+      "subtitle": "Barbell back squat",
+      "threshold": 180,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "titan-vi",
+      "groupId": "group-2",
+      "name": "Titan VI",
+      "subtitle": "Barbell back squat",
+      "threshold": 200,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "atlas-i",
+      "groupId": "group-2",
+      "name": "Atlas I",
+      "subtitle": "Barbell floor deadlift",
+      "threshold": 60,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "atlas-ii",
+      "groupId": "group-2",
+      "name": "Atlas II",
+      "subtitle": "Barbell floor deadlift",
+      "threshold": 100,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "atlas-iii",
+      "groupId": "group-2",
+      "name": "Atlas III",
+      "subtitle": "Barbell floor deadlift",
+      "threshold": 140,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "atlas-iv",
+      "groupId": "group-2",
+      "name": "Atlas IV",
+      "subtitle": "Barbell floor deadlift",
+      "threshold": 180,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "atlas-v",
+      "groupId": "group-2",
+      "name": "Atlas V",
+      "subtitle": "Barbell floor deadlift",
+      "threshold": 200,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "atlas-vi",
+      "groupId": "group-2",
+      "name": "Atlas VI",
+      "subtitle": "Barbell floor deadlift",
+      "threshold": 220,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "skybearer-i",
+      "groupId": "group-2",
+      "name": "Skybearer I",
+      "subtitle": "Strict standing barbell overhead press",
+      "threshold": 20,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "skybearer-ii",
+      "groupId": "group-2",
+      "name": "Skybearer II",
+      "subtitle": "Strict standing barbell overhead press",
+      "threshold": 30,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "skybearer-iii",
+      "groupId": "group-2",
+      "name": "Skybearer III",
+      "subtitle": "Strict standing barbell overhead press",
+      "threshold": 40,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "skybearer-iv",
+      "groupId": "group-2",
+      "name": "Skybearer IV",
+      "subtitle": "Strict standing barbell overhead press",
+      "threshold": 50,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "skybearer-v",
+      "groupId": "group-2",
+      "name": "Skybearer V",
+      "subtitle": "Strict standing barbell overhead press",
+      "threshold": 60,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "skybearer-vi",
+      "groupId": "group-2",
+      "name": "Skybearer VI",
+      "subtitle": "Strict standing barbell overhead press",
+      "threshold": 80,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "foundation-i",
+      "groupId": "group-2",
+      "name": "Foundation I",
+      "subtitle": "Barbell hip thrust",
+      "threshold": 40,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "foundation-ii",
+      "groupId": "group-2",
+      "name": "Foundation II",
+      "subtitle": "Barbell hip thrust",
+      "threshold": 60,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "foundation-iii",
+      "groupId": "group-2",
+      "name": "Foundation III",
+      "subtitle": "Barbell hip thrust",
+      "threshold": 80,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "foundation-iv",
+      "groupId": "group-2",
+      "name": "Foundation IV",
+      "subtitle": "Barbell hip thrust",
+      "threshold": 100,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "foundation-v",
+      "groupId": "group-2",
+      "name": "Foundation V",
+      "subtitle": "Barbell hip thrust",
+      "threshold": 140,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "foundation-vi",
+      "groupId": "group-2",
+      "name": "Foundation VI",
+      "subtitle": "Barbell hip thrust",
+      "threshold": 180,
+      "unit": "kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "first-ascent",
+      "groupId": "group-3",
+      "name": "First Ascent",
+      "subtitle": "Strict unassisted pull-up",
+      "threshold": 1,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "ascent-ii",
+      "groupId": "group-3",
+      "name": "Ascent II",
+      "subtitle": "Strict unassisted pull-up",
+      "threshold": 5,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "ascent-iii",
+      "groupId": "group-3",
+      "name": "Ascent III",
+      "subtitle": "Strict unassisted pull-up",
+      "threshold": 10,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "ascent-iv",
+      "groupId": "group-3",
+      "name": "Ascent IV",
+      "subtitle": "Strict unassisted pull-up",
+      "threshold": 15,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "ascent-v",
+      "groupId": "group-3",
+      "name": "Ascent V",
+      "subtitle": "Strict unassisted pull-up",
+      "threshold": 20,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "first-stand",
+      "groupId": "group-3",
+      "name": "First Stand",
+      "subtitle": "Standard floor push-up",
+      "threshold": 1,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "resolve-ii",
+      "groupId": "group-3",
+      "name": "Resolve II",
+      "subtitle": "Standard floor push-up",
+      "threshold": 10,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "resolve-iii",
+      "groupId": "group-3",
+      "name": "Resolve III",
+      "subtitle": "Standard floor push-up",
+      "threshold": 20,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "resolve-iv",
+      "groupId": "group-3",
+      "name": "Resolve IV",
+      "subtitle": "Standard floor push-up",
+      "threshold": 30,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "resolve-v",
+      "groupId": "group-3",
+      "name": "Resolve V",
+      "subtitle": "Standard floor push-up",
+      "threshold": 50,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "first-rise",
+      "groupId": "group-3",
+      "name": "First Rise",
+      "subtitle": "Unassisted parallel-bar dip",
+      "threshold": 1,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "rise-ii",
+      "groupId": "group-3",
+      "name": "Rise II",
+      "subtitle": "Unassisted parallel-bar dip",
+      "threshold": 5,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "rise-iii",
+      "groupId": "group-3",
+      "name": "Rise III",
+      "subtitle": "Unassisted parallel-bar dip",
+      "threshold": 10,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "rise-iv",
+      "groupId": "group-3",
+      "name": "Rise IV",
+      "subtitle": "Unassisted parallel-bar dip",
+      "threshold": 15,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "rise-v",
+      "groupId": "group-3",
+      "name": "Rise V",
+      "subtitle": "Unassisted parallel-bar dip",
+      "threshold": 20,
+      "unit": "reps",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "gravity-i",
+      "groupId": "group-3",
+      "name": "Gravity I",
+      "subtitle": "Weighted strict pull-up",
+      "threshold": 5,
+      "unit": "added_kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "gravity-ii",
+      "groupId": "group-3",
+      "name": "Gravity II",
+      "subtitle": "Weighted strict pull-up",
+      "threshold": 10,
+      "unit": "added_kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "gravity-iii",
+      "groupId": "group-3",
+      "name": "Gravity III",
+      "subtitle": "Weighted strict pull-up",
+      "threshold": 20,
+      "unit": "added_kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "gravity-iv",
+      "groupId": "group-3",
+      "name": "Gravity IV",
+      "subtitle": "Weighted strict pull-up",
+      "threshold": 30,
+      "unit": "added_kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "gravity-v",
+      "groupId": "group-3",
+      "name": "Gravity V",
+      "subtitle": "Weighted strict pull-up",
+      "threshold": 40,
+      "unit": "added_kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "defiance-i",
+      "groupId": "group-3",
+      "name": "Defiance I",
+      "subtitle": "Weighted parallel-bar dip",
+      "threshold": 5,
+      "unit": "added_kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "defiance-ii",
+      "groupId": "group-3",
+      "name": "Defiance II",
+      "subtitle": "Weighted parallel-bar dip",
+      "threshold": 10,
+      "unit": "added_kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "defiance-iii",
+      "groupId": "group-3",
+      "name": "Defiance III",
+      "subtitle": "Weighted parallel-bar dip",
+      "threshold": 20,
+      "unit": "added_kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "defiance-iv",
+      "groupId": "group-3",
+      "name": "Defiance IV",
+      "subtitle": "Weighted parallel-bar dip",
+      "threshold": 30,
+      "unit": "added_kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "defiance-v",
+      "groupId": "group-3",
+      "name": "Defiance V",
+      "subtitle": "Weighted parallel-bar dip",
+      "threshold": 40,
+      "unit": "added_kg",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "equal-force-i",
+      "groupId": "group-4",
+      "name": "Equal Force I",
+      "subtitle": "Barbell bench press",
+      "threshold": 0.75,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "equal-force-ii",
+      "groupId": "group-4",
+      "name": "Equal Force II",
+      "subtitle": "Barbell bench press",
+      "threshold": 1,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "equal-force-iii",
+      "groupId": "group-4",
+      "name": "Equal Force III",
+      "subtitle": "Barbell bench press",
+      "threshold": 1.25,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "rooted-strength-i",
+      "groupId": "group-4",
+      "name": "Rooted Strength I",
+      "subtitle": "Barbell back squat",
+      "threshold": 1,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "rooted-strength-ii",
+      "groupId": "group-4",
+      "name": "Rooted Strength II",
+      "subtitle": "Barbell back squat",
+      "threshold": 1.5,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "rooted-strength-iii",
+      "groupId": "group-4",
+      "name": "Rooted Strength III",
+      "subtitle": "Barbell back squat",
+      "threshold": 2,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "earthmover-i",
+      "groupId": "group-4",
+      "name": "Earthmover I",
+      "subtitle": "Barbell deadlift",
+      "threshold": 1,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "earthmover-ii",
+      "groupId": "group-4",
+      "name": "Earthmover II",
+      "subtitle": "Barbell deadlift",
+      "threshold": 1.5,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "earthmover-iii",
+      "groupId": "group-4",
+      "name": "Earthmover III",
+      "subtitle": "Barbell deadlift",
+      "threshold": 2,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "earthmover-iv",
+      "groupId": "group-4",
+      "name": "Earthmover IV",
+      "subtitle": "Barbell deadlift",
+      "threshold": 2.5,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "skyward-i",
+      "groupId": "group-4",
+      "name": "Skyward I",
+      "subtitle": "Strict barbell overhead press",
+      "threshold": 0.5,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "skyward-ii",
+      "groupId": "group-4",
+      "name": "Skyward II",
+      "subtitle": "Strict barbell overhead press",
+      "threshold": 0.75,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "skyward-iii",
+      "groupId": "group-4",
+      "name": "Skyward III",
+      "subtitle": "Strict barbell overhead press",
+      "threshold": 1,
+      "unit": "bodyweight_ratio",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "new-heights",
+      "groupId": "group-5",
+      "name": "New Heights",
+      "subtitle": "New highest qualifying load",
+      "threshold": null,
+      "unit": null,
+      "repeatable": true,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "one-more",
+      "groupId": "group-5",
+      "name": "One More",
+      "subtitle": "New repetition best at the same load",
+      "threshold": null,
+      "unit": null,
+      "repeatable": true,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "five-forged",
+      "groupId": "group-5",
+      "name": "Five Forged",
+      "subtitle": "Highest qualifying five-rep load",
+      "threshold": 5,
+      "unit": "reps",
+      "repeatable": true,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "eight-forged",
+      "groupId": "group-5",
+      "name": "Eight Forged",
+      "subtitle": "Highest qualifying eight-rep load",
+      "threshold": 8,
+      "unit": "reps",
+      "repeatable": true,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "ten-forged",
+      "groupId": "group-5",
+      "name": "Ten Forged",
+      "subtitle": "Highest qualifying ten-rep load",
+      "threshold": 10,
+      "unit": "reps",
+      "repeatable": true,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "twelve-forged",
+      "groupId": "group-5",
+      "name": "Twelve Forged",
+      "subtitle": "Highest qualifying twelve-rep load",
+      "threshold": 12,
+      "unit": "reps",
+      "repeatable": true,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "beyond-the-baseline-i",
+      "groupId": "group-5",
+      "name": "Beyond the Baseline I",
+      "subtitle": "Load improvement at same rep target",
+      "threshold": 10,
+      "unit": "percent",
+      "repeatable": true,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "beyond-the-baseline-ii",
+      "groupId": "group-5",
+      "name": "Beyond the Baseline II",
+      "subtitle": "Load improvement at same rep target",
+      "threshold": 25,
+      "unit": "percent",
+      "repeatable": true,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "beyond-the-baseline-iii",
+      "groupId": "group-5",
+      "name": "Beyond the Baseline III",
+      "subtitle": "Load improvement at same rep target",
+      "threshold": 50,
+      "unit": "percent",
+      "repeatable": true,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "the-beginning",
+      "groupId": "group-6",
+      "name": "The Beginning",
+      "subtitle": "First completed prescribed workout",
+      "threshold": 1,
+      "unit": "sessions",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "a-week-forged",
+      "groupId": "group-6",
+      "name": "A Week Forged",
+      "subtitle": "First full scheduled training week",
+      "threshold": 1,
+      "unit": "scheduled_week",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "roots-i",
+      "groupId": "group-6",
+      "name": "Roots I",
+      "subtitle": "Completed prescribed workouts",
+      "threshold": 10,
+      "unit": "sessions",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "roots-ii",
+      "groupId": "group-6",
+      "name": "Roots II",
+      "subtitle": "Completed prescribed workouts",
+      "threshold": 25,
+      "unit": "sessions",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "roots-iii",
+      "groupId": "group-6",
+      "name": "Roots III",
+      "subtitle": "Completed prescribed workouts",
+      "threshold": 50,
+      "unit": "sessions",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "roots-iv",
+      "groupId": "group-6",
+      "name": "Roots IV",
+      "subtitle": "Completed prescribed workouts",
+      "threshold": 100,
+      "unit": "sessions",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "roots-v",
+      "groupId": "group-6",
+      "name": "Roots V",
+      "subtitle": "Completed prescribed workouts",
+      "threshold": 250,
+      "unit": "sessions",
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "form-established",
+      "groupId": "group-7",
+      "name": "Form Established",
+      "subtitle": "Coach confirms repeatable technique",
+      "threshold": null,
+      "unit": null,
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "the-next-weight",
+      "groupId": "group-7",
+      "name": "The Next Weight",
+      "subtitle": "Coach approves progression criteria",
+      "threshold": null,
+      "unit": null,
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "fuel-in-rhythm",
+      "groupId": "group-7",
+      "name": "Fuel in Rhythm",
+      "subtitle": "Individually agreed nutrition target met",
+      "threshold": null,
+      "unit": null,
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "your-summit",
+      "groupId": "group-7",
+      "name": "Your Summit",
+      "subtitle": "Coach confirms the agreed personal goal",
+      "threshold": null,
+      "unit": null,
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "tame-the-flesh",
+      "groupId": "group-8",
+      "name": "Tame the Flesh",
+      "subtitle": "Phase completion confirmed by coach",
+      "threshold": null,
+      "unit": null,
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "forge-the-form",
+      "groupId": "group-8",
+      "name": "Forge the Form",
+      "subtitle": "Phase completion confirmed by coach",
+      "threshold": null,
+      "unit": null,
+      "repeatable": false,
+      "evaluationEnabled": false
+    },
+    {
+      "id": "ascend",
+      "groupId": "group-8",
+      "name": "Ascend",
+      "subtitle": "Phase completion confirmed by coach",
+      "threshold": null,
+      "unit": null,
+      "repeatable": false,
+      "evaluationEnabled": false
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useMemo, useState } from "react";
 import PortalShell from "../components/PortalShell";
 import { clientPortalAdapter } from "../data/clientPortalAdapter";

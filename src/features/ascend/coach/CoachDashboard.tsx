@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { coachPortalAdapter } from "./coachPortalAdapter";
 
 type View = "overview" | "people" | "applications" | "checkins" | "delivery" | "workouts" | "system";
@@ -283,7 +283,7 @@ export default function CoachDashboard({ coachName, signOutPath }: { coachName: 
   return (
     <main className="coach-app">
       <aside className="coach-sidebar">
-        <Link className="coach-wordmark" to="/"><span>ASCEND</span><small>Coach command</small></Link>
+        <Link className="coach-wordmark" href="/"><span>ASCEND</span><small>Coach command</small></Link>
         <nav aria-label="Coach workspace">
           <p>Workspace</p>
           {navItems.map((item) => (

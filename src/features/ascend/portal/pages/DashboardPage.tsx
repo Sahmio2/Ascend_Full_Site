@@ -1,5 +1,7 @@
+"use client";
+
 import type { CSSProperties } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import PortalShell from "../components/PortalShell";
 import { useClientPortalData } from "../data/useClientPortalData";
 import { nutritionTotals, type PortalScope } from "../data/types";
@@ -32,11 +34,11 @@ export default function DashboardPage({ scope }: { scope: PortalScope }) {
 
       <section className="portal-dashboard-grid">
         <article className="portal-panel portal-nutrition-card">
-          <header><div><p className="portal-kicker">Today’s nutrition</p><h2>Fuel the work.</h2></div><Link to={`${basePath}/nutrition`}>View nutrition <span>→</span></Link></header>
+          <header><div><p className="portal-kicker">Today’s nutrition</p><h2>Fuel the work.</h2></div><Link href={`${basePath}/nutrition`}>View nutrition <span>→</span></Link></header>
           <div className="portal-nutrition-main">
             <div className="portal-calorie-ring" style={ringStyle}><div><strong>{caloriesRemaining}</strong><span>kcal left</span></div></div>
             <div className="portal-nutrition-details">
-              <div className="portal-calorie-action"><span>Daily target</span><strong>{targets.calories.toLocaleString()} kcal</strong><Link to={`${basePath}/nutrition`}>+ Log food</Link></div>
+              <div className="portal-calorie-action"><span>Daily target</span><strong>{targets.calories.toLocaleString()} kcal</strong><Link href={`${basePath}/nutrition`}>+ Log food</Link></div>
               <div className="portal-macro-grid">
                 <div><span><b>Protein</b><small>{totals.protein}g / {targets.protein}g</small></span><ProgressBar value={totals.protein} target={targets.protein} /></div>
                 <div><span><b>Carbs</b><small>{totals.carbs}g / {targets.carbs}g</small></span><ProgressBar value={totals.carbs} target={targets.carbs} /></div>
@@ -49,13 +51,13 @@ export default function DashboardPage({ scope }: { scope: PortalScope }) {
         <article className="portal-panel portal-workout-card">
           <header><div><p className="portal-kicker">Today’s training</p><h2>{nextWorkout.name}</h2></div><span className="portal-status"><i /> Scheduled</span></header>
           <div className="portal-workout-meta"><span><b>{nextWorkout.estimatedMinutes}</b> minutes</span><span><b>{nextWorkout.exercises.length}</b> exercises</span></div>
-          <Link className="portal-primary-action" to={`${basePath}/workout-logger`}>Start today’s workout <span>→</span></Link>
+          <Link className="portal-primary-action" href={`${basePath}/workout-logger`}>Start today’s workout <span>→</span></Link>
         </article>
       </section>
 
       <section className="portal-lower-grid">
         <article className="portal-panel portal-coach-note"><header><p className="portal-kicker">From your coach</p><span>{coachNote?.date}</span></header><blockquote>“{coachNote?.message}”</blockquote><div><span>SE</span><p><strong>{data.client.coachName}</strong><small>Coach feedback</small></p></div></article>
-        <article className="portal-panel portal-checkin-card"><p className="portal-kicker">Next check-in</p><div><strong>{checkIn.getDate()}</strong><span>{checkIn.toLocaleDateString("en", { month: "long" })}<br /><small>{checkIn.toLocaleDateString("en", { weekday: "long" })}</small></span></div><p>Update your weight, photos, recovery and weekly reflection before submission.</p><Link to={`${basePath}/progress`}>Prepare check-in <span>→</span></Link></article>
+        <article className="portal-panel portal-checkin-card"><p className="portal-kicker">Next check-in</p><div><strong>{checkIn.getDate()}</strong><span>{checkIn.toLocaleDateString("en", { month: "long" })}<br /><small>{checkIn.toLocaleDateString("en", { weekday: "long" })}</small></span></div><p>Update your weight, photos, recovery and weekly reflection before submission.</p><Link href={`${basePath}/progress`}>Prepare check-in <span>→</span></Link></article>
       </section>
     </PortalShell>
   );

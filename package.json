@@ -1,35 +1,45 @@
 {
-  "name": "ascend-coaching-portal",
+  "name": "ascend-full-stack",
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "check": "prisma validate && prisma generate && tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
     "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push",
-    "prisma:migrate": "prisma migrate dev"
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "node --import tsx prisma/seed.ts",
+    "dev:session": "node --import tsx scripts/dev-session.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.2.0",
+    "@prisma/adapter-mariadb": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "@tailwindcss/postcss": "^4.0.0",
+    "dotenv": "^17.2.0",
     "fflate": "^0.8.3",
+    "next": "16.4.6",
     "ogl": "^1.0.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.5"
+    "tailwindcss": "^4.0.0",
+    "zod": "^4.0.0",
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^4.3.4",
     "postcss": "^8.4.49",
-    "prisma": "^6.2.0",
-    "tailwindcss": "^4.0.0",
-    "typescript": "^5.7.0",
-    "vite": "^6.1.0"
+    "prisma": "7.10.1",
+    "tsx": "^4.20.0",
+    "typescript": "5.7.3"
   }
 }

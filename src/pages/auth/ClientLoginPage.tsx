@@ -1,9 +1,12 @@
+"use client";
+
 import { FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { authStore } from "../../services/authStore";
 
 export default function ClientLoginPage() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +20,7 @@ export default function ClientLoginPage() {
         clientEmail: email,
         clientName: email.split("@")[0],
       });
-      navigate("/client/dashboard");
+      router.push("/client/dashboard");
     }
   }
 
@@ -30,12 +33,12 @@ export default function ClientLoginPage() {
       clientEmail: "demo@ascend.co",
       clientName: "Amara Okeke",
     });
-    window.setTimeout(() => navigate("/demo/dashboard"), 450);
+    window.setTimeout(() => router.push("/demo/dashboard"), 450);
   }
 
   return (
     <main className="demo-login">
-      <Link className="wordmark" to="/"><span>ASCEND</span></Link>
+      <Link className="wordmark" href="/"><span>ASCEND</span></Link>
       <section className="demo-login-card unified-login-card">
         <div className="demo-login-copy">
           <p className="eyebrow">ASCEND by Sahmi El</p>
@@ -63,7 +66,7 @@ export default function ClientLoginPage() {
           </form>
 
           <small className="client-signin-note" style={{ marginTop: "12px", display: "block" }}>Use the email connected to your ASCEND client record.</small>
-          <ul><li>BMI & energy calculators</li><li>Training and nutrition documents</li><li>Programme-loaded workout logging</li><li>Previous weights and coach feedback</li></ul>
+          <ul><li>BMI &amp; energy calculators</li><li>Training and nutrition documents</li><li>Programme-loaded workout logging</li><li>Previous weights and coach feedback</li></ul>
         </div>
         <form onSubmit={handleDemoLogin}>
           <span className="demo-lock">◆</span>

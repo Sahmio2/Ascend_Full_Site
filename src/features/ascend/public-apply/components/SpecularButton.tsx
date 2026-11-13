@@ -1,3 +1,5 @@
+"use client";
+
 import {
   useEffect,
   useRef,
@@ -7,7 +9,7 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Color, Mesh, Program, Renderer, Triangle } from "ogl";
 import "./SpecularButton.css";
 
@@ -397,7 +399,7 @@ export function SpecularLink({
   return (
     <Link
       ref={linkRef}
-      to={href}
+      href={href}
       onClick={onClick}
       aria-label={ariaLabel}
       className={surfaceClass(size, className)}

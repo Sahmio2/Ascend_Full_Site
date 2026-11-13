@@ -1,160 +1,113 @@
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+}
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
 }
-
-generator client {
-  provider = "prisma-client-js"
-}
-
-enum PersonKind {
-  LEAD
+enum Role {
   CLIENT
   COACH
-  ADMIN
 }
-
-enum PersonStatus {
-  NEW
-  REVIEWING
-  ACTIVE
-  PAUSED
-  ARCHIVED
+enum Metric {
+  BODYWEIGHT_KG
+  WAIST_CM
 }
-
-model Person {
-  id                  String             @id @default(uuid())
-  kind                PersonKind         @default(LEAD)
-  status              PersonStatus       @default(NEW)
-  fullName            String             @map("full_name")
-  email               String             @unique
-  whatsapp            String             @default("")
-  cityCountry         String             @default("") @map("city_country")
-  age                 String             @default("")
-  height              String             @default("")
-  bodyweight          String             @default("")
-  primaryGoal         String             @default("") @map("primary_goal")
-  goalDetail          String             @default("") @db.Text @map("goal_detail")
-  goalUrgency         Int                @default(5) @map("goal_urgency")
-  trainingAge         String             @default("") @map("training_age")
-  preferredFrequency  String             @default("") @map("preferred_frequency")
-  sessionLength       String             @default("") @map("session_length")
-  accessType          String             @default("") @map("access_type")
-  daysAvailable       String             @default("[]") @map("days_available")
-  equipment           String             @default("[]")
-  painContext         String             @default("") @db.Text @map("pain_context")
-  consistencyBarrier  String             @default("") @db.Text @map("consistency_barrier")
-  trackingReadiness   String             @default("[]") @map("tracking_readiness")
-  phase               String             @default("Unassigned")
-  trainingLevel       String             @default("To assess") @map("training_level")
-  nextCheckIn         String             @default("") @map("next_check_in")
-  coachNote           String             @default("") @db.Text @map("coach_note")
-  createdAt           DateTime           @default(now()) @map("created_at")
-  updatedAt           DateTime           @updatedAt @map("updated_at")
-
-  checkIns            CheckIn[]
-  workoutSessions     WorkoutSession[]
-  foodEntries         FoodEntry[]
-  progressEntries     ProgressEntry[]
-  programAssignments  ProgramAssignment[]
-
-  @@index([status])
-  @@index([kind])
-  @@map("people")
+model User {
+  id String @id @default(cuid())
+  email String @unique @db.VarChar(191)
+  role Role @default(CLIENT)
+  timeZone String @default("Africa/Lagos") @db.VarChar(64)
+  createdAt DateTime @default(now())
+  sessions Session[]
+  observations Observation[]
+  workouts Workout[]
+  awards AchievementAward[]
 }
-
-model CheckIn {
-  id                 String   @id @default(uuid())
-  personId           String   @map("person_id")
-  weekOf             String   @map("week_of")
-  workoutsCompleted  Int      @default(0) @map("workouts_completed")
-  workoutsPlanned    Int      @default(0) @map("workouts_planned")
-  averageBodyweight  String   @default("") @map("average_bodyweight")
-  proteinDays        Int      @default(0) @map("protein_days")
-  averageSleep       String   @default("") @map("average_sleep")
-  recovery           String   @default("Normal")
-  painSoreness       String   @default("") @map("pain_soreness")
-  coachResponse      String   @default("") @db.Text @map("coach_response")
-  createdAt          DateTime @default(now()) @map("created_at")
-
-  person             Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
-
-  @@index([personId])
-  @@map("check_ins")
+model Session {
+  tokenHash String @id @db.Char(64)
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  @@index([userId,expiresAt])
 }
-
-model WorkoutSession {
-  id               String   @id @default(uuid())
-  personId         String   @map("person_id")
-  assignmentId     String   @default("") @map("assignment_id")
-  workoutDate      String   @map("workout_date")
-  workoutName      String   @map("workout_name")
-  completionStatus String   @default("planned") @map("completion_status")
-  durationMinutes  Int      @default(0) @map("duration_minutes")
-  effortRating     Int      @default(0) @map("effort_rating")
-  athleteNote      String   @default("") @db.Text @map("athlete_note")
-  coachFeedback    String   @default("") @db.Text @map("coach_feedback")
-  exerciseLog      String   @default("[]") @db.Text @map("exercise_log")
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
-
-  person           Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
-
-  @@index([personId, workoutDate])
-  @@map("workout_sessions")
+model Observation {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Restrict)
+  metric Metric
+  value Decimal @db.Decimal(8,3)
+  measuredAt DateTime @db.DateTime(3)
+  createdAt DateTime @default(now())
+  voidedAt DateTime?
+  requestId String @db.Char(36)
+  payloadHash String @db.Char(64)
+  @@unique([userId,requestId])
+  @@index([userId,metric,measuredAt,id])
 }
-
-model FoodEntry {
-  id           String   @id @default(uuid())
-  personId     String   @map("person_id")
-  entryDate    String   @map("entry_date")
-  mealType     String   @map("meal_type")
-  foodName     String   @map("food_name")
-  calories     Int      @default(0)
-  proteinGrams Int      @default(0) @map("protein_grams")
-  carbsGrams   Int      @default(0) @map("carbs_grams")
-  fatGrams     Int      @default(0) @map("fat_grams")
-  createdAt    DateTime @default(now()) @map("created_at")
-
-  person       Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
-
-  @@index([personId, entryDate])
-  @@map("food_entries")
+model Exercise {
+  id String @id
+  name String
+  variation String
+  equipment String
+  loadConvention String // TOTAL, PER_HAND, ADDED or ASSISTANCE; never infer across conventions.
+  sets WorkoutSet[]
 }
-
-model ProgressEntry {
-  id          String   @id @default(uuid())
-  personId    String   @map("person_id")
-  recordedOn  String   @map("recorded_on")
-  bodyweight  String   @default("")
-  waist       String   @default("")
-  chest       String   @default("")
-  hips        String   @default("")
-  note        String   @default("") @db.Text
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  person      Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
-
-  @@index([personId, recordedOn])
-  @@map("progress_entries")
+model Workout {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Restrict)
+  prescriptionId String? // Stable scheduled-session ID, retained through rescheduling.
+  scheduledAt DateTime?
+  completedAt DateTime?
+  sets WorkoutSet[]
+  @@unique([userId,prescriptionId])
+  @@index([userId,completedAt])
 }
-
-model ProgramAssignment {
-  id                  String   @id @default(uuid())
-  personId            String   @map("person_id")
-  title               String
-  phase               String   @default("Taming the Flesh")
-  daysPerWeek         Int      @default(3) @map("days_per_week")
-  status              String   @default("draft")
-  startsOn            String   @default("") @map("starts_on")
-  endsOn              String   @default("") @map("ends_on")
-  coachInstructions   String   @default("") @db.Text @map("coach_instructions")
-  athleteInstructions String   @default("") @db.Text @map("athlete_instructions")
-  createdAt           DateTime @default(now()) @map("created_at")
-  updatedAt           DateTime @updatedAt @map("updated_at")
-
-  person              Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
-
-  @@index([personId])
-  @@map("program_assignments")
+model WorkoutSet {
+  id String @id @default(cuid())
+  workoutId String
+  workout Workout @relation(fields:[workoutId],references:[id],onDelete:Restrict)
+  exerciseId String
+  exercise Exercise @relation(fields:[exerciseId],references:[id],onDelete:Restrict)
+  position Int
+  loadKg Decimal @db.Decimal(9,4)
+  reps Int
+  isWarmup Boolean @default(false)
+  isEstimated Boolean @default(false)
+  performedAt DateTime
+  @@unique([workoutId,position])
+}
+model AchievementGroup {
+  id String @id
+  name String @unique
+  position Int
+  definitions AchievementDefinition[]
+}
+model AchievementDefinition {
+  id String @id
+  groupId String
+  group AchievementGroup @relation(fields:[groupId],references:[id])
+  name String
+  subtitle String
+  threshold Decimal? @db.Decimal(14,8)
+  unit String?
+  ruleVersion Int @default(1)
+  evaluationEnabled Boolean @default(false)
+  repeatable Boolean @default(false)
+  awards AchievementAward[]
+}
+model AchievementAward {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Restrict)
+  definitionId String
+  definition AchievementDefinition @relation(fields:[definitionId],references:[id])
+  eventKey String @db.VarChar(191) // 'once' for one-time badges; source-event ID for repeatable records.
+  evidence Json
+  ruleVersion Int
+  awardedAt DateTime @default(now())
+  confirmedById String? // Future approval service must verify assigned coach and append audit evidence.
+  @@unique([userId,definitionId,eventKey])
 }
