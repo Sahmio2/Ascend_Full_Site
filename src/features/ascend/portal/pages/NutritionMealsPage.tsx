@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import ModernClientBottomNav from "../components/ModernClientBottomNav";
+import { useClientPortalData } from "../data/useClientPortalData";
+import { clientPortalAdapter } from "../data/clientPortalAdapter";
 import "@/styles/ascend-nutrition-meals.css";
 import type { PortalScope } from "../data/types";
 
@@ -95,6 +97,13 @@ export interface NutritionMealsPageProps {
 }
 
 export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }: NutritionMealsPageProps) {
+  const portalData = useClientPortalData(scope);
+  const TARGETS = {
+    kcal: portalData.nutrition.targets.calories,
+    protein: portalData.nutrition.targets.protein,
+    carbs: portalData.nutrition.targets.carbs,
+    fat: portalData.nutrition.targets.fats,
+  };
   const [view, setView] = useState<"today" | "add" | "form" | "weekly" | "shopping">("today");
   const [expanded, setExpanded] = useState<string | null>("lunch");
   const [log, setLog] = useState<Record<string, { kind: "planned" | "skipped" | "changed"; note?: string }>>({
@@ -140,7 +149,7 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
     if (!entry) return <span className="status">Not recorded</span>;
     if (entry.kind === "planned") return <span className="status done">✓ Recorded</span>;
     if (entry.kind === "skipped") return <span className="status skipped">— Skipped</span>;
-    return <span className="status changed">Changed (demo)</span>;
+    return <span className="status changed">Changed</span>;
   };
 
   const recordPlanned = (mealId: string) => {
@@ -184,6 +193,19 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
       setExtras([...extras, { name: `${found.name} (${g} g)`, amount: `${g} g`, kcal: computedKcal }]);
       showToast(`Added: ${found.name} (${g} g) · ${computedKcal} kcal`);
     }
+
+    try {
+      clientPortalAdapter.addFood(scope, {
+        name: `${found.name} (${g} g)`,
+        calories: computedKcal,
+        protein: Math.round((found.p100 * g) / 100),
+        carbs: Math.round((found.c100 * g) / 100),
+        fats: Math.round((found.f100 * g) / 100),
+      });
+    } catch (e) {
+      console.error("Failed to save food:", e);
+    }
+
     setView("today");
   };
 

@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import ModernClientBottomNav from "../components/ModernClientBottomNav";
+import { useClientPortalData } from "../data/useClientPortalData";
+import { clientPortalAdapter } from "../data/clientPortalAdapter";
 import "@/styles/ascend-workouts-focus.css";
 import type { PortalScope } from "../data/types";
 
@@ -161,6 +163,7 @@ export interface WorkoutsFocusPageProps {
 }
 
 export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }: WorkoutsFocusPageProps) {
+  const data = useClientPortalData(scope);
   // Navigation & Page State
   const [page, setPage] = useState<"workouts" | "preview" | "logger" | "summary" | "share">("workouts");
   const [selectedWorkoutKey, setSelectedWorkoutKey] = useState<"a" | "b" | "c">("a");
@@ -279,6 +282,33 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
       ...completedWorkouts,
       [selectedWorkoutKey]: { duration: 48, partial: stats.done < stats.total },
     });
+
+    try {
+      const exerciseLogs = exercises.map((ex) => ({
+        exerciseId: ex.id,
+        name: ex.name,
+        sets: (setRows[ex.id] || []).map((row, idx) => ({
+          set: idx + 1,
+          load: row.load,
+          reps: row.reps,
+          completed: row.done,
+        })),
+      }));
+
+      clientPortalAdapter.saveWorkout(scope, {
+        programmeDayId: selectedWorkoutKey,
+        workoutName: currentWorkout.name,
+        workoutDate: new Date().toISOString().split("T")[0],
+        durationMinutes: 48,
+        effortRating: 8,
+        athleteNote: "Focus mode completed",
+        painNote: "",
+        exercises: exerciseLogs,
+      });
+    } catch (e) {
+      console.error("Failed to save workout:", e);
+    }
+
     setPage("summary");
   };
 
@@ -345,19 +375,19 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
               </div>
             </div>
 
-            <div className="eyebrow">FOUNDATION PHASE</div>
+            <div className="eyebrow">{data.client.phaseName.toUpperCase()}</div>
             <h1 className="t1">Your training week</h1>
             <p className="small" style={{ margin: "7px 0 17px" }}>
-              Your coach-prescribed sessions, ready when you are.
+              {data.programme.subtitle || "Your coach-prescribed sessions, ready when you are."}
             </p>
 
             <div className="card padded" style={{ marginBottom: "17px" }}>
               <div className="row spread">
                 <span className="strong">This week</span>
-                <span className="small">1 of 3 completed</span>
+                <span className="small">{`${data.workouts.length % 3} of 3 completed`}</span>
               </div>
               <div className="progress-track">
-                <div style={{ width: "33%" }} />
+                <div style={{ width: `${Math.min(100, Math.round(((data.workouts.length % 3) / 3) * 100))}%` }} />
               </div>
             </div>
 

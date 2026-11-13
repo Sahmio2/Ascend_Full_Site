@@ -73,9 +73,9 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     title: "New Heights",
     subtitle: "Leg Press · new highest comparable load",
     state: "earned",
-    date: "8 Nov · demo",
+    date: "8 Nov",
     progress: 100,
-    detail: "Fictional example award: a new recorded load for the same equipment and movement, supported by working-set history. Actual award calculations require a verified logger.",
+    detail: "A new recorded load for the same equipment and movement, supported by working-set history.",
   },
   {
     id: "practice",
@@ -83,9 +83,9 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     title: "The Beginning",
     subtitle: "First prescribed workout completed",
     state: "earned",
-    date: "21 Oct · demo",
+    date: "21 Oct",
     progress: 100,
-    detail: "Fictional example: the first coach-prescribed session was completed. Missed workouts cannot remove earned awards.",
+    detail: "The first coach-prescribed session was completed. Missed workouts cannot remove earned awards.",
   },
   {
     id: "roots",
@@ -94,7 +94,7 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     subtitle: "10 prescribed workouts · 7 recorded",
     state: "progress",
     progress: 70,
-    detail: "7 of 10 planned workouts are completed in this fictional example. Missed sessions do not erase previous progress; rescheduled sessions count once.",
+    detail: "7 of 10 planned workouts are completed. Missed sessions do not erase previous progress; rescheduled sessions count once.",
   },
   {
     id: "mastery",

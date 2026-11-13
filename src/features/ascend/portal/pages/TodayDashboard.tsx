@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ModernClientBottomNav from "../components/ModernClientBottomNav";
+import { useClientPortalData } from "../data/useClientPortalData";
+import { nutritionTotals, type PortalScope } from "../data/types";
 import "@/styles/ascend-today-dashboard.css";
-import type { PortalScope } from "../data/types";
 
 // SVG icons matching the approved prototype
 const SVGS: Record<string, string> = {
@@ -38,108 +39,27 @@ function TodayIcon({ name, className = "svg" }: { name: string; className?: stri
   );
 }
 
-// Scenarios definition
-type ScenarioKey = "training" | "rest" | "checkin" | "missed" | "building" | "assessment" | "safety";
-
-interface ScenarioConfig {
-  day: string;
-  lead: string;
-  name: string;
-  meta: string;
-  cta: string;
-  direction: string;
-  target: "workout" | "direction" | "checkin" | "building" | "assessment" | "safety";
-}
-
-const SCENARIOS: Record<ScenarioKey, ScenarioConfig> = {
-  training: {
-    day: "WEDNESDAY · TRAINING DAY",
-    lead: "Today’s session is ready",
-    name: "Full Body B",
-    meta: "50 min · Gym",
-    cta: "Start Workout",
-    direction: "Focus on controlled repetitions. Keep your technique consistent throughout the session.",
-    target: "workout",
-  },
-  rest: {
-    day: "TUESDAY · RECOVERY DAY",
-    lead: "Recovery is part of the work",
-    name: "Rest & Recovery",
-    meta: "Rest day · No gym session",
-    cta: "View Today’s Direction",
-    direction: "Follow only the recovery steps prescribed in your active programme. Your nutrition plan remains available.",
-    target: "direction",
-  },
-  checkin: {
-    day: "FRIDAY · COACHING CHECK-IN",
-    lead: "Your next adjustment begins here",
-    name: "Midpoint Check-In",
-    meta: "Scheduled coaching review",
-    cta: "Complete Check-In",
-    direction: "Record the week as it happened. Sahmi will use your check-in and saved logs during your scheduled review.",
-    target: "checkin",
-  },
-  missed: {
-    day: "THURSDAY · TRAINING DAY",
-    lead: "Today’s session is ready",
-    name: "Full Body C",
-    meta: "55 min · Gym",
-    cta: "Start Workout",
-    direction: "Follow today’s approved session. A previously missed workout remains missed unless you choose to reschedule it.",
-    target: "workout",
-  },
-  building: {
-    day: "PROGRAMME PREPARATION",
-    lead: "Your direction is taking shape",
-    name: "Programme Under Review",
-    meta: "After complete assessment · Up to 5 business days",
-    cta: "View Review Status",
-    direction: "Your training and nutrition plans are being prepared. They will appear when approved.",
-    target: "building",
-  },
-  assessment: {
-    day: "YOUR STARTING POINT",
-    lead: "Complete your foundation",
-    name: "Private Assessment",
-    meta: "Your answers are saved as you progress",
-    cta: "Continue Assessment",
-    direction: "Complete the remaining assessment so Sahmi can prepare your individual plan.",
-    target: "assessment",
-  },
-  safety: {
-    day: "PERSONAL REVIEW REQUIRED",
-    lead: "A personal review is required",
-    name: "Review Required",
-    meta: "Training action unavailable during review",
-    cta: "View Required Action",
-    direction: "An individual safety review is needed before affected coaching instructions can be used.",
-    target: "safety",
-  },
-};
-
-const MEALS = [
-  { id: "breakfast", name: "Breakfast", food: "Oats and boiled eggs", portion: "Oats 60 g (dry) · Eggs 100 g (boiled)" },
-  { id: "lunch", name: "Lunch", food: "Rice and fish", portion: "Rice 180 g (cooked) · Fish 130 g (cooked)" },
-  { id: "dinner", name: "Dinner", food: "Eba and egusi soup", portion: "Eba 200 g (prepared) · Egusi 160 g (finished recipe)" },
-];
-
 export interface TodayDashboardProps {
   scope?: PortalScope;
-  onSwitchToClassic?: () => void;
 }
 
-export default function TodayDashboard({ scope = "live", onSwitchToClassic }: TodayDashboardProps) {
+export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) {
   const router = useRouter();
   const basePath = scope === "demo" ? "/demo" : "/client";
+  const data = useClientPortalData(scope);
+  const totals = nutritionTotals(data);
+  const targets = data.nutrition.targets;
 
-  // Navigation & Simulation State
-  type ScreenTab = "today" | "workouts" | "nutrition" | "progress";
-  const [activeTab, setActiveTab] = useState<ScreenTab>("today");
-  const [scenario, setScenario] = useState<ScenarioKey>("training");
-  const [mealLogs, setMealLogs] = useState<Record<string, "as-planned" | "changed" | "skipped">>({
-    breakfast: "as-planned",
-  });
-  const [workoutStatus, setWorkoutStatus] = useState<"scheduled" | "active">("scheduled");
+  // Next workout calculation from active programme
+  const days = data.programme.days;
+  const nextWorkoutIndex = data.workouts.length % (days.length || 1);
+  const nextWorkout = days[nextWorkoutIndex] || days[0];
+
+  // Current formatted date
+  const now = new Date();
+  const dayName = now.toLocaleDateString("en-NG", { weekday: "long" }).toUpperCase();
+  const dateFormatted = now.toLocaleDateString("en-NG", { day: "numeric", month: "short" }).toUpperCase();
+  const todayLabel = `${dayName}, ${dateFormatted} · ${nextWorkout ? "TRAINING DAY" : "REST & RECOVERY"}`;
 
   // Modal State
   const [modalData, setModalData] = useState<{
@@ -158,426 +78,145 @@ export default function TodayDashboard({ scope = "live", onSwitchToClassic }: To
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const s = SCENARIOS[scenario];
-  const hasPlan = !["building", "assessment", "safety"].includes(scenario);
-  const recordedMealsCount = Object.values(mealLogs).filter(Boolean).length;
-
-  const handleMealAction = (mealId: string, action: "as-planned" | "changed" | "skipped" | "clear") => {
-    if (action === "clear") {
-      const copy = { ...mealLogs };
-      delete copy[mealId];
-      setMealLogs(copy);
-    } else if (action === "changed") {
-      setMealLogs({ ...mealLogs, [mealId]: "changed" });
-      setModalData({
-        title: "Changed meal · demo",
-        body: "A production logger records actual foods, grams and preparation states. No macros are invented here.",
-        actionLabel: "Open Nigerian Meal Plan",
-        actionHref: `${basePath}/nutrition`,
-      });
-    } else {
-      setMealLogs({ ...mealLogs, [mealId]: action });
-    }
-  };
-
-  const handleMainAction = () => {
-    const target = s.target;
-    if (target === "workout") {
-      router.push(`${basePath}/workout-logger`);
-    } else if (target === "direction") {
-      setModalData({
-        title: "Today’s direction",
-        body: "Prescribed recovery guidance appears here. No unverified advice is generated automatically.",
-      });
-    } else if (target === "checkin") {
-      router.push(`${basePath}/progress`);
-    } else if (target === "building") {
-      setModalData({
-        title: "Programme review status",
-        body: "Your assessment answers have been received. Sahmi prepares your plan within 5 business days after full submission.",
-      });
-    } else if (target === "assessment") {
-      setModalData({
-        title: "Continue your assessment",
-        body: "Complete your 9-stage intake foundation so your personalised coaching track can be calibrated.",
-        actionLabel: "Open 9-Stage Assessment",
-        actionHref: "/apply",
-      });
-    } else {
-      setModalData({
-        title: "Safety review",
-        body: "An individual safety review is required before affected coaching instructions can be activated. Sahmi reviews clinical flags personally.",
-      });
-    }
-  };
+  const latestCoachFeedback = data.coachFeedback[0];
 
   return (
     <div className="today-dashboard-root">
       <main className="workspace">
-        {/* Top interactive simulator testbar */}
-        <div className="testbar">
-          <div>
-            <span>INTERACTIVE DEMO <span className="demoPill">· Fictional client</span></span>
-            {onSwitchToClassic && (
-              <button
-                onClick={onSwitchToClassic}
-                style={{
-                  display: "block",
-                  background: "transparent",
-                  border: "none",
-                  color: "var(--gold)",
-                  fontSize: "11px",
-                  padding: "2px 0 0 0",
-                  cursor: "pointer",
-                  textAlign: "left",
-                }}
-              >
-                Switch to Classic Portal Grid →
-              </button>
-            )}
-          </div>
-          <select
-            id="scenario"
-            aria-label="Choose Today dashboard scenario"
-            value={scenario}
-            onChange={(e) => {
-              setScenario(e.target.value as ScenarioKey);
-              setActiveTab("today");
-            }}
-          >
-            <option value="training">Training day</option>
-            <option value="rest">Recovery day</option>
-            <option value="checkin">Check-in due</option>
-            <option value="missed">Previous workout missed</option>
-            <option value="building">Programme being built</option>
-            <option value="assessment">Assessment incomplete</option>
-            <option value="safety">Safety review hold</option>
-          </select>
-        </div>
-
-        {/* Mobile/Tablet Phone Shell */}
+        {/* Phone Shell */}
         <div className="shell">
           <div className="screen" id="screen">
             {/* Header Brand Bar */}
             <header className="brand">
               <div>
                 <div className="brandname">ASCEND</div>
-                <div className="eyebrow">YOUR DAILY DIRECTION</div>
+                <div className="eyebrow">{data.client.phaseName.toUpperCase()} · DAILY DIRECTION</div>
               </div>
               <div className="headBtns">
                 <button
                   className="iconBtn"
                   onClick={() =>
                     setModalData({
-                      title: "Coach inbox",
-                      body: "Normal questions are queued for the next scheduled review. Dated coach updates and priority tickets are handled here.",
+                      title: `Message from ${data.client.coachName}`,
+                      body:
+                        latestCoachFeedback?.message ||
+                        "Your programme is active. Execute each session with controlled tempo and log your working sets in the logger.",
                     })
                   }
                   aria-label="Coach inbox"
+                  title="Coach inbox"
                 >
                   <TodayIcon name="msg" />
                 </button>
-                <button
+                <Link
+                  href="/account"
                   className="iconBtn"
-                  onClick={() =>
-                    setModalData({
-                      title: "Client profile",
-                      body: "Account settings, membership standing, payment history and coaching track details are managed in Account Overview.",
-                      actionLabel: "Open Account Overview",
-                      actionHref: "/account",
-                    })
-                  }
-                  aria-label="Profile"
+                  aria-label="Profile and account"
+                  title="Profile and account"
+                  style={{ textDecoration: "none" }}
                 >
                   <TodayIcon name="user" />
-                </button>
+                </Link>
               </div>
             </header>
 
-            {/* TAB 1: TODAY */}
-            {activeTab === "today" && (
-              <>
-                <div className="daylabel">{s.day}</div>
+            {/* Date Tag */}
+            <div className="daylabel">{todayLabel}</div>
 
-                <section className="primary">
-                  <div className="kicker">YOUR NEXT ACTION</div>
-                  <h1>{s.name}</h1>
-                  <div className="meta">{s.meta}</div>
-                  <button className="primaryAction" onClick={handleMainAction}>
-                    <span>{s.cta}</span>
-                    <TodayIcon name="right" />
-                  </button>
-                </section>
+            {/* Next Action Primary Card */}
+            <section className="primary">
+              <div className="kicker">YOUR NEXT ACTION</div>
+              <h1>{nextWorkout ? nextWorkout.name : "Active Recovery & Mobility"}</h1>
+              <div className="meta">
+                {nextWorkout
+                  ? `${nextWorkout.estimatedMinutes} · Gym · ${nextWorkout.exercises.length} prescribed exercises`
+                  : "Prescribed hydration, mobility & nutrition recovery"}
+              </div>
+              <button
+                className="primaryAction"
+                onClick={() => router.push(`${basePath}/workout-logger`)}
+              >
+                <span>{nextWorkout ? "Start Workout" : "Review Programme"}</span>
+                <TodayIcon name="right" />
+              </button>
+            </section>
 
-                <section className="direction">
-                  <h2>Today&apos;s direction</h2>
-                  <p>{s.direction}</p>
-                </section>
+            {/* Today's Direction */}
+            <section className="direction">
+              <h2>Today&apos;s direction</h2>
+              <p>
+                {data.programme.athleteDirection ||
+                  "Execute each repetition with controlled tempo. Focus on progressive overload, log each working set, and observe your prescribed rest intervals."}
+              </p>
+            </section>
 
-                <div className="divider" />
+            <div className="divider" />
 
-                <section>
-                  <h2 className="sectionHeader">Your day at a glance</h2>
-                  <div className="statgrid">
-                    <button
-                      className="stat"
-                      onClick={() => router.push(`${basePath}/workout-logger`)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <span className="statTitle">
-                        <TodayIcon name="dumb" /> Training
-                      </span>
-                      <strong>{hasPlan ? "1 / 3" : "—"}</strong>
-                      <div className="small">
-                        {hasPlan ? "Workouts completed this week" : "Plan not yet active"}
-                      </div>
-                      {hasPlan && (
-                        <div className="next">Open Workout Logger →</div>
-                      )}
-                    </button>
-
-                    <button
-                      className="stat"
-                      onClick={() => router.push(`${basePath}/nutrition`)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <span className="statTitle">
-                        <TodayIcon name="food" /> Nutrition
-                      </span>
-                      <strong>{hasPlan ? `${recordedMealsCount} / ${MEALS.length}` : "—"}</strong>
-                      <div className="small">
-                        {hasPlan ? "Meal updates recorded today" : "Meal plan not yet active"}
-                      </div>
-                      {hasPlan && (
-                        <div className="next">Next planned: Lunch · View meals →</div>
-                      )}
-                    </button>
-                  </div>
-                </section>
-
-                <section
-                  className="under"
-                  onClick={() => router.push(`${basePath}/progress`)}
+            {/* Day at a Glance Stats */}
+            <section>
+              <h2 className="sectionHeader">Your day at a glance</h2>
+              <div className="statgrid">
+                <button
+                  className="stat"
+                  onClick={() => router.push(`${basePath}/workout-logger`)}
                   style={{ cursor: "pointer" }}
                 >
-                  <div>
-                    <strong>Next coaching check-in</strong>
-                    <small>{hasPlan ? "Friday · Example schedule (Tap for Progress)" : "Shown after your programme is active"}</small>
-                  </div>
-                  <span className="right">
-                    <TodayIcon name="calendar" />
+                  <span className="statTitle">
+                    <TodayIcon name="dumb" /> Training
                   </span>
-                </section>
+                  <strong>{`${data.workouts.length % (days.length || 3)} / ${days.length || 3}`}</strong>
+                  <div className="small">Workouts completed this week</div>
+                  {nextWorkout && (
+                    <div className="next">{nextWorkout.name} up next →</div>
+                  )}
+                </button>
 
-                {hasPlan && (
-                  <section className="update">
-                    <strong>Latest coach update · Example</strong>
-                    <p>5 Nov · Your approved programme is active. View changes in the coaching inbox.</p>
-                  </section>
-                )}
+                <button
+                  className="stat"
+                  onClick={() => router.push(`${basePath}/nutrition`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <span className="statTitle">
+                    <TodayIcon name="food" /> Nutrition
+                  </span>
+                  <strong>{`${totals.calories.toLocaleString()} / ${targets.calories.toLocaleString()} kcal`}</strong>
+                  <div className="small">{data.nutrition.meals.length} meal entries recorded today</div>
+                  <div className="next">Open Meal Plan →</div>
+                </button>
+              </div>
+            </section>
 
-                <p className="mini">
-                  Illustrative information and dates. Nutrition logging and full programme details live in their own tabs.
-                </p>
-              </>
+            {/* Coaching Review Schedule */}
+            <section
+              className="under"
+              onClick={() => router.push(`${basePath}/progress`)}
+              style={{ cursor: "pointer" }}
+            >
+              <div>
+                <strong>Next coaching review</strong>
+                <small>Scheduled for {data.client.nextCheckIn} · with {data.client.coachName}</small>
+              </div>
+              <span className="right">
+                <TodayIcon name="calendar" />
+              </span>
+            </section>
+
+            {/* Latest Coach Update */}
+            {latestCoachFeedback && (
+              <section className="update">
+                <strong>Latest coach update · {latestCoachFeedback.date}</strong>
+                <p>{latestCoachFeedback.message}</p>
+              </section>
             )}
 
-            {/* TAB 2: WORKOUTS */}
-            {activeTab === "workouts" && (
-              <>
-                <div className="pageHeader">
-                  <h1>Workouts</h1>
-                  <p>Foundation · 1 of 3 sessions completed this example week</p>
-                </div>
-
-                {[
-                  { day: "MON", n: "Full Body A", st: "Completed" as const },
-                  { day: "WED", n: "Full Body B", st: workoutStatus === "active" ? ("In progress" as const) : ("Scheduled" as const) },
-                  { day: "FRI", n: "Full Body C", st: "Scheduled" as const },
-                ].map((item, idx) => (
-                  <section key={idx} className="meal">
-                    <div className="mealhead">
-                      <div>
-                        <strong>{item.day} · {item.n}</strong>
-                        <br />
-                        <span>{item.st}</span>
-                      </div>
-                      {item.st === "Completed" ? (
-                        <TodayIcon name="check" />
-                      ) : (
-                        <TodayIcon name="dumb" />
-                      )}
-                    </div>
-                    <div className="actions">
-                      {item.st === "Completed" ? (
-                        <button
-                          className="smallBtn"
-                          onClick={() =>
-                            setModalData({
-                              title: "Completed Session",
-                              body: "Your completed workout metrics are preserved in Workout History.",
-                            })
-                          }
-                        >
-                          View summary
-                        </button>
-                      ) : (
-                        <>
-                          <button
-                            className="smallBtn fill"
-                            onClick={() => router.push(`${basePath}/workout-logger`)}
-                          >
-                            Open Workout Logger →
-                          </button>
-                          <button
-                            className="smallBtn"
-                            onClick={() =>
-                              setModalData({
-                                title: "Workout preview",
-                                body: "This Today preview displays programmed volume: 3 sets Leg Press, 2 sets Romanian Deadlift, 3 sets Seated Row.",
-                                actionLabel: "Start Workout in Logger",
-                                actionHref: `${basePath}/workout-logger`,
-                              })
-                            }
-                          >
-                            View details
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </section>
-                ))}
-
-                <div className="summary">
-                  <h2>Missed workouts have no penalty</h2>
-                  <p>
-                    Optional rescheduling stays in Workouts. A missed session does not interrupt the next Today action.
-                  </p>
-                </div>
-              </>
-            )}
-
-            {/* TAB 3: NUTRITION */}
-            {activeTab === "nutrition" && (
-              <>
-                <div className="pageHeader">
-                  <h1>Today&apos;s Meals</h1>
-                  <p>Open a meal to record it. This is the Nutrition screen, not Today.</p>
-                </div>
-
-                <div className="summary">
-                  <h2>{recordedMealsCount} of {MEALS.length} meal updates recorded</h2>
-                  <p>Recorded does not automatically mean eaten as prescribed.</p>
-                </div>
-
-                {MEALS.map((m) => {
-                  const logStatus = mealLogs[m.id];
-                  return (
-                    <section key={m.id} className="meal">
-                      <div className="mealhead">
-                        <div>
-                          <strong>{m.name}</strong>
-                          <br />
-                          <span>{m.food}</span>
-                        </div>
-                        <span className="mealstatus">
-                          {logStatus === "as-planned"
-                            ? "Reported as planned"
-                            : logStatus === "skipped"
-                            ? "Did not eat"
-                            : logStatus === "changed"
-                            ? "Changed (example)"
-                            : "Not recorded"}
-                        </span>
-                      </div>
-                      <div className="foodlist">{m.portion}</div>
-                      <div className="actions">
-                        <button
-                          className={`smallBtn ${logStatus === "as-planned" ? "fill" : ""}`}
-                          onClick={() => handleMealAction(m.id, "as-planned")}
-                        >
-                          Ate as planned
-                        </button>
-                        <button
-                          className="smallBtn"
-                          onClick={() => handleMealAction(m.id, "changed")}
-                        >
-                          Changed
-                        </button>
-                        <button
-                          className="smallBtn"
-                          onClick={() => handleMealAction(m.id, "skipped")}
-                        >
-                          Didn&apos;t eat
-                        </button>
-                        {logStatus && (
-                          <button
-                            className="smallBtn"
-                            onClick={() => handleMealAction(m.id, "clear")}
-                          >
-                            Undo
-                          </button>
-                        )}
-                      </div>
-                    </section>
-                  );
-                })}
-
-                <div style={{ marginTop: "12px", textAlign: "center" }}>
-                  <Link
-                    href={`${basePath}/nutrition`}
-                    style={{
-                      color: "var(--gold)",
-                      fontSize: "12px",
-                      textDecoration: "none",
-                      fontWeight: 600,
-                    }}
-                  >
-                    Open Full Nigerian Nutrition Plan →
-                  </Link>
-                </div>
-
-                <p className="mini">Demo logging only. No nutritional values have been verified or saved to a server.</p>
-              </>
-            )}
-
-            {/* TAB 4: PROGRESS */}
-            {activeTab === "progress" && (
-              <>
-                <div className="pageHeader">
-                  <h1>Progress</h1>
-                  <p>Private coaching progress and trend review</p>
-                </div>
-
-                <div className="summary">
-                  <h2>1 workout completed this week</h2>
-                  <p>
-                    Bodyweight trends, optional measurements and coach-approved milestones will appear here. The Today dashboard only shows a compact summary.
-                  </p>
-                </div>
-
-                <div style={{ marginTop: "18px" }}>
-                  <Link
-                    href={`${basePath}/progress`}
-                    className="primaryAction"
-                    style={{ textDecoration: "none" }}
-                  >
-                    <span>Open Comprehensive Progress Portal</span>
-                    <TodayIcon name="right" />
-                  </Link>
-                </div>
-              </>
-            )}
+            <p className="mini">
+              Streak: {data.client.streakDays} days active · {data.client.fullName}
+            </p>
           </div>
 
           {/* Sticky Bottom Navigation */}
           <ModernClientBottomNav scope={scope} active="today" />
         </div>
-
-        {/* Prototype Footer Note */}
-        <p className="note">
-          ASCEND · Approved Today dashboard direction · Prototype uses simulated data and local interaction only. No accounts, payments, food logs or workouts are saved.
-        </p>
       </main>
 
       {/* Interactive Modal */}
@@ -591,33 +230,18 @@ export default function TodayDashboard({ scope = "live", onSwitchToClassic }: To
           >
             <h2>{modalData.title}</h2>
             <p>{modalData.body}</p>
-
-            {modalData.actionHref && modalData.actionLabel && (
+            {modalData.actionLabel && modalData.actionHref ? (
               <button
                 onClick={() => {
                   setModalData(null);
                   router.push(modalData.actionHref!);
                 }}
-                style={{
-                  marginBottom: "8px",
-                  background: "var(--gold)",
-                  color: "#201b12",
-                }}
               >
-                {modalData.actionLabel} →
+                {modalData.actionLabel}
               </button>
+            ) : (
+              <button onClick={() => setModalData(null)}>Close</button>
             )}
-
-            <button
-              onClick={() => setModalData(null)}
-              style={{
-                background: "transparent",
-                border: "1px solid #4a453b",
-                color: "var(--text)",
-              }}
-            >
-              Return to Today Dashboard
-            </button>
           </div>
         </div>
       )}
