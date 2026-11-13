@@ -340,3 +340,8 @@ test('Endpoint 10: Existing account without credentials (passwordHash: null) fai
     await prisma.user.deleteMany({ where: { email: noCredsEmail } });
   }
 });
+
+after(async () => {
+  const prisma = db();
+  await prisma.$disconnect();
+});

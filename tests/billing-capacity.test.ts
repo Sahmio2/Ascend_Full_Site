@@ -45,6 +45,7 @@ after(async () => {
   await prisma.user.deleteMany({
     where: { email: { startsWith: TEST_USER_PREFIX } },
   });
+  await prisma.$disconnect();
 });
 
 test('Billing 1: Computes Lagos ISO week key accurately', () => {

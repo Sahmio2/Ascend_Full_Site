@@ -147,3 +147,7 @@ test('5. Saving measurement, idempotency replay, and soft deletion', async () =>
   await prisma.observation.deleteMany({ where: { userId: user.id } });
 });
 
+after(async () => {
+  await db().$disconnect();
+});
+
