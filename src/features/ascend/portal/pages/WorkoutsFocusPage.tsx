@@ -218,6 +218,35 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
     return () => clearInterval(interval);
   }, [rest.status, rest.ends]);
 
+  // Touch gesture tracking for horizontal swipe between Focus and Session modes
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+
+    // Horizontal swipe threshold: distance >= 55px and predominantly horizontal
+    if (Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+      if (deltaX < 0 && viewMode === "focus") {
+        setViewMode("session");
+        showToast("Swiped to Session Mode");
+      } else if (deltaX > 0 && viewMode === "session") {
+        setViewMode("focus");
+        showToast("Swiped to Focus Mode");
+      }
+    }
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
   // Calculations
   const currentWeekObj = WEEK_ROUTINES.find((x) => x.id === workoutId) || WEEK_ROUTINES[0];
   const currentExercises = EXERCISE_PLAN[workoutId] || EXERCISES_A;
@@ -228,9 +257,10 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
   const ensureRowsForEx = (x: ExerciseDef) => {
     const k = exKey(x);
     if (!rows[k]) {
-      const initial = Array.from({ length: x.sets }, (_, i) => ({
-        w: x.previous?.rows[i]?.[0] || "",
-        r: x.previous?.rows[i]?.[1] || "",
+      // Historical loads are referenced, never prefilled into editable inputs
+      const initial = Array.from({ length: x.sets }, () => ({
+        w: "",
+        r: "",
         done: false,
       }));
       setRows((prev) => ({ ...prev, [k]: initial }));
@@ -596,7 +626,11 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
         {/* VIEW 3: LIVE WORKOUT LOGGER */}
         {screen === "logger" && (
           <div className="view">
-            <div className="focus-logger-wrap">
+            <div
+              className="focus-logger-wrap"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
               <div className="topbar tight">
                 <button
                   className="icon-btn flat"
@@ -621,7 +655,7 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
                 </button>
               </div>
 
-              {/* Status Line with Mode Switch */}
+              {/* Status Line with Mode Indicator & Swipe Affordance */}
               <div className="statusline">
                 <div>
                   <div className="session-name">{currentWeekObj.name}</div>
@@ -630,11 +664,13 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
                   </div>
                 </div>
                 <button
-                  className="smallmode"
+                  className="mode-swipe-indicator"
                   onClick={() => setViewMode(viewMode === "focus" ? "session" : "focus")}
-                  style={{ cursor: "pointer" }}
+                  title="Tap or swipe horizontally to toggle logging mode"
+                  aria-label={`Current: ${viewMode === "focus" ? "Focus Mode" : "Session Mode"}. Tap or swipe to switch.`}
                 >
-                  {viewMode === "focus" ? "FOCUS MODE" : "SESSION MODE"}
+                  <span>{viewMode === "focus" ? "Focus Mode" : "Session Mode"}</span>
+                  <span className="swipe-arrow">⇄</span>
                 </button>
               </div>
 
@@ -876,15 +912,24 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
                       </div>
                     ) : (
                       <>
+                        {currentEx.previous?.rows[nextUnfinishedSetIndex] && (
+                          <div className="prev-ref-hint">
+                            <span>Ref from {currentEx.previous.date}:</span>
+                            <strong>
+                              {currentEx.previous.rows[nextUnfinishedSetIndex][0]} kg × {currentEx.previous.rows[nextUnfinishedSetIndex][1]} reps
+                            </strong>
+                          </div>
+                        )}
                         <div className="fieldgrid">
                           <label className="field">
                             <span>WEIGHT (KG)</span>
                             <input
                               className="number"
                               type="number"
+                              inputMode="decimal"
                               step="0.5"
                               min="0"
-                              placeholder="0"
+                              placeholder={currentEx.previous?.rows[nextUnfinishedSetIndex]?.[0] || "0"}
                               value={currentExRows[nextUnfinishedSetIndex]?.w || ""}
                               onChange={(e) => {
                                 const k = exKey(currentEx);
@@ -902,9 +947,10 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
                             <input
                               className="number"
                               type="number"
+                              inputMode="numeric"
                               min="1"
                               step="1"
-                              placeholder="0"
+                              placeholder={currentEx.previous?.rows[nextUnfinishedSetIndex]?.[1] || "0"}
                               value={currentExRows[nextUnfinishedSetIndex]?.r || ""}
                               onChange={(e) => {
                                 const k = exKey(currentEx);
@@ -1031,41 +1077,50 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
                                 <span>DONE</span>
                               </div>
                               {exRows.map((r, i) => (
-                                <div key={i} className="set-row">
-                                  <input
-                                    className="number"
-                                    type="number"
-                                    step="0.5"
-                                    min="0"
-                                    placeholder="kg"
-                                    value={r.w}
-                                    onChange={(e) => {
-                                      const list = [...exRows];
-                                      list[i] = { ...list[i], w: e.target.value };
-                                      setRows((prev) => ({ ...prev, [k]: list }));
-                                    }}
-                                  />
-                                  <input
-                                    className="number"
-                                    type="number"
-                                    min="1"
-                                    step="1"
-                                    placeholder="reps"
-                                    value={r.r}
-                                    onChange={(e) => {
-                                      const list = [...exRows];
-                                      list[i] = { ...list[i], r: e.target.value };
-                                      setRows((prev) => ({ ...prev, [k]: list }));
-                                    }}
-                                  />
-                                  <button
-                                    className={`set-check ${r.done ? "done" : ""}`}
-                                    type="button"
-                                    onClick={() => handleCompleteSet(x, i)}
-                                    aria-label="Complete set"
-                                  >
-                                    <Glyph name="check" />
-                                  </button>
+                                <div key={i}>
+                                  <div className="set-row">
+                                    <input
+                                      className="number"
+                                      type="number"
+                                      inputMode="decimal"
+                                      step="0.5"
+                                      min="0"
+                                      placeholder={x.previous?.rows[i]?.[0] || "kg"}
+                                      value={r.w}
+                                      onChange={(e) => {
+                                        const list = [...exRows];
+                                        list[i] = { ...list[i], w: e.target.value };
+                                        setRows((prev) => ({ ...prev, [k]: list }));
+                                      }}
+                                    />
+                                    <input
+                                      className="number"
+                                      type="number"
+                                      inputMode="numeric"
+                                      min="1"
+                                      step="1"
+                                      placeholder={x.previous?.rows[i]?.[1] || "reps"}
+                                      value={r.r}
+                                      onChange={(e) => {
+                                        const list = [...exRows];
+                                        list[i] = { ...list[i], r: e.target.value };
+                                        setRows((prev) => ({ ...prev, [k]: list }));
+                                      }}
+                                    />
+                                    <button
+                                      className={`set-check ${r.done ? "done" : ""}`}
+                                      type="button"
+                                      onClick={() => handleCompleteSet(x, i)}
+                                      aria-label="Complete set"
+                                    >
+                                      <Glyph name="check" />
+                                    </button>
+                                  </div>
+                                  {x.previous?.rows[i] && (
+                                    <div className="set-ref-ghost">
+                                      Ref: {x.previous.rows[i][0]} kg × {x.previous.rows[i][1]} ({x.previous.date})
+                                    </div>
+                                  )}
                                 </div>
                               ))}
                             </>

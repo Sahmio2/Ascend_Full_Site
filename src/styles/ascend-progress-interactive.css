@@ -4,4 +4,48 @@
 @media(min-width:860px){.bottomNav{max-width:1000px;left:50%;transform:translateX(-50%);border-left:1px solid #37342d;border-right:1px solid #37342d;border-radius:13px 13px 0 0}.achieveWrap{max-width:850px;margin:auto}.recordValue{font-size:14px}}
 @media(max-width:680px){.wrap{padding:17px 15px 102px}.header{padding-bottom:16px}.mast{padding:26px 1px 22px}.mast h1{font-size:57px}.gridMain{grid-template-columns:1fr;gap:14px;padding-top:16px}.column{gap:14px}.panel{padding:17px}.stats{gap:10px}.achievementList{gap:10px}.achievement{min-height:172px;padding:15px}.achieveTitle{font-size:20px}.achieveIntro{margin-top:15px}.stat{padding:14px 12px}.stat strong{font-size:24px}.chartBox{height:162px}.miniTop{font-size:10px}}
 @media(max-width:370px){.ranges button{padding:6px}.achievementList{grid-template-columns:1fr}.mast h1{font-size:50px}.formgrid{grid-template-columns:1fr}}
+.trend-legend {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.legend-indicator {
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.legend-indicator.gold-line {
+  background: var(--gold);
+  height: 3px;
+}
+
+.legend-indicator.dash-line {
+  background: #736b5e;
+  height: 2px;
+  border-top: 1px dashed #a89c8a;
+}
+
+.rolling-trend-pill {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  background: rgba(219, 192, 138, 0.12);
+  border: 1px solid rgba(219, 192, 138, 0.3);
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-top: 6px;
+  display: inline-block;
+}
+
 @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}

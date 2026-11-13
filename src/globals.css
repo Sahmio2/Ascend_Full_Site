@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/transitions.css";
+@import "./styles/ascend-portal-header.css";
 
 :root {
   --ink: #090907;

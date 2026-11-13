@@ -118,6 +118,7 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
   const [foodState, setFoodState] = useState("cooked");
   const [searchText, setSearchText] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [nutritionMode, setNutritionMode] = useState<"structured" | "simple" | "precision">("structured");
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -243,6 +244,101 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
                 </button>
               </div>
             </div>
+
+            {/* Mode Switcher: Simple, Structured, Precision */}
+            <div className="nutrition-mode-switcher" role="tablist" aria-label="Nutrition tracking mode">
+              <button
+                type="button"
+                className={`nutrition-mode-btn ${nutritionMode === "structured" ? "active" : ""}`}
+                onClick={() => setNutritionMode("structured")}
+                aria-selected={nutritionMode === "structured"}
+              >
+                Structured (Grams)
+              </button>
+              <button
+                type="button"
+                className={`nutrition-mode-btn ${nutritionMode === "simple" ? "active" : ""}`}
+                onClick={() => setNutritionMode("simple")}
+                aria-selected={nutritionMode === "simple"}
+              >
+                Simple (Portions)
+              </button>
+              <button
+                type="button"
+                className={`nutrition-mode-btn ${nutritionMode === "precision" ? "active" : ""}`}
+                onClick={() => setNutritionMode("precision")}
+                aria-selected={nutritionMode === "precision"}
+              >
+                Precision (Macros)
+              </button>
+            </div>
+
+            {/* Mode-Specific Insight Banner */}
+            {nutritionMode === "simple" && (
+              <div className="simple-mode-banner">
+                <div className="mode-banner-head">
+                  <span className="mode-badge">Simple Mode Active</span>
+                  <span className="mode-hint-text">For travel, dining out & unweighed meals</span>
+                </div>
+                <div className="portion-grid">
+                  <div className="portion-card">
+                    <span className="portion-icon">✋</span>
+                    <strong>1 Palm</strong>
+                    <small>Protein (~30–35g)</small>
+                    <div className="portion-desc">E.g., grilled chicken breast, mackerel filet</div>
+                  </div>
+                  <div className="portion-card">
+                    <span className="portion-icon">✊</span>
+                    <strong>1 Fist</strong>
+                    <small>Carbohydrates (~40g)</small>
+                    <div className="portion-desc">E.g., 1 ladle jollof rice, boiled yam chunk</div>
+                  </div>
+                  <div className="portion-card">
+                    <span className="portion-icon">👍</span>
+                    <strong>1 Thumb</strong>
+                    <small>Healthy Fats (~12g)</small>
+                    <div className="portion-desc">E.g., groundnut oil, palm oil in stew, avocado</div>
+                  </div>
+                  <div className="portion-card">
+                    <span className="portion-icon">🤲</span>
+                    <strong>2 Cupped Hands</strong>
+                    <small>Vegetables & Fiber</small>
+                    <div className="portion-desc">E.g., efo riro, steamed greens, garden salad</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {nutritionMode === "precision" && (
+              <div className="precision-mode-banner">
+                <div className="mode-banner-head">
+                  <span className="mode-badge">Precision Mode Active</span>
+                  <span className="mode-hint-text">Peak physique & competition macro breakdown</span>
+                </div>
+                <div className="precision-macro-grid">
+                  <div className="precision-metric">
+                    <span>Protein Ratio</span>
+                    <strong>{Math.round((TARGETS.protein * 4 / TARGETS.kcal) * 100)}%</strong>
+                    <small>{TARGETS.protein}g · {TARGETS.protein * 4} kcal</small>
+                  </div>
+                  <div className="precision-metric">
+                    <span>Carbs Ratio</span>
+                    <strong>{Math.round((TARGETS.carbs * 4 / TARGETS.kcal) * 100)}%</strong>
+                    <small>{TARGETS.carbs}g · {TARGETS.carbs * 4} kcal</small>
+                  </div>
+                  <div className="precision-metric">
+                    <span>Fat Ratio</span>
+                    <strong>{Math.round((TARGETS.fat * 9 / TARGETS.kcal) * 100)}%</strong>
+                    <small>{TARGETS.fat}g · {TARGETS.fat * 9} kcal</small>
+                  </div>
+                  <div className="precision-metric">
+                    <span>Target Hydration</span>
+                    <strong>{portalData.nutrition.targets.waterLitres || 3.5}L</strong>
+                    <small>{portalData.nutrition.hydrationLoggedLitres || 2.0}L recorded</small>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* STACKED FIRST: Energy Budget Macro Summary Card */}
             <div className="energy-budget-card">

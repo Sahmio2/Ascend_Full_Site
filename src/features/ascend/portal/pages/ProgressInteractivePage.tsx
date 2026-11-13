@@ -136,6 +136,7 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
 
   const [tab, setTab] = useState<"overview" | "achievements">("overview");
   const [weights, setWeights] = useState<number[]>(INITIAL_WEIGHTS);
+  const [achievements, setAchievements] = useState<Achievement[]>(INITIAL_ACHIEVEMENTS);
   const [range, setRange] = useState<number>(8); // 4, 8, 12
   const [chosenCategory, setChosenCategory] = useState("All");
   const [chosenStatus, setChosenStatus] = useState<"all" | "progress" | "earned">("all");
@@ -164,7 +165,7 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
     setTimeout(() => setToastMessage(null), 3200);
   };
 
-  // Sync live progress if in live scope
+  // Sync live progress & achievements if in live scope
   useEffect(() => {
     if (scope !== "live") return;
     const load = async () => {
@@ -189,19 +190,67 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
       } catch (e) {
         console.error("Live progress sync failed:", e);
       }
+
+      try {
+        const achRes = await fetch("/api/achievements", {
+          headers: { Accept: "application/json" },
+          credentials: "same-origin",
+        });
+        if (achRes.ok) {
+          const json = await achRes.json();
+          if (json.groups && Array.isArray(json.groups) && json.groups.length > 0) {
+            const mapped: Achievement[] = [];
+            for (const grp of json.groups) {
+              for (const def of grp.definitions || []) {
+                const award = def.awards && def.awards[0];
+                mapped.push({
+                  id: def.id,
+                  category: grp.name,
+                  title: def.title,
+                  subtitle: def.criteriaDescription || def.description || "",
+                  state: award ? "earned" : "progress",
+                  date: award
+                    ? new Date(award.awardedAt).toLocaleDateString("en-NG", {
+                        day: "numeric",
+                        month: "short",
+                      })
+                    : undefined,
+                  progress: award ? 100 : 0,
+                  detail: def.description || def.criteriaDescription || "",
+                });
+              }
+            }
+            if (mapped.length > 0) {
+              setAchievements(mapped);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Live achievements sync failed:", err);
+      }
     };
     load();
   }, [scope]);
 
-  // Current weight calculations
+  // Current weight calculations & 7-day rolling median/average
   const slice = weights.slice(-range);
   const currentWeight = weights[weights.length - 1] || 78.4;
   const baseline = weights[0] || currentWeight;
   const changeFromStart = (currentWeight - baseline).toFixed(1);
 
+  // 7-day trailing moving average calculation (reduces daily water retention noise)
+  const rollingAvgSlice = slice.map((_, i) => {
+    const start = Math.max(0, i - 6);
+    const window = slice.slice(start, i + 1);
+    const avg = window.reduce((acc, curr) => acc + curr, 0) / window.length;
+    return parseFloat(avg.toFixed(2));
+  });
+  const currentRollingAvg = rollingAvgSlice[rollingAvgSlice.length - 1] || currentWeight;
+
   // SVG Chart Dimensions
   const w = 540, h = 175, top = 18, bottom = 22, left = 14, right = 18;
-  let minW = Math.min(...slice), maxW = Math.max(...slice);
+  const allChartValues = [...slice, ...rollingAvgSlice];
+  let minW = Math.min(...allChartValues), maxW = Math.max(...allChartValues);
   const marginW = Math.max((maxW - minW) * 0.35, 0.2);
   minW -= marginW;
   maxW += marginW;
@@ -209,14 +258,20 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
   const getX = (i: number) => left + (i * (w - left - right)) / Math.max(1, slice.length - 1);
   const getY = (v: number) => top + ((maxW - v) * (h - top - bottom)) / (maxW - minW);
 
-  const pts = slice.map((v, i) => [getX(i), getY(v)]);
-  const lineD = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
-  const areaD = lineD ? `${lineD} L${getX(slice.length - 1)} ${h - bottom} L${getX(0)} ${h - bottom} Z` : "";
+  // Raw weigh-in points
+  const rawPts = slice.map((v, i) => [getX(i), getY(v)]);
+  const rawLineD = rawPts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+
+  // 7-day rolling average points & area fill
+  const rollingPts = rollingAvgSlice.map((v, i) => [getX(i), getY(v)]);
+  const rollingLineD = rollingPts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+  const areaD = rollingLineD ? `${rollingLineD} L${getX(rollingAvgSlice.length - 1)} ${h - bottom} L${getX(0)} ${h - bottom} Z` : "";
+
   const gridYs = [0, 1, 2].map((j) => {
     const v = maxW - ((maxW - minW) * j) / 2;
     return getY(v);
   });
-  const lastPt = pts[pts.length - 1] || [0, 0];
+  const lastPt = rollingPts[rollingPts.length - 1] || [0, 0];
 
   // Handlers
   const handleSaveWeight = async () => {
@@ -262,7 +317,7 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
     showToast(`Recorded ${measurementLocation}: ${val} cm`);
   };
 
-  const filteredAchievements = INITIAL_ACHIEVEMENTS.filter((a) => {
+  const filteredAchievements = achievements.filter((a) => {
     const catMatch = chosenCategory === "All" || a.category === chosenCategory;
     const statusMatch = chosenStatus === "all" || a.state === chosenStatus;
     return catMatch && statusMatch;
@@ -316,7 +371,10 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
                       <div>
                         <div className="miniTop">BODYWEIGHT TREND</div>
                         <div className="bigValue" id="currentWeight">
-                          {currentWeight.toFixed(1)} <small>kg</small>
+                          {currentWeight.toFixed(1)} <small>kg latest</small>
+                        </div>
+                        <div className="rolling-trend-pill">
+                          7-Day Trend: {currentRollingAvg.toFixed(1)} kg
                         </div>
                         <div className="statTag" id="trendText">
                           Movement over time, not one weigh-in
@@ -352,7 +410,7 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
                         id="weightChart"
                         viewBox={`0 0 ${w} ${h}`}
                         role="img"
-                        aria-label={`Bodyweight trend, ${slice.length} readings`}
+                        aria-label={`Bodyweight trend, ${slice.length} readings, 7-day average ${currentRollingAvg.toFixed(1)} kg`}
                       >
                         <defs>
                           <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
@@ -373,12 +431,37 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
                           />
                         ))}
                         {areaD && <path d={areaD} fill="url(#areaFill)" />}
-                        {lineD && (
+
+                        {/* Raw weigh-in dashed guide line */}
+                        {rawLineD && (
                           <path
-                            d={lineD}
+                            d={rawLineD}
+                            fill="none"
+                            stroke="#736b5e"
+                            strokeWidth="1.2"
+                            strokeDasharray="3 4"
+                          />
+                        )}
+
+                        {/* Raw weigh-in dots */}
+                        {rawPts.map((p, idx) => (
+                          <circle
+                            key={idx}
+                            cx={p[0]}
+                            cy={p[1]}
+                            r="2.2"
+                            fill="#8c8273"
+                            opacity="0.75"
+                          />
+                        ))}
+
+                        {/* Solid 7-Day Rolling Trend Line */}
+                        {rollingLineD && (
+                          <path
+                            d={rollingLineD}
                             fill="none"
                             stroke="#d7bf8f"
-                            strokeWidth="2.6"
+                            strokeWidth="2.8"
                             strokeLinejoin="round"
                             strokeLinecap="round"
                           />
@@ -402,9 +485,15 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
 
                     <div className="chartFoot">
                       <div>
-                        Based on recorded weigh-ins
-                        <br />
-                        <span className="muted">
+                        <div className="trend-legend">
+                          <span className="legend-item">
+                            <span className="legend-indicator gold-line" /> 7-Day Trend
+                          </span>
+                          <span className="legend-item">
+                            <span className="legend-indicator dash-line" /> Daily Weigh-in
+                          </span>
+                        </div>
+                        <span className="muted" style={{ display: "block", marginTop: "4px" }}>
                           Net change: {Number(changeFromStart) <= 0 ? changeFromStart : `+${changeFromStart}`} kg from baseline
                         </span>
                       </div>

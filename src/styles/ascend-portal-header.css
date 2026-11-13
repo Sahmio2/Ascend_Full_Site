@@ -1,0 +1,154 @@
+.client-portal-header {
+  height: 56px;
+  background: rgba(18, 17, 16, 0.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid #2e2b26;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.client-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.client-header-brand {
+  font-family: Georgia, serif;
+  font-size: 18px;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: #f5f0e9;
+  text-decoration: none;
+}
+
+.client-header-phase {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: #d6b87a;
+  background: rgba(214, 184, 122, 0.12);
+  border: 1px solid rgba(214, 184, 122, 0.3);
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.client-portal-top-nav {
+  display: flex;
+  gap: 4px;
+  background: #121110;
+  padding: 3px;
+  border-radius: 10px;
+  border: 1px solid #343029;
+}
+
+.client-nav-link {
+  padding: 6px 14px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  color: #b8b2a5;
+  background: transparent;
+  transition: all 0.15s ease;
+}
+
+.client-nav-link:hover {
+  color: #f5f0e9;
+}
+
+.client-nav-link.active {
+  font-weight: 700;
+  color: #151412;
+  background: #d6b87a;
+}
+
+.client-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-coach-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #1d1b18;
+  border: 1px solid #3d3528;
+  border-radius: 999px;
+  padding: 4px 10px;
+  text-decoration: none;
+  font-size: 11px;
+  color: #d6b87a;
+  transition: all 0.15s ease;
+}
+
+.header-coach-pill:hover {
+  background: #27231c;
+  border-color: #5d4d33;
+}
+
+.coach-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b8d4b3;
+}
+
+.priority-msg-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #1a160f;
+  background: #d6b87a;
+  padding: 1px 5px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.client-account-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #f5f0e9;
+  font-size: 12px;
+}
+
+.client-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #2a2723;
+  border: 1px solid #453e33;
+  color: #d6b87a;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.client-header-username {
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .header-coach-pill span:not(.priority-msg-badge):not(.coach-dot) {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .client-portal-top-nav {
+    display: none !important;
+  }
+  .client-header-username {
+    display: none !important;
+  }
+}
