@@ -59,7 +59,24 @@ export const ModelName = {
   WorkoutSet: 'WorkoutSet',
   AchievementGroup: 'AchievementGroup',
   AchievementDefinition: 'AchievementDefinition',
-  AchievementAward: 'AchievementAward'
+  AchievementAward: 'AchievementAward',
+  CapacityPolicy: 'CapacityPolicy',
+  CapacityReservation: 'CapacityReservation',
+  Membership: 'Membership',
+  Payment: 'Payment',
+  ProviderEventInbox: 'ProviderEventInbox',
+  WaitlistEntry: 'WaitlistEntry',
+  RegistrantScreening: 'RegistrantScreening',
+  ClientAssessment: 'ClientAssessment',
+  AssessmentStageData: 'AssessmentStageData',
+  DailyMealLog: 'DailyMealLog',
+  NutritionTarget: 'NutritionTarget',
+  ExerciseSwap: 'ExerciseSwap',
+  ClientWorkoutSession: 'ClientWorkoutSession',
+  ClientWorkoutSetLog: 'ClientWorkoutSetLog',
+  ProgrammeDraft: 'ProgrammeDraft',
+  CoachingCheckIn: 'CoachingCheckIn',
+  PriorityMessage: 'PriorityMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -190,6 +207,257 @@ export const AchievementAwardScalarFieldEnum = {
 export type AchievementAwardScalarFieldEnum = (typeof AchievementAwardScalarFieldEnum)[keyof typeof AchievementAwardScalarFieldEnum]
 
 
+export const CapacityPolicyScalarFieldEnum = {
+  id: 'id',
+  maxActiveClients: 'maxActiveClients',
+  maxWeeklyOnboardings: 'maxWeeklyOnboardings',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CapacityPolicyScalarFieldEnum = (typeof CapacityPolicyScalarFieldEnum)[keyof typeof CapacityPolicyScalarFieldEnum]
+
+
+export const CapacityReservationScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  status: 'status',
+  weekKey: 'weekKey',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type CapacityReservationScalarFieldEnum = (typeof CapacityReservationScalarFieldEnum)[keyof typeof CapacityReservationScalarFieldEnum]
+
+
+export const MembershipScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  status: 'status',
+  paidThrough: 'paidThrough',
+  paystackCustomerCode: 'paystackCustomerCode',
+  paystackSubscriptionCode: 'paystackSubscriptionCode',
+  paystackEmailToken: 'paystackEmailToken',
+  planCode: 'planCode',
+  priceKobo: 'priceKobo',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd',
+  cancelledAt: 'cancelledAt',
+  priorityMessagesRemaining: 'priorityMessagesRemaining',
+  reviewsRemaining: 'reviewsRemaining',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MembershipScalarFieldEnum = (typeof MembershipScalarFieldEnum)[keyof typeof MembershipScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reference: 'reference',
+  amountKobo: 'amountKobo',
+  currency: 'currency',
+  status: 'status',
+  paidAt: 'paidAt',
+  channel: 'channel',
+  rawMetadata: 'rawMetadata',
+  createdAt: 'createdAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const ProviderEventInboxScalarFieldEnum = {
+  id: 'id',
+  eventHash: 'eventHash',
+  eventType: 'eventType',
+  payload: 'payload',
+  processedAt: 'processedAt',
+  outcome: 'outcome',
+  createdAt: 'createdAt'
+} as const
+
+export type ProviderEventInboxScalarFieldEnum = (typeof ProviderEventInboxScalarFieldEnum)[keyof typeof ProviderEventInboxScalarFieldEnum]
+
+
+export const WaitlistEntryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  status: 'status',
+  optInProof: 'optInProof',
+  invitedAt: 'invitedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type WaitlistEntryScalarFieldEnum = (typeof WaitlistEntryScalarFieldEnum)[keyof typeof WaitlistEntryScalarFieldEnum]
+
+
+export const RegistrantScreeningScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  firstName: 'firstName',
+  whatsappNumber: 'whatsappNumber',
+  mainGoal: 'mainGoal',
+  gymExperience: 'gymExperience',
+  trainingLocation: 'trainingLocation',
+  daysPerWeek: 'daysPerWeek',
+  ageRange: 'ageRange',
+  medicalClearance: 'medicalClearance',
+  readySevenDays: 'readySevenDays',
+  eligibility: 'eligibility',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RegistrantScreeningScalarFieldEnum = (typeof RegistrantScreeningScalarFieldEnum)[keyof typeof RegistrantScreeningScalarFieldEnum]
+
+
+export const ClientAssessmentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  status: 'status',
+  safetyFlags: 'safetyFlags',
+  deliveryDueAt: 'deliveryDueAt',
+  submittedAt: 'submittedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClientAssessmentScalarFieldEnum = (typeof ClientAssessmentScalarFieldEnum)[keyof typeof ClientAssessmentScalarFieldEnum]
+
+
+export const AssessmentStageDataScalarFieldEnum = {
+  id: 'id',
+  assessmentId: 'assessmentId',
+  stageCode: 'stageCode',
+  data: 'data',
+  completedAt: 'completedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssessmentStageDataScalarFieldEnum = (typeof AssessmentStageDataScalarFieldEnum)[keyof typeof AssessmentStageDataScalarFieldEnum]
+
+
+export const DailyMealLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  mealType: 'mealType',
+  mealName: 'mealName',
+  status: 'status',
+  customFoods: 'customFoods',
+  notes: 'notes',
+  recordedAt: 'recordedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DailyMealLogScalarFieldEnum = (typeof DailyMealLogScalarFieldEnum)[keyof typeof DailyMealLogScalarFieldEnum]
+
+
+export const NutritionTargetScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  kcal: 'kcal',
+  proteinGrams: 'proteinGrams',
+  carbsGrams: 'carbsGrams',
+  fatGrams: 'fatGrams',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NutritionTargetScalarFieldEnum = (typeof NutritionTargetScalarFieldEnum)[keyof typeof NutritionTargetScalarFieldEnum]
+
+
+export const ExerciseSwapScalarFieldEnum = {
+  id: 'id',
+  sourceExerciseId: 'sourceExerciseId',
+  swappedExerciseId: 'swappedExerciseId',
+  swapName: 'swapName',
+  note: 'note',
+  isCoachApproved: 'isCoachApproved'
+} as const
+
+export type ExerciseSwapScalarFieldEnum = (typeof ExerciseSwapScalarFieldEnum)[keyof typeof ExerciseSwapScalarFieldEnum]
+
+
+export const ClientWorkoutSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  workoutId: 'workoutId',
+  workoutName: 'workoutName',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  status: 'status',
+  notes: 'notes'
+} as const
+
+export type ClientWorkoutSessionScalarFieldEnum = (typeof ClientWorkoutSessionScalarFieldEnum)[keyof typeof ClientWorkoutSessionScalarFieldEnum]
+
+
+export const ClientWorkoutSetLogScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  exerciseId: 'exerciseId',
+  exerciseName: 'exerciseName',
+  setIndex: 'setIndex',
+  isWarmup: 'isWarmup',
+  weightKg: 'weightKg',
+  reps: 'reps',
+  completed: 'completed',
+  loggedAt: 'loggedAt'
+} as const
+
+export type ClientWorkoutSetLogScalarFieldEnum = (typeof ClientWorkoutSetLogScalarFieldEnum)[keyof typeof ClientWorkoutSetLogScalarFieldEnum]
+
+
+export const ProgrammeDraftScalarFieldEnum = {
+  id: 'id',
+  clientUserId: 'clientUserId',
+  version: 'version',
+  isPublished: 'isPublished',
+  trainingJson: 'trainingJson',
+  nutritionJson: 'nutritionJson',
+  coachNotes: 'coachNotes',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProgrammeDraftScalarFieldEnum = (typeof ProgrammeDraftScalarFieldEnum)[keyof typeof ProgrammeDraftScalarFieldEnum]
+
+
+export const CoachingCheckInScalarFieldEnum = {
+  id: 'id',
+  clientUserId: 'clientUserId',
+  scheduledDate: 'scheduledDate',
+  submittedAt: 'submittedAt',
+  clientNotes: 'clientNotes',
+  coachDecision: 'coachDecision',
+  coachFeedback: 'coachFeedback',
+  reviewedAt: 'reviewedAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CoachingCheckInScalarFieldEnum = (typeof CoachingCheckInScalarFieldEnum)[keyof typeof CoachingCheckInScalarFieldEnum]
+
+
+export const PriorityMessageScalarFieldEnum = {
+  id: 'id',
+  clientUserId: 'clientUserId',
+  subject: 'subject',
+  body: 'body',
+  reply: 'reply',
+  repliedAt: 'repliedAt',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type PriorityMessageScalarFieldEnum = (typeof PriorityMessageScalarFieldEnum)[keyof typeof PriorityMessageScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -203,6 +471,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const NullsOrder = {
@@ -315,4 +591,181 @@ export const AchievementAwardOrderByRelevanceFieldEnum = {
 } as const
 
 export type AchievementAwardOrderByRelevanceFieldEnum = (typeof AchievementAwardOrderByRelevanceFieldEnum)[keyof typeof AchievementAwardOrderByRelevanceFieldEnum]
+
+
+export const CapacityPolicyOrderByRelevanceFieldEnum = {
+  id: 'id'
+} as const
+
+export type CapacityPolicyOrderByRelevanceFieldEnum = (typeof CapacityPolicyOrderByRelevanceFieldEnum)[keyof typeof CapacityPolicyOrderByRelevanceFieldEnum]
+
+
+export const CapacityReservationOrderByRelevanceFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  weekKey: 'weekKey'
+} as const
+
+export type CapacityReservationOrderByRelevanceFieldEnum = (typeof CapacityReservationOrderByRelevanceFieldEnum)[keyof typeof CapacityReservationOrderByRelevanceFieldEnum]
+
+
+export const MembershipOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  paystackCustomerCode: 'paystackCustomerCode',
+  paystackSubscriptionCode: 'paystackSubscriptionCode',
+  paystackEmailToken: 'paystackEmailToken',
+  planCode: 'planCode'
+} as const
+
+export type MembershipOrderByRelevanceFieldEnum = (typeof MembershipOrderByRelevanceFieldEnum)[keyof typeof MembershipOrderByRelevanceFieldEnum]
+
+
+export const PaymentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reference: 'reference',
+  currency: 'currency',
+  channel: 'channel'
+} as const
+
+export type PaymentOrderByRelevanceFieldEnum = (typeof PaymentOrderByRelevanceFieldEnum)[keyof typeof PaymentOrderByRelevanceFieldEnum]
+
+
+export const ProviderEventInboxOrderByRelevanceFieldEnum = {
+  id: 'id',
+  eventHash: 'eventHash',
+  eventType: 'eventType',
+  outcome: 'outcome'
+} as const
+
+export type ProviderEventInboxOrderByRelevanceFieldEnum = (typeof ProviderEventInboxOrderByRelevanceFieldEnum)[keyof typeof ProviderEventInboxOrderByRelevanceFieldEnum]
+
+
+export const WaitlistEntryOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId'
+} as const
+
+export type WaitlistEntryOrderByRelevanceFieldEnum = (typeof WaitlistEntryOrderByRelevanceFieldEnum)[keyof typeof WaitlistEntryOrderByRelevanceFieldEnum]
+
+
+export const RegistrantScreeningOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  firstName: 'firstName',
+  whatsappNumber: 'whatsappNumber',
+  mainGoal: 'mainGoal',
+  gymExperience: 'gymExperience',
+  trainingLocation: 'trainingLocation',
+  daysPerWeek: 'daysPerWeek',
+  ageRange: 'ageRange',
+  medicalClearance: 'medicalClearance',
+  readySevenDays: 'readySevenDays'
+} as const
+
+export type RegistrantScreeningOrderByRelevanceFieldEnum = (typeof RegistrantScreeningOrderByRelevanceFieldEnum)[keyof typeof RegistrantScreeningOrderByRelevanceFieldEnum]
+
+
+export const ClientAssessmentOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId'
+} as const
+
+export type ClientAssessmentOrderByRelevanceFieldEnum = (typeof ClientAssessmentOrderByRelevanceFieldEnum)[keyof typeof ClientAssessmentOrderByRelevanceFieldEnum]
+
+
+export const AssessmentStageDataOrderByRelevanceFieldEnum = {
+  id: 'id',
+  assessmentId: 'assessmentId',
+  stageCode: 'stageCode'
+} as const
+
+export type AssessmentStageDataOrderByRelevanceFieldEnum = (typeof AssessmentStageDataOrderByRelevanceFieldEnum)[keyof typeof AssessmentStageDataOrderByRelevanceFieldEnum]
+
+
+export const DailyMealLogOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  mealName: 'mealName',
+  notes: 'notes'
+} as const
+
+export type DailyMealLogOrderByRelevanceFieldEnum = (typeof DailyMealLogOrderByRelevanceFieldEnum)[keyof typeof DailyMealLogOrderByRelevanceFieldEnum]
+
+
+export const NutritionTargetOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId'
+} as const
+
+export type NutritionTargetOrderByRelevanceFieldEnum = (typeof NutritionTargetOrderByRelevanceFieldEnum)[keyof typeof NutritionTargetOrderByRelevanceFieldEnum]
+
+
+export const ExerciseSwapOrderByRelevanceFieldEnum = {
+  id: 'id',
+  sourceExerciseId: 'sourceExerciseId',
+  swappedExerciseId: 'swappedExerciseId',
+  swapName: 'swapName',
+  note: 'note'
+} as const
+
+export type ExerciseSwapOrderByRelevanceFieldEnum = (typeof ExerciseSwapOrderByRelevanceFieldEnum)[keyof typeof ExerciseSwapOrderByRelevanceFieldEnum]
+
+
+export const ClientWorkoutSessionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  workoutId: 'workoutId',
+  workoutName: 'workoutName',
+  status: 'status',
+  notes: 'notes'
+} as const
+
+export type ClientWorkoutSessionOrderByRelevanceFieldEnum = (typeof ClientWorkoutSessionOrderByRelevanceFieldEnum)[keyof typeof ClientWorkoutSessionOrderByRelevanceFieldEnum]
+
+
+export const ClientWorkoutSetLogOrderByRelevanceFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  exerciseId: 'exerciseId',
+  exerciseName: 'exerciseName'
+} as const
+
+export type ClientWorkoutSetLogOrderByRelevanceFieldEnum = (typeof ClientWorkoutSetLogOrderByRelevanceFieldEnum)[keyof typeof ClientWorkoutSetLogOrderByRelevanceFieldEnum]
+
+
+export const ProgrammeDraftOrderByRelevanceFieldEnum = {
+  id: 'id',
+  clientUserId: 'clientUserId',
+  version: 'version',
+  coachNotes: 'coachNotes'
+} as const
+
+export type ProgrammeDraftOrderByRelevanceFieldEnum = (typeof ProgrammeDraftOrderByRelevanceFieldEnum)[keyof typeof ProgrammeDraftOrderByRelevanceFieldEnum]
+
+
+export const CoachingCheckInOrderByRelevanceFieldEnum = {
+  id: 'id',
+  clientUserId: 'clientUserId',
+  clientNotes: 'clientNotes',
+  coachDecision: 'coachDecision',
+  coachFeedback: 'coachFeedback'
+} as const
+
+export type CoachingCheckInOrderByRelevanceFieldEnum = (typeof CoachingCheckInOrderByRelevanceFieldEnum)[keyof typeof CoachingCheckInOrderByRelevanceFieldEnum]
+
+
+export const PriorityMessageOrderByRelevanceFieldEnum = {
+  id: 'id',
+  clientUserId: 'clientUserId',
+  subject: 'subject',
+  body: 'body',
+  reply: 'reply',
+  status: 'status'
+} as const
+
+export type PriorityMessageOrderByRelevanceFieldEnum = (typeof PriorityMessageOrderByRelevanceFieldEnum)[keyof typeof PriorityMessageOrderByRelevanceFieldEnum]
 

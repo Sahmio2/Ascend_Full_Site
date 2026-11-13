@@ -7,7 +7,7 @@ import { db } from '../src/server/db';
 import { hashPassword } from '../src/server/passwords';
 
 const TEST_PORT = 3009;
-const ORIGIN = `http://localhost:${TEST_PORT}`;
+let ORIGIN = `http://localhost:${TEST_PORT}`;
 let serverProcess: ChildProcess | null = null;
 
 const USER_A_EMAIL = 'http_client_a@test.internal';
@@ -44,46 +44,61 @@ before(async () => {
     data: { email: USER_B_EMAIL, passwordHash: hashB, role: 'CLIENT' },
   });
 
-  // Spawn Next.js server with APP_ORIGIN matching the test port
-  serverProcess = spawn(
-    'npx',
-    ['next', 'dev', '-p', String(TEST_PORT)],
-    {
-      detached: true,
-      env: {
-        ...process.env,
-        PORT: String(TEST_PORT),
-        APP_ORIGIN: ORIGIN,
-      },
-      stdio: 'pipe',
+  // Check if a dev server is already running on port 3000
+  let isExistingServerLive = false;
+  try {
+    const probe = await fetch('http://localhost:3000/api/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:3000' },
+      body: JSON.stringify({ email: 'probe@internal', password: 'probe' }),
+    });
+    if (probe.status === 401 || probe.status === 400 || probe.status === 405) {
+      isExistingServerLive = true;
+      ORIGIN = 'http://localhost:3000';
     }
-  );
+  } catch {}
 
-  // Poll until the server is responding to HTTP requests
-  const start = Date.now();
-  let isReady = false;
-  while (Date.now() - start < 30000) {
-    try {
-      const res = await fetch(`${ORIGIN}/api/session`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Origin: ORIGIN,
+  if (!isExistingServerLive) {
+    // Spawn Next.js server with APP_ORIGIN matching the test port
+    serverProcess = spawn(
+      'npx',
+      ['next', 'dev', '-p', String(TEST_PORT)],
+      {
+        detached: true,
+        env: {
+          ...process.env,
+          PORT: String(TEST_PORT),
+          APP_ORIGIN: ORIGIN,
         },
-        body: JSON.stringify({ email: 'test_probe@test.internal', password: 'probe' }),
-      });
-      // Any standard response (e.g. 401 INVALID_CREDENTIALS) confirms server is live
-      if (res.status === 401 || res.status === 200 || res.status === 400) {
-        isReady = true;
-        break;
+        stdio: 'pipe',
       }
-    } catch {
-      await new Promise(r => setTimeout(r, 400));
-    }
-  }
+    );
 
-  if (!isReady) {
-    throw new Error('Next.js dev server failed to start within 30 seconds');
+    // Poll until the server is responding to HTTP requests
+    const start = Date.now();
+    let isReady = false;
+    while (Date.now() - start < 30000) {
+      try {
+        const res = await fetch(`${ORIGIN}/api/session`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Origin: ORIGIN,
+          },
+          body: JSON.stringify({ email: 'test_probe@test.internal', password: 'probe' }),
+        });
+        if (res.status === 401 || res.status === 200 || res.status === 400) {
+          isReady = true;
+          break;
+        }
+      } catch {
+        await new Promise(r => setTimeout(r, 400));
+      }
+    }
+
+    if (!isReady) {
+      throw new Error('Next.js dev server failed to start within 30 seconds');
+    }
   }
 });
 

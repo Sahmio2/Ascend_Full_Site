@@ -1,114 +1,447 @@
 generator client {
   provider = "prisma-client"
-  output = "../src/generated/prisma"
+  output   = "../src/generated/prisma"
 }
+
 datasource db {
   provider = "mysql"
 }
+
 enum Role {
   CLIENT
   COACH
 }
+
 enum Metric {
   BODYWEIGHT_KG
   WAIST_CM
 }
+
 model User {
-  id String @id @default(cuid())
-  email String @unique @db.VarChar(191)
-  passwordHash String? @db.VarChar(255)
-  role Role @default(CLIENT)
-  timeZone String @default("Africa/Lagos") @db.VarChar(64)
-  createdAt DateTime @default(now())
-  sessions Session[]
-  observations Observation[]
-  workouts Workout[]
-  awards AchievementAward[]
+  id                   String                 @id @default(cuid())
+  email                String                 @unique @db.VarChar(191)
+  passwordHash         String?                @db.VarChar(255)
+  role                 Role                   @default(CLIENT)
+  timeZone             String                 @default("Africa/Lagos") @db.VarChar(64)
+  createdAt            DateTime               @default(now())
+  sessions             Session[]
+  observations         Observation[]
+  workouts             Workout[]
+  awards               AchievementAward[]
+  capacityReservations CapacityReservation[]
+  membership           Membership?
+  payments             Payment[]
+  waitlist             WaitlistEntry?
+  screening            RegistrantScreening?
+  assessment           ClientAssessment?
+  mealLogs             DailyMealLog[]
+  nutritionTarget      NutritionTarget?
+  workoutSessions      ClientWorkoutSession[]
+  programmes           ProgrammeDraft[]       @relation("ClientProgrammes")
+  checkIns             CoachingCheckIn[]      @relation("ClientCheckIns")
+  priorityMessages     PriorityMessage[]      @relation("ClientPriorityMessages")
 }
+
 model Session {
-  tokenHash String @id @db.Char(64)
-  userId String
-  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  tokenHash String    @id @db.Char(64)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   revokedAt DateTime?
-  @@index([userId,expiresAt])
+
+  @@index([userId, expiresAt])
 }
+
 model Observation {
-  id String @id @default(cuid())
-  userId String
-  user User @relation(fields:[userId],references:[id],onDelete:Restrict)
-  metric Metric
-  value Decimal @db.Decimal(8,3)
-  measuredAt DateTime @db.DateTime(3)
-  createdAt DateTime @default(now())
-  voidedAt DateTime?
-  requestId String @db.Char(36)
-  payloadHash String @db.Char(64)
-  @@unique([userId,requestId])
-  @@index([userId,metric,measuredAt,id])
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  metric      Metric
+  value       Decimal   @db.Decimal(8, 3)
+  measuredAt  DateTime  @db.DateTime(3)
+  createdAt   DateTime  @default(now())
+  voidedAt    DateTime?
+  requestId   String    @db.Char(36)
+  payloadHash String    @db.Char(64)
+
+  @@unique([userId, requestId])
+  @@index([userId, metric, measuredAt, id])
 }
+
 model Exercise {
-  id String @id
-  name String
-  variation String
-  equipment String
+  id             String       @id
+  name           String
+  variation      String
+  equipment      String
   loadConvention String // TOTAL, PER_HAND, ADDED or ASSISTANCE; never infer across conventions.
-  sets WorkoutSet[]
+  sets           WorkoutSet[]
 }
+
 model Workout {
-  id String @id @default(cuid())
-  userId String
-  user User @relation(fields:[userId],references:[id],onDelete:Restrict)
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Restrict)
   prescriptionId String? // Stable scheduled-session ID, retained through rescheduling.
-  scheduledAt DateTime?
-  completedAt DateTime?
-  sets WorkoutSet[]
-  @@unique([userId,prescriptionId])
-  @@index([userId,completedAt])
+  scheduledAt    DateTime?
+  completedAt    DateTime?
+  sets           WorkoutSet[]
+
+  @@unique([userId, prescriptionId])
+  @@index([userId, completedAt])
 }
+
 model WorkoutSet {
-  id String @id @default(cuid())
-  workoutId String
-  workout Workout @relation(fields:[workoutId],references:[id],onDelete:Restrict)
-  exerciseId String
-  exercise Exercise @relation(fields:[exerciseId],references:[id],onDelete:Restrict)
-  position Int
-  loadKg Decimal @db.Decimal(9,4)
-  reps Int
-  isWarmup Boolean @default(false)
-  isEstimated Boolean @default(false)
+  id          String   @id @default(cuid())
+  workoutId   String
+  workout     Workout  @relation(fields: [workoutId], references: [id], onDelete: Restrict)
+  exerciseId  String
+  exercise    Exercise @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+  position    Int
+  loadKg      Decimal  @db.Decimal(9, 4)
+  reps        Int
+  isWarmup    Boolean  @default(false)
+  isEstimated Boolean  @default(false)
   performedAt DateTime
-  @@unique([workoutId,position])
+
+  @@unique([workoutId, position])
 }
+
 model AchievementGroup {
-  id String @id
-  name String @unique
-  position Int
+  id          String                  @id
+  name        String                  @unique
+  position    Int
   definitions AchievementDefinition[]
 }
+
 model AchievementDefinition {
-  id String @id
-  groupId String
-  group AchievementGroup @relation(fields:[groupId],references:[id])
-  name String
-  subtitle String
-  threshold Decimal? @db.Decimal(14,8)
-  unit String?
-  ruleVersion Int @default(1)
-  evaluationEnabled Boolean @default(false)
-  repeatable Boolean @default(false)
-  awards AchievementAward[]
+  id                String             @id
+  groupId           String
+  group             AchievementGroup   @relation(fields: [groupId], references: [id])
+  name              String
+  subtitle          String
+  threshold         Decimal?           @db.Decimal(14, 8)
+  unit              String?
+  ruleVersion       Int                @default(1)
+  evaluationEnabled Boolean            @default(false)
+  repeatable        Boolean            @default(false)
+  awards            AchievementAward[]
 }
+
 model AchievementAward {
-  id String @id @default(cuid())
-  userId String
-  user User @relation(fields:[userId],references:[id],onDelete:Restrict)
-  definitionId String
-  definition AchievementDefinition @relation(fields:[definitionId],references:[id])
-  eventKey String @db.VarChar(191) // 'once' for one-time badges; source-event ID for repeatable records.
-  evidence Json
-  ruleVersion Int
-  awardedAt DateTime @default(now())
+  id            String                @id @default(cuid())
+  userId        String
+  user          User                  @relation(fields: [userId], references: [id], onDelete: Restrict)
+  definitionId  String
+  definition    AchievementDefinition @relation(fields: [definitionId], references: [id])
+  eventKey      String                @db.VarChar(191) // 'once' for one-time badges; source-event ID for repeatable records.
+  evidence      Json
+  ruleVersion   Int
+  awardedAt     DateTime              @default(now())
   confirmedById String? // Future approval service must verify assigned coach and append audit evidence.
-  @@unique([userId,definitionId,eventKey])
+
+  @@unique([userId, definitionId, eventKey])
+}
+
+enum MembershipStatus {
+  PENDING
+  ACTIVE_RENEWING
+  NON_RENEWING
+  PAYMENT_ACTION_REQUIRED
+  ENDED
+}
+
+enum ReservationStatus {
+  PENDING
+  COMMITTED
+  EXPIRED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum WaitlistStatus {
+  WAITING
+  INVITED
+  DECLINED
+  EXPIRED
+}
+
+enum EligibilityStatus {
+  CLEAR
+  UNDER_16
+  GUARDIAN_PENDING
+  SAFETY_HOLD
+  EQUIPMENT_HOLD
+  NOT_READY
+  CAPACITY_WAIT
+}
+
+enum AssessmentStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SAFETY_HELD
+  SUBMITTED
+  APPROVED
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
+enum MealStatus {
+  NOT_RECORDED
+  PLANNED
+  CHANGED
+  SKIPPED
+}
+
+enum CheckInStatus {
+  SCHEDULED
+  SUBMITTED
+  REVIEWED
+  MISSED
+}
+
+model CapacityPolicy {
+  id                   String   @id @default("default")
+  maxActiveClients     Int      @default(10)
+  maxWeeklyOnboardings Int      @default(3)
+  updatedAt            DateTime @updatedAt
+}
+
+model CapacityReservation {
+  id        String            @id @default(cuid())
+  token     String            @unique @db.VarChar(64)
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    ReservationStatus @default(PENDING)
+  weekKey   String            @db.VarChar(16)
+  expiresAt DateTime
+  createdAt DateTime          @default(now())
+
+  @@index([userId, status])
+  @@index([weekKey, status])
+}
+
+model Membership {
+  id                        String           @id @default(cuid())
+  userId                    String           @unique
+  user                      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status                    MembershipStatus @default(PENDING)
+  paidThrough               DateTime?
+  paystackCustomerCode      String?          @db.VarChar(128)
+  paystackSubscriptionCode  String?          @db.VarChar(128)
+  paystackEmailToken        String?          @db.VarChar(128)
+  planCode                  String           @default("PLN_ascend_monthly") @db.VarChar(64)
+  priceKobo                 Int              @default(4000000)
+  cancelAtPeriodEnd         Boolean          @default(false)
+  cancelledAt               DateTime?
+  priorityMessagesRemaining Int              @default(2)
+  reviewsRemaining          Int              @default(2)
+  createdAt                 DateTime         @default(now())
+  updatedAt                 DateTime         @updatedAt
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  reference   String        @unique @db.VarChar(128)
+  amountKobo  Int
+  currency    String        @default("NGN") @db.VarChar(8)
+  status      PaymentStatus @default(PENDING)
+  paidAt      DateTime?
+  channel     String?       @db.VarChar(32)
+  rawMetadata Json?
+  createdAt   DateTime      @default(now())
+
+  @@index([userId, paidAt])
+}
+
+model ProviderEventInbox {
+  id          String    @id @default(cuid())
+  eventHash   String    @unique @db.VarChar(128)
+  eventType   String    @db.VarChar(64)
+  payload     Json
+  processedAt DateTime?
+  outcome     String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now())
+}
+
+model WaitlistEntry {
+  id         String         @id @default(cuid())
+  userId     String         @unique
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status     WaitlistStatus @default(WAITING)
+  optInProof Json?
+  invitedAt  DateTime?
+  expiresAt  DateTime?
+  createdAt  DateTime       @default(now())
+}
+
+model RegistrantScreening {
+  id               String            @id @default(cuid())
+  userId           String            @unique
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName        String            @db.VarChar(64)
+  whatsappNumber   String            @db.VarChar(32)
+  mainGoal         String            @db.VarChar(64)
+  gymExperience    String            @db.VarChar(64)
+  trainingLocation String            @db.VarChar(64)
+  daysPerWeek      String            @db.VarChar(32)
+  ageRange         String            @db.VarChar(32)
+  medicalClearance String            @db.VarChar(32)
+  readySevenDays   String            @db.VarChar(16)
+  eligibility      EligibilityStatus @default(CLEAR)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model ClientAssessment {
+  id            String                @id @default(cuid())
+  userId        String                @unique
+  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status        AssessmentStatus      @default(NOT_STARTED)
+  safetyFlags   Json?
+  deliveryDueAt DateTime?
+  submittedAt   DateTime?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  stages        AssessmentStageData[]
+}
+
+model AssessmentStageData {
+  id           String           @id @default(cuid())
+  assessmentId String
+  assessment   ClientAssessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  stageCode    String           @db.VarChar(16)
+  data         Json
+  completedAt  DateTime?
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([assessmentId, stageCode])
+}
+
+model DailyMealLog {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date        String     @db.VarChar(10)
+  mealType    MealType
+  mealName    String     @db.VarChar(64)
+  status      MealStatus @default(NOT_RECORDED)
+  customFoods Json?
+  notes       String?    @db.Text
+  recordedAt  DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([userId, date, mealType])
+  @@index([userId, date])
+}
+
+model NutritionTarget {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kcal         Int      @default(2200)
+  proteinGrams Int      @default(135)
+  carbsGrams   Int      @default(250)
+  fatGrams     Int      @default(75)
+  updatedAt    DateTime @updatedAt
+}
+
+model ExerciseSwap {
+  id                String  @id @default(cuid())
+  sourceExerciseId  String
+  swappedExerciseId String
+  swapName          String  @db.VarChar(128)
+  note              String  @db.Text
+  isCoachApproved   Boolean @default(true)
+}
+
+model ClientWorkoutSession {
+  id          String                @id @default(cuid())
+  userId      String
+  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workoutId   String                @db.VarChar(64)
+  workoutName String                @db.VarChar(128)
+  startedAt   DateTime              @default(now())
+  completedAt DateTime?
+  status      String                @default("IN_PROGRESS") @db.VarChar(32)
+  notes       String?               @db.Text
+  setLogs     ClientWorkoutSetLog[]
+
+  @@index([userId, startedAt])
+}
+
+model ClientWorkoutSetLog {
+  id           String               @id @default(cuid())
+  sessionId    String
+  session      ClientWorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exerciseId   String               @db.VarChar(64)
+  exerciseName String               @db.VarChar(128)
+  setIndex     Int
+  isWarmup     Boolean              @default(false)
+  weightKg     Decimal              @db.Decimal(6, 2)
+  reps         Int
+  completed    Boolean              @default(true)
+  loggedAt     DateTime             @default(now())
+
+  @@index([sessionId, exerciseId])
+}
+
+model ProgrammeDraft {
+  id            String    @id @default(cuid())
+  clientUserId  String
+  clientUser    User      @relation("ClientProgrammes", fields: [clientUserId], references: [id], onDelete: Cascade)
+  version       String    @db.VarChar(32)
+  isPublished   Boolean   @default(false)
+  trainingJson  Json
+  nutritionJson Json
+  coachNotes    String?   @db.Text
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([clientUserId, isPublished])
+}
+
+model CoachingCheckIn {
+  id            String        @id @default(cuid())
+  clientUserId  String
+  clientUser    User          @relation("ClientCheckIns", fields: [clientUserId], references: [id], onDelete: Cascade)
+  scheduledDate DateTime
+  submittedAt   DateTime?
+  clientNotes   String?       @db.Text
+  coachDecision String?       @db.VarChar(64)
+  coachFeedback String?       @db.Text
+  reviewedAt    DateTime?
+  status        CheckInStatus @default(SCHEDULED)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([clientUserId, scheduledDate])
+}
+
+model PriorityMessage {
+  id           String    @id @default(cuid())
+  clientUserId String
+  clientUser   User      @relation("ClientPriorityMessages", fields: [clientUserId], references: [id], onDelete: Cascade)
+  subject      String    @db.VarChar(128)
+  body         String    @db.Text
+  reply        String?   @db.Text
+  repliedAt    DateTime?
+  status       String    @default("OPEN") @db.VarChar(32)
+  createdAt    DateTime  @default(now())
+
+  @@index([clientUserId, status])
 }

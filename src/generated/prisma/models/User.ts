@@ -194,6 +194,18 @@ export type UserWhereInput = {
   observations?: Prisma.ObservationListRelationFilter
   workouts?: Prisma.WorkoutListRelationFilter
   awards?: Prisma.AchievementAwardListRelationFilter
+  capacityReservations?: Prisma.CapacityReservationListRelationFilter
+  membership?: Prisma.XOR<Prisma.MembershipNullableScalarRelationFilter, Prisma.MembershipWhereInput> | null
+  payments?: Prisma.PaymentListRelationFilter
+  waitlist?: Prisma.XOR<Prisma.WaitlistEntryNullableScalarRelationFilter, Prisma.WaitlistEntryWhereInput> | null
+  screening?: Prisma.XOR<Prisma.RegistrantScreeningNullableScalarRelationFilter, Prisma.RegistrantScreeningWhereInput> | null
+  assessment?: Prisma.XOR<Prisma.ClientAssessmentNullableScalarRelationFilter, Prisma.ClientAssessmentWhereInput> | null
+  mealLogs?: Prisma.DailyMealLogListRelationFilter
+  nutritionTarget?: Prisma.XOR<Prisma.NutritionTargetNullableScalarRelationFilter, Prisma.NutritionTargetWhereInput> | null
+  workoutSessions?: Prisma.ClientWorkoutSessionListRelationFilter
+  programmes?: Prisma.ProgrammeDraftListRelationFilter
+  checkIns?: Prisma.CoachingCheckInListRelationFilter
+  priorityMessages?: Prisma.PriorityMessageListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -207,6 +219,18 @@ export type UserOrderByWithRelationInput = {
   observations?: Prisma.ObservationOrderByRelationAggregateInput
   workouts?: Prisma.WorkoutOrderByRelationAggregateInput
   awards?: Prisma.AchievementAwardOrderByRelationAggregateInput
+  capacityReservations?: Prisma.CapacityReservationOrderByRelationAggregateInput
+  membership?: Prisma.MembershipOrderByWithRelationInput
+  payments?: Prisma.PaymentOrderByRelationAggregateInput
+  waitlist?: Prisma.WaitlistEntryOrderByWithRelationInput
+  screening?: Prisma.RegistrantScreeningOrderByWithRelationInput
+  assessment?: Prisma.ClientAssessmentOrderByWithRelationInput
+  mealLogs?: Prisma.DailyMealLogOrderByRelationAggregateInput
+  nutritionTarget?: Prisma.NutritionTargetOrderByWithRelationInput
+  workoutSessions?: Prisma.ClientWorkoutSessionOrderByRelationAggregateInput
+  programmes?: Prisma.ProgrammeDraftOrderByRelationAggregateInput
+  checkIns?: Prisma.CoachingCheckInOrderByRelationAggregateInput
+  priorityMessages?: Prisma.PriorityMessageOrderByRelationAggregateInput
   _relevance?: Prisma.UserOrderByRelevanceInput
 }
 
@@ -224,6 +248,18 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   observations?: Prisma.ObservationListRelationFilter
   workouts?: Prisma.WorkoutListRelationFilter
   awards?: Prisma.AchievementAwardListRelationFilter
+  capacityReservations?: Prisma.CapacityReservationListRelationFilter
+  membership?: Prisma.XOR<Prisma.MembershipNullableScalarRelationFilter, Prisma.MembershipWhereInput> | null
+  payments?: Prisma.PaymentListRelationFilter
+  waitlist?: Prisma.XOR<Prisma.WaitlistEntryNullableScalarRelationFilter, Prisma.WaitlistEntryWhereInput> | null
+  screening?: Prisma.XOR<Prisma.RegistrantScreeningNullableScalarRelationFilter, Prisma.RegistrantScreeningWhereInput> | null
+  assessment?: Prisma.XOR<Prisma.ClientAssessmentNullableScalarRelationFilter, Prisma.ClientAssessmentWhereInput> | null
+  mealLogs?: Prisma.DailyMealLogListRelationFilter
+  nutritionTarget?: Prisma.XOR<Prisma.NutritionTargetNullableScalarRelationFilter, Prisma.NutritionTargetWhereInput> | null
+  workoutSessions?: Prisma.ClientWorkoutSessionListRelationFilter
+  programmes?: Prisma.ProgrammeDraftListRelationFilter
+  checkIns?: Prisma.CoachingCheckInListRelationFilter
+  priorityMessages?: Prisma.PriorityMessageListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -261,6 +297,18 @@ export type UserCreateInput = {
   observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
   workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
   awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -274,6 +322,18 @@ export type UserUncheckedCreateInput = {
   observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
   workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
   awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
 }
 
 export type UserUpdateInput = {
@@ -287,6 +347,18 @@ export type UserUpdateInput = {
   observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
   workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
   awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -300,6 +372,18 @@ export type UserUncheckedUpdateInput = {
   observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
   workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
   awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -439,6 +523,174 @@ export type UserUpdateOneRequiredWithoutAwardsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAwardsInput, Prisma.UserUpdateWithoutAwardsInput>, Prisma.UserUncheckedUpdateWithoutAwardsInput>
 }
 
+export type UserCreateNestedOneWithoutCapacityReservationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCapacityReservationsInput, Prisma.UserUncheckedCreateWithoutCapacityReservationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCapacityReservationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCapacityReservationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCapacityReservationsInput, Prisma.UserUncheckedCreateWithoutCapacityReservationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCapacityReservationsInput
+  upsert?: Prisma.UserUpsertWithoutCapacityReservationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCapacityReservationsInput, Prisma.UserUpdateWithoutCapacityReservationsInput>, Prisma.UserUncheckedUpdateWithoutCapacityReservationsInput>
+}
+
+export type UserCreateNestedOneWithoutMembershipInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMembershipInput, Prisma.UserUncheckedCreateWithoutMembershipInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMembershipInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMembershipNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMembershipInput, Prisma.UserUncheckedCreateWithoutMembershipInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMembershipInput
+  upsert?: Prisma.UserUpsertWithoutMembershipInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMembershipInput, Prisma.UserUpdateWithoutMembershipInput>, Prisma.UserUncheckedUpdateWithoutMembershipInput>
+}
+
+export type UserCreateNestedOneWithoutPaymentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentsInput, Prisma.UserUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentsInput, Prisma.UserUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentsInput
+  upsert?: Prisma.UserUpsertWithoutPaymentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPaymentsInput, Prisma.UserUpdateWithoutPaymentsInput>, Prisma.UserUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type UserCreateNestedOneWithoutWaitlistInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWaitlistInput, Prisma.UserUncheckedCreateWithoutWaitlistInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWaitlistInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutWaitlistNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWaitlistInput, Prisma.UserUncheckedCreateWithoutWaitlistInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWaitlistInput
+  upsert?: Prisma.UserUpsertWithoutWaitlistInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWaitlistInput, Prisma.UserUpdateWithoutWaitlistInput>, Prisma.UserUncheckedUpdateWithoutWaitlistInput>
+}
+
+export type UserCreateNestedOneWithoutScreeningInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutScreeningInput, Prisma.UserUncheckedCreateWithoutScreeningInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutScreeningInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutScreeningNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutScreeningInput, Prisma.UserUncheckedCreateWithoutScreeningInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutScreeningInput
+  upsert?: Prisma.UserUpsertWithoutScreeningInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutScreeningInput, Prisma.UserUpdateWithoutScreeningInput>, Prisma.UserUncheckedUpdateWithoutScreeningInput>
+}
+
+export type UserCreateNestedOneWithoutAssessmentInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssessmentInput, Prisma.UserUncheckedCreateWithoutAssessmentInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssessmentInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAssessmentNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssessmentInput, Prisma.UserUncheckedCreateWithoutAssessmentInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssessmentInput
+  upsert?: Prisma.UserUpsertWithoutAssessmentInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssessmentInput, Prisma.UserUpdateWithoutAssessmentInput>, Prisma.UserUncheckedUpdateWithoutAssessmentInput>
+}
+
+export type UserCreateNestedOneWithoutMealLogsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMealLogsInput, Prisma.UserUncheckedCreateWithoutMealLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMealLogsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMealLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMealLogsInput, Prisma.UserUncheckedCreateWithoutMealLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMealLogsInput
+  upsert?: Prisma.UserUpsertWithoutMealLogsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMealLogsInput, Prisma.UserUpdateWithoutMealLogsInput>, Prisma.UserUncheckedUpdateWithoutMealLogsInput>
+}
+
+export type UserCreateNestedOneWithoutNutritionTargetInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNutritionTargetInput, Prisma.UserUncheckedCreateWithoutNutritionTargetInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNutritionTargetInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutNutritionTargetNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNutritionTargetInput, Prisma.UserUncheckedCreateWithoutNutritionTargetInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNutritionTargetInput
+  upsert?: Prisma.UserUpsertWithoutNutritionTargetInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNutritionTargetInput, Prisma.UserUpdateWithoutNutritionTargetInput>, Prisma.UserUncheckedUpdateWithoutNutritionTargetInput>
+}
+
+export type UserCreateNestedOneWithoutWorkoutSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWorkoutSessionsInput, Prisma.UserUncheckedCreateWithoutWorkoutSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWorkoutSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutWorkoutSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWorkoutSessionsInput, Prisma.UserUncheckedCreateWithoutWorkoutSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWorkoutSessionsInput
+  upsert?: Prisma.UserUpsertWithoutWorkoutSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWorkoutSessionsInput, Prisma.UserUpdateWithoutWorkoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutWorkoutSessionsInput>
+}
+
+export type UserCreateNestedOneWithoutProgrammesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProgrammesInput, Prisma.UserUncheckedCreateWithoutProgrammesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProgrammesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutProgrammesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProgrammesInput, Prisma.UserUncheckedCreateWithoutProgrammesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProgrammesInput
+  upsert?: Prisma.UserUpsertWithoutProgrammesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProgrammesInput, Prisma.UserUpdateWithoutProgrammesInput>, Prisma.UserUncheckedUpdateWithoutProgrammesInput>
+}
+
+export type UserCreateNestedOneWithoutCheckInsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCheckInsInput, Prisma.UserUncheckedCreateWithoutCheckInsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCheckInsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCheckInsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCheckInsInput, Prisma.UserUncheckedCreateWithoutCheckInsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCheckInsInput
+  upsert?: Prisma.UserUpsertWithoutCheckInsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCheckInsInput, Prisma.UserUpdateWithoutCheckInsInput>, Prisma.UserUncheckedUpdateWithoutCheckInsInput>
+}
+
+export type UserCreateNestedOneWithoutPriorityMessagesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPriorityMessagesInput, Prisma.UserUncheckedCreateWithoutPriorityMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPriorityMessagesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPriorityMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPriorityMessagesInput, Prisma.UserUncheckedCreateWithoutPriorityMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPriorityMessagesInput
+  upsert?: Prisma.UserUpsertWithoutPriorityMessagesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPriorityMessagesInput, Prisma.UserUpdateWithoutPriorityMessagesInput>, Prisma.UserUncheckedUpdateWithoutPriorityMessagesInput>
+}
+
 export type UserCreateWithoutSessionsInput = {
   id?: string
   email: string
@@ -449,6 +701,18 @@ export type UserCreateWithoutSessionsInput = {
   observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
   workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
   awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -461,6 +725,18 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
   workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
   awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -489,6 +765,18 @@ export type UserUpdateWithoutSessionsInput = {
   observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
   workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
   awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -501,6 +789,18 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
   workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
   awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
 }
 
 export type UserCreateWithoutObservationsInput = {
@@ -513,6 +813,18 @@ export type UserCreateWithoutObservationsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
   awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
 }
 
 export type UserUncheckedCreateWithoutObservationsInput = {
@@ -525,6 +837,18 @@ export type UserUncheckedCreateWithoutObservationsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
   awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
 }
 
 export type UserCreateOrConnectWithoutObservationsInput = {
@@ -553,6 +877,18 @@ export type UserUpdateWithoutObservationsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
   awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutObservationsInput = {
@@ -565,6 +901,18 @@ export type UserUncheckedUpdateWithoutObservationsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
   awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
 }
 
 export type UserCreateWithoutWorkoutsInput = {
@@ -577,6 +925,18 @@ export type UserCreateWithoutWorkoutsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
   awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
 }
 
 export type UserUncheckedCreateWithoutWorkoutsInput = {
@@ -589,6 +949,18 @@ export type UserUncheckedCreateWithoutWorkoutsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
   awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
 }
 
 export type UserCreateOrConnectWithoutWorkoutsInput = {
@@ -617,6 +989,18 @@ export type UserUpdateWithoutWorkoutsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
   awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkoutsInput = {
@@ -629,6 +1013,18 @@ export type UserUncheckedUpdateWithoutWorkoutsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
   awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
 }
 
 export type UserCreateWithoutAwardsInput = {
@@ -641,6 +1037,18 @@ export type UserCreateWithoutAwardsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
   workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
 }
 
 export type UserUncheckedCreateWithoutAwardsInput = {
@@ -653,6 +1061,18 @@ export type UserUncheckedCreateWithoutAwardsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
   workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
 }
 
 export type UserCreateOrConnectWithoutAwardsInput = {
@@ -681,6 +1101,18 @@ export type UserUpdateWithoutAwardsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
   workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAwardsInput = {
@@ -693,6 +1125,1362 @@ export type UserUncheckedUpdateWithoutAwardsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
   workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutCapacityReservationsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutCapacityReservationsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutCapacityReservationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCapacityReservationsInput, Prisma.UserUncheckedCreateWithoutCapacityReservationsInput>
+}
+
+export type UserUpsertWithoutCapacityReservationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCapacityReservationsInput, Prisma.UserUncheckedUpdateWithoutCapacityReservationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCapacityReservationsInput, Prisma.UserUncheckedCreateWithoutCapacityReservationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCapacityReservationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCapacityReservationsInput, Prisma.UserUncheckedUpdateWithoutCapacityReservationsInput>
+}
+
+export type UserUpdateWithoutCapacityReservationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCapacityReservationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutMembershipInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutMembershipInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutMembershipInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMembershipInput, Prisma.UserUncheckedCreateWithoutMembershipInput>
+}
+
+export type UserUpsertWithoutMembershipInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMembershipInput, Prisma.UserUncheckedUpdateWithoutMembershipInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMembershipInput, Prisma.UserUncheckedCreateWithoutMembershipInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMembershipInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMembershipInput, Prisma.UserUncheckedUpdateWithoutMembershipInput>
+}
+
+export type UserUpdateWithoutMembershipInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMembershipInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutPaymentsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutPaymentsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutPaymentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPaymentsInput, Prisma.UserUncheckedCreateWithoutPaymentsInput>
+}
+
+export type UserUpsertWithoutPaymentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPaymentsInput, Prisma.UserUncheckedUpdateWithoutPaymentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPaymentsInput, Prisma.UserUncheckedCreateWithoutPaymentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPaymentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPaymentsInput, Prisma.UserUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type UserUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutWaitlistInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutWaitlistInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutWaitlistInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWaitlistInput, Prisma.UserUncheckedCreateWithoutWaitlistInput>
+}
+
+export type UserUpsertWithoutWaitlistInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWaitlistInput, Prisma.UserUncheckedUpdateWithoutWaitlistInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWaitlistInput, Prisma.UserUncheckedCreateWithoutWaitlistInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWaitlistInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWaitlistInput, Prisma.UserUncheckedUpdateWithoutWaitlistInput>
+}
+
+export type UserUpdateWithoutWaitlistInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWaitlistInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutScreeningInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutScreeningInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutScreeningInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutScreeningInput, Prisma.UserUncheckedCreateWithoutScreeningInput>
+}
+
+export type UserUpsertWithoutScreeningInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutScreeningInput, Prisma.UserUncheckedUpdateWithoutScreeningInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutScreeningInput, Prisma.UserUncheckedCreateWithoutScreeningInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutScreeningInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutScreeningInput, Prisma.UserUncheckedUpdateWithoutScreeningInput>
+}
+
+export type UserUpdateWithoutScreeningInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutScreeningInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutAssessmentInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutAssessmentInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutAssessmentInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssessmentInput, Prisma.UserUncheckedCreateWithoutAssessmentInput>
+}
+
+export type UserUpsertWithoutAssessmentInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAssessmentInput, Prisma.UserUncheckedUpdateWithoutAssessmentInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssessmentInput, Prisma.UserUncheckedCreateWithoutAssessmentInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAssessmentInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAssessmentInput, Prisma.UserUncheckedUpdateWithoutAssessmentInput>
+}
+
+export type UserUpdateWithoutAssessmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAssessmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutMealLogsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutMealLogsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutMealLogsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMealLogsInput, Prisma.UserUncheckedCreateWithoutMealLogsInput>
+}
+
+export type UserUpsertWithoutMealLogsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMealLogsInput, Prisma.UserUncheckedUpdateWithoutMealLogsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMealLogsInput, Prisma.UserUncheckedCreateWithoutMealLogsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMealLogsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMealLogsInput, Prisma.UserUncheckedUpdateWithoutMealLogsInput>
+}
+
+export type UserUpdateWithoutMealLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMealLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutNutritionTargetInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutNutritionTargetInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutNutritionTargetInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutNutritionTargetInput, Prisma.UserUncheckedCreateWithoutNutritionTargetInput>
+}
+
+export type UserUpsertWithoutNutritionTargetInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNutritionTargetInput, Prisma.UserUncheckedUpdateWithoutNutritionTargetInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNutritionTargetInput, Prisma.UserUncheckedCreateWithoutNutritionTargetInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutNutritionTargetInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNutritionTargetInput, Prisma.UserUncheckedUpdateWithoutNutritionTargetInput>
+}
+
+export type UserUpdateWithoutNutritionTargetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutNutritionTargetInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutWorkoutSessionsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutWorkoutSessionsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutWorkoutSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWorkoutSessionsInput, Prisma.UserUncheckedCreateWithoutWorkoutSessionsInput>
+}
+
+export type UserUpsertWithoutWorkoutSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWorkoutSessionsInput, Prisma.UserUncheckedUpdateWithoutWorkoutSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWorkoutSessionsInput, Prisma.UserUncheckedCreateWithoutWorkoutSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWorkoutSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWorkoutSessionsInput, Prisma.UserUncheckedUpdateWithoutWorkoutSessionsInput>
+}
+
+export type UserUpdateWithoutWorkoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWorkoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutProgrammesInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutProgrammesInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutProgrammesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutProgrammesInput, Prisma.UserUncheckedCreateWithoutProgrammesInput>
+}
+
+export type UserUpsertWithoutProgrammesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutProgrammesInput, Prisma.UserUncheckedUpdateWithoutProgrammesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutProgrammesInput, Prisma.UserUncheckedCreateWithoutProgrammesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutProgrammesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutProgrammesInput, Prisma.UserUncheckedUpdateWithoutProgrammesInput>
+}
+
+export type UserUpdateWithoutProgrammesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutProgrammesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutCheckInsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutCheckInsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutCheckInsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCheckInsInput, Prisma.UserUncheckedCreateWithoutCheckInsInput>
+}
+
+export type UserUpsertWithoutCheckInsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCheckInsInput, Prisma.UserUncheckedUpdateWithoutCheckInsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCheckInsInput, Prisma.UserUncheckedCreateWithoutCheckInsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCheckInsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCheckInsInput, Prisma.UserUncheckedUpdateWithoutCheckInsInput>
+}
+
+export type UserUpdateWithoutCheckInsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCheckInsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  priorityMessages?: Prisma.PriorityMessageUncheckedUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserCreateWithoutPriorityMessagesInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInCreateNestedManyWithoutClientUserInput
+}
+
+export type UserUncheckedCreateWithoutPriorityMessagesInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.Role
+  timeZone?: string
+  createdAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  observations?: Prisma.ObservationUncheckedCreateNestedManyWithoutUserInput
+  workouts?: Prisma.WorkoutUncheckedCreateNestedManyWithoutUserInput
+  awards?: Prisma.AchievementAwardUncheckedCreateNestedManyWithoutUserInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedCreateNestedManyWithoutUserInput
+  membership?: Prisma.MembershipUncheckedCreateNestedOneWithoutUserInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
+  waitlist?: Prisma.WaitlistEntryUncheckedCreateNestedOneWithoutUserInput
+  screening?: Prisma.RegistrantScreeningUncheckedCreateNestedOneWithoutUserInput
+  assessment?: Prisma.ClientAssessmentUncheckedCreateNestedOneWithoutUserInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutUserInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedCreateNestedOneWithoutUserInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutUserInput
+  programmes?: Prisma.ProgrammeDraftUncheckedCreateNestedManyWithoutClientUserInput
+  checkIns?: Prisma.CoachingCheckInUncheckedCreateNestedManyWithoutClientUserInput
+}
+
+export type UserCreateOrConnectWithoutPriorityMessagesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPriorityMessagesInput, Prisma.UserUncheckedCreateWithoutPriorityMessagesInput>
+}
+
+export type UserUpsertWithoutPriorityMessagesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPriorityMessagesInput, Prisma.UserUncheckedUpdateWithoutPriorityMessagesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPriorityMessagesInput, Prisma.UserUncheckedCreateWithoutPriorityMessagesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPriorityMessagesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPriorityMessagesInput, Prisma.UserUncheckedUpdateWithoutPriorityMessagesInput>
+}
+
+export type UserUpdateWithoutPriorityMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUpdateManyWithoutClientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPriorityMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  timeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  observations?: Prisma.ObservationUncheckedUpdateManyWithoutUserNestedInput
+  workouts?: Prisma.WorkoutUncheckedUpdateManyWithoutUserNestedInput
+  awards?: Prisma.AchievementAwardUncheckedUpdateManyWithoutUserNestedInput
+  capacityReservations?: Prisma.CapacityReservationUncheckedUpdateManyWithoutUserNestedInput
+  membership?: Prisma.MembershipUncheckedUpdateOneWithoutUserNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
+  waitlist?: Prisma.WaitlistEntryUncheckedUpdateOneWithoutUserNestedInput
+  screening?: Prisma.RegistrantScreeningUncheckedUpdateOneWithoutUserNestedInput
+  assessment?: Prisma.ClientAssessmentUncheckedUpdateOneWithoutUserNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutUserNestedInput
+  nutritionTarget?: Prisma.NutritionTargetUncheckedUpdateOneWithoutUserNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutUserNestedInput
+  programmes?: Prisma.ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput
+  checkIns?: Prisma.CoachingCheckInUncheckedUpdateManyWithoutClientUserNestedInput
 }
 
 
@@ -705,6 +2493,13 @@ export type UserCountOutputType = {
   observations: number
   workouts: number
   awards: number
+  capacityReservations: number
+  payments: number
+  mealLogs: number
+  workoutSessions: number
+  programmes: number
+  checkIns: number
+  priorityMessages: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -712,6 +2507,13 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   observations?: boolean | UserCountOutputTypeCountObservationsArgs
   workouts?: boolean | UserCountOutputTypeCountWorkoutsArgs
   awards?: boolean | UserCountOutputTypeCountAwardsArgs
+  capacityReservations?: boolean | UserCountOutputTypeCountCapacityReservationsArgs
+  payments?: boolean | UserCountOutputTypeCountPaymentsArgs
+  mealLogs?: boolean | UserCountOutputTypeCountMealLogsArgs
+  workoutSessions?: boolean | UserCountOutputTypeCountWorkoutSessionsArgs
+  programmes?: boolean | UserCountOutputTypeCountProgrammesArgs
+  checkIns?: boolean | UserCountOutputTypeCountCheckInsArgs
+  priorityMessages?: boolean | UserCountOutputTypeCountPriorityMessagesArgs
 }
 
 /**
@@ -752,6 +2554,55 @@ export type UserCountOutputTypeCountAwardsArgs<ExtArgs extends runtime.Types.Ext
   where?: Prisma.AchievementAwardWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCapacityReservationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CapacityReservationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMealLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DailyMealLogWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountWorkoutSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClientWorkoutSessionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountProgrammesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProgrammeDraftWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCheckInsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CoachingCheckInWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPriorityMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PriorityMessageWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -764,6 +2615,18 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   observations?: boolean | Prisma.User$observationsArgs<ExtArgs>
   workouts?: boolean | Prisma.User$workoutsArgs<ExtArgs>
   awards?: boolean | Prisma.User$awardsArgs<ExtArgs>
+  capacityReservations?: boolean | Prisma.User$capacityReservationsArgs<ExtArgs>
+  membership?: boolean | Prisma.User$membershipArgs<ExtArgs>
+  payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
+  waitlist?: boolean | Prisma.User$waitlistArgs<ExtArgs>
+  screening?: boolean | Prisma.User$screeningArgs<ExtArgs>
+  assessment?: boolean | Prisma.User$assessmentArgs<ExtArgs>
+  mealLogs?: boolean | Prisma.User$mealLogsArgs<ExtArgs>
+  nutritionTarget?: boolean | Prisma.User$nutritionTargetArgs<ExtArgs>
+  workoutSessions?: boolean | Prisma.User$workoutSessionsArgs<ExtArgs>
+  programmes?: boolean | Prisma.User$programmesArgs<ExtArgs>
+  checkIns?: boolean | Prisma.User$checkInsArgs<ExtArgs>
+  priorityMessages?: boolean | Prisma.User$priorityMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -784,6 +2647,18 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   observations?: boolean | Prisma.User$observationsArgs<ExtArgs>
   workouts?: boolean | Prisma.User$workoutsArgs<ExtArgs>
   awards?: boolean | Prisma.User$awardsArgs<ExtArgs>
+  capacityReservations?: boolean | Prisma.User$capacityReservationsArgs<ExtArgs>
+  membership?: boolean | Prisma.User$membershipArgs<ExtArgs>
+  payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
+  waitlist?: boolean | Prisma.User$waitlistArgs<ExtArgs>
+  screening?: boolean | Prisma.User$screeningArgs<ExtArgs>
+  assessment?: boolean | Prisma.User$assessmentArgs<ExtArgs>
+  mealLogs?: boolean | Prisma.User$mealLogsArgs<ExtArgs>
+  nutritionTarget?: boolean | Prisma.User$nutritionTargetArgs<ExtArgs>
+  workoutSessions?: boolean | Prisma.User$workoutSessionsArgs<ExtArgs>
+  programmes?: boolean | Prisma.User$programmesArgs<ExtArgs>
+  checkIns?: boolean | Prisma.User$checkInsArgs<ExtArgs>
+  priorityMessages?: boolean | Prisma.User$priorityMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -794,6 +2669,18 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     observations: Prisma.$ObservationPayload<ExtArgs>[]
     workouts: Prisma.$WorkoutPayload<ExtArgs>[]
     awards: Prisma.$AchievementAwardPayload<ExtArgs>[]
+    capacityReservations: Prisma.$CapacityReservationPayload<ExtArgs>[]
+    membership: Prisma.$MembershipPayload<ExtArgs> | null
+    payments: Prisma.$PaymentPayload<ExtArgs>[]
+    waitlist: Prisma.$WaitlistEntryPayload<ExtArgs> | null
+    screening: Prisma.$RegistrantScreeningPayload<ExtArgs> | null
+    assessment: Prisma.$ClientAssessmentPayload<ExtArgs> | null
+    mealLogs: Prisma.$DailyMealLogPayload<ExtArgs>[]
+    nutritionTarget: Prisma.$NutritionTargetPayload<ExtArgs> | null
+    workoutSessions: Prisma.$ClientWorkoutSessionPayload<ExtArgs>[]
+    programmes: Prisma.$ProgrammeDraftPayload<ExtArgs>[]
+    checkIns: Prisma.$CoachingCheckInPayload<ExtArgs>[]
+    priorityMessages: Prisma.$PriorityMessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1146,6 +3033,18 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   observations<T extends Prisma.User$observationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$observationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ObservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workouts<T extends Prisma.User$workoutsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workoutsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   awards<T extends Prisma.User$awardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$awardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AchievementAwardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  capacityReservations<T extends Prisma.User$capacityReservationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$capacityReservationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CapacityReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  membership<T extends Prisma.User$membershipArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$membershipArgs<ExtArgs>>): Prisma.Prisma__MembershipClient<runtime.Types.Result.GetResult<Prisma.$MembershipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  payments<T extends Prisma.User$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  waitlist<T extends Prisma.User$waitlistArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$waitlistArgs<ExtArgs>>): Prisma.Prisma__WaitlistEntryClient<runtime.Types.Result.GetResult<Prisma.$WaitlistEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  screening<T extends Prisma.User$screeningArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$screeningArgs<ExtArgs>>): Prisma.Prisma__RegistrantScreeningClient<runtime.Types.Result.GetResult<Prisma.$RegistrantScreeningPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  assessment<T extends Prisma.User$assessmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assessmentArgs<ExtArgs>>): Prisma.Prisma__ClientAssessmentClient<runtime.Types.Result.GetResult<Prisma.$ClientAssessmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  mealLogs<T extends Prisma.User$mealLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$mealLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DailyMealLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  nutritionTarget<T extends Prisma.User$nutritionTargetArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$nutritionTargetArgs<ExtArgs>>): Prisma.Prisma__NutritionTargetClient<runtime.Types.Result.GetResult<Prisma.$NutritionTargetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  workoutSessions<T extends Prisma.User$workoutSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workoutSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientWorkoutSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  programmes<T extends Prisma.User$programmesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$programmesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProgrammeDraftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  checkIns<T extends Prisma.User$checkInsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$checkInsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CoachingCheckInPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  priorityMessages<T extends Prisma.User$priorityMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$priorityMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PriorityMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1622,6 +3521,269 @@ export type User$awardsArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.AchievementAwardScalarFieldEnum | Prisma.AchievementAwardScalarFieldEnum[]
+}
+
+/**
+ * User.capacityReservations
+ */
+export type User$capacityReservationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CapacityReservation
+   */
+  select?: Prisma.CapacityReservationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CapacityReservation
+   */
+  omit?: Prisma.CapacityReservationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CapacityReservationInclude<ExtArgs> | null
+  where?: Prisma.CapacityReservationWhereInput
+  orderBy?: Prisma.CapacityReservationOrderByWithRelationInput | Prisma.CapacityReservationOrderByWithRelationInput[]
+  cursor?: Prisma.CapacityReservationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CapacityReservationScalarFieldEnum | Prisma.CapacityReservationScalarFieldEnum[]
+}
+
+/**
+ * User.membership
+ */
+export type User$membershipArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Membership
+   */
+  select?: Prisma.MembershipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Membership
+   */
+  omit?: Prisma.MembershipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MembershipInclude<ExtArgs> | null
+  where?: Prisma.MembershipWhereInput
+}
+
+/**
+ * User.payments
+ */
+export type User$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
+}
+
+/**
+ * User.waitlist
+ */
+export type User$waitlistArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WaitlistEntry
+   */
+  select?: Prisma.WaitlistEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WaitlistEntry
+   */
+  omit?: Prisma.WaitlistEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WaitlistEntryInclude<ExtArgs> | null
+  where?: Prisma.WaitlistEntryWhereInput
+}
+
+/**
+ * User.screening
+ */
+export type User$screeningArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RegistrantScreening
+   */
+  select?: Prisma.RegistrantScreeningSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RegistrantScreening
+   */
+  omit?: Prisma.RegistrantScreeningOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RegistrantScreeningInclude<ExtArgs> | null
+  where?: Prisma.RegistrantScreeningWhereInput
+}
+
+/**
+ * User.assessment
+ */
+export type User$assessmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClientAssessment
+   */
+  select?: Prisma.ClientAssessmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ClientAssessment
+   */
+  omit?: Prisma.ClientAssessmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClientAssessmentInclude<ExtArgs> | null
+  where?: Prisma.ClientAssessmentWhereInput
+}
+
+/**
+ * User.mealLogs
+ */
+export type User$mealLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DailyMealLog
+   */
+  select?: Prisma.DailyMealLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DailyMealLog
+   */
+  omit?: Prisma.DailyMealLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DailyMealLogInclude<ExtArgs> | null
+  where?: Prisma.DailyMealLogWhereInput
+  orderBy?: Prisma.DailyMealLogOrderByWithRelationInput | Prisma.DailyMealLogOrderByWithRelationInput[]
+  cursor?: Prisma.DailyMealLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DailyMealLogScalarFieldEnum | Prisma.DailyMealLogScalarFieldEnum[]
+}
+
+/**
+ * User.nutritionTarget
+ */
+export type User$nutritionTargetArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NutritionTarget
+   */
+  select?: Prisma.NutritionTargetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NutritionTarget
+   */
+  omit?: Prisma.NutritionTargetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NutritionTargetInclude<ExtArgs> | null
+  where?: Prisma.NutritionTargetWhereInput
+}
+
+/**
+ * User.workoutSessions
+ */
+export type User$workoutSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClientWorkoutSession
+   */
+  select?: Prisma.ClientWorkoutSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ClientWorkoutSession
+   */
+  omit?: Prisma.ClientWorkoutSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClientWorkoutSessionInclude<ExtArgs> | null
+  where?: Prisma.ClientWorkoutSessionWhereInput
+  orderBy?: Prisma.ClientWorkoutSessionOrderByWithRelationInput | Prisma.ClientWorkoutSessionOrderByWithRelationInput[]
+  cursor?: Prisma.ClientWorkoutSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClientWorkoutSessionScalarFieldEnum | Prisma.ClientWorkoutSessionScalarFieldEnum[]
+}
+
+/**
+ * User.programmes
+ */
+export type User$programmesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProgrammeDraft
+   */
+  select?: Prisma.ProgrammeDraftSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProgrammeDraft
+   */
+  omit?: Prisma.ProgrammeDraftOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgrammeDraftInclude<ExtArgs> | null
+  where?: Prisma.ProgrammeDraftWhereInput
+  orderBy?: Prisma.ProgrammeDraftOrderByWithRelationInput | Prisma.ProgrammeDraftOrderByWithRelationInput[]
+  cursor?: Prisma.ProgrammeDraftWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProgrammeDraftScalarFieldEnum | Prisma.ProgrammeDraftScalarFieldEnum[]
+}
+
+/**
+ * User.checkIns
+ */
+export type User$checkInsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CoachingCheckIn
+   */
+  select?: Prisma.CoachingCheckInSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CoachingCheckIn
+   */
+  omit?: Prisma.CoachingCheckInOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CoachingCheckInInclude<ExtArgs> | null
+  where?: Prisma.CoachingCheckInWhereInput
+  orderBy?: Prisma.CoachingCheckInOrderByWithRelationInput | Prisma.CoachingCheckInOrderByWithRelationInput[]
+  cursor?: Prisma.CoachingCheckInWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CoachingCheckInScalarFieldEnum | Prisma.CoachingCheckInScalarFieldEnum[]
+}
+
+/**
+ * User.priorityMessages
+ */
+export type User$priorityMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PriorityMessage
+   */
+  select?: Prisma.PriorityMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PriorityMessage
+   */
+  omit?: Prisma.PriorityMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PriorityMessageInclude<ExtArgs> | null
+  where?: Prisma.PriorityMessageWhereInput
+  orderBy?: Prisma.PriorityMessageOrderByWithRelationInput | Prisma.PriorityMessageOrderByWithRelationInput[]
+  cursor?: Prisma.PriorityMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PriorityMessageScalarFieldEnum | Prisma.PriorityMessageScalarFieldEnum[]
 }
 
 /**

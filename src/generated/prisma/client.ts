@@ -86,3 +86,88 @@ export type AchievementDefinition = Prisma.AchievementDefinitionModel
  * 
  */
 export type AchievementAward = Prisma.AchievementAwardModel
+/**
+ * Model CapacityPolicy
+ * 
+ */
+export type CapacityPolicy = Prisma.CapacityPolicyModel
+/**
+ * Model CapacityReservation
+ * 
+ */
+export type CapacityReservation = Prisma.CapacityReservationModel
+/**
+ * Model Membership
+ * 
+ */
+export type Membership = Prisma.MembershipModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
+ * Model ProviderEventInbox
+ * 
+ */
+export type ProviderEventInbox = Prisma.ProviderEventInboxModel
+/**
+ * Model WaitlistEntry
+ * 
+ */
+export type WaitlistEntry = Prisma.WaitlistEntryModel
+/**
+ * Model RegistrantScreening
+ * 
+ */
+export type RegistrantScreening = Prisma.RegistrantScreeningModel
+/**
+ * Model ClientAssessment
+ * 
+ */
+export type ClientAssessment = Prisma.ClientAssessmentModel
+/**
+ * Model AssessmentStageData
+ * 
+ */
+export type AssessmentStageData = Prisma.AssessmentStageDataModel
+/**
+ * Model DailyMealLog
+ * 
+ */
+export type DailyMealLog = Prisma.DailyMealLogModel
+/**
+ * Model NutritionTarget
+ * 
+ */
+export type NutritionTarget = Prisma.NutritionTargetModel
+/**
+ * Model ExerciseSwap
+ * 
+ */
+export type ExerciseSwap = Prisma.ExerciseSwapModel
+/**
+ * Model ClientWorkoutSession
+ * 
+ */
+export type ClientWorkoutSession = Prisma.ClientWorkoutSessionModel
+/**
+ * Model ClientWorkoutSetLog
+ * 
+ */
+export type ClientWorkoutSetLog = Prisma.ClientWorkoutSetLogModel
+/**
+ * Model ProgrammeDraft
+ * 
+ */
+export type ProgrammeDraft = Prisma.ProgrammeDraftModel
+/**
+ * Model CoachingCheckIn
+ * 
+ */
+export type CoachingCheckIn = Prisma.CoachingCheckInModel
+/**
+ * Model PriorityMessage
+ * 
+ */
+export type PriorityMessage = Prisma.PriorityMessageModel

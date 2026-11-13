@@ -23,3 +23,98 @@ export const Metric = {
 } as const
 
 export type Metric = (typeof Metric)[keyof typeof Metric]
+
+
+export const MembershipStatus = {
+  PENDING: 'PENDING',
+  ACTIVE_RENEWING: 'ACTIVE_RENEWING',
+  NON_RENEWING: 'NON_RENEWING',
+  PAYMENT_ACTION_REQUIRED: 'PAYMENT_ACTION_REQUIRED',
+  ENDED: 'ENDED'
+} as const
+
+export type MembershipStatus = (typeof MembershipStatus)[keyof typeof MembershipStatus]
+
+
+export const ReservationStatus = {
+  PENDING: 'PENDING',
+  COMMITTED: 'COMMITTED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ReservationStatus = (typeof ReservationStatus)[keyof typeof ReservationStatus]
+
+
+export const PaymentStatus = {
+  PENDING: 'PENDING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  REFUNDED: 'REFUNDED'
+} as const
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const WaitlistStatus = {
+  WAITING: 'WAITING',
+  INVITED: 'INVITED',
+  DECLINED: 'DECLINED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type WaitlistStatus = (typeof WaitlistStatus)[keyof typeof WaitlistStatus]
+
+
+export const EligibilityStatus = {
+  CLEAR: 'CLEAR',
+  UNDER_16: 'UNDER_16',
+  GUARDIAN_PENDING: 'GUARDIAN_PENDING',
+  SAFETY_HOLD: 'SAFETY_HOLD',
+  EQUIPMENT_HOLD: 'EQUIPMENT_HOLD',
+  NOT_READY: 'NOT_READY',
+  CAPACITY_WAIT: 'CAPACITY_WAIT'
+} as const
+
+export type EligibilityStatus = (typeof EligibilityStatus)[keyof typeof EligibilityStatus]
+
+
+export const AssessmentStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  SAFETY_HELD: 'SAFETY_HELD',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED'
+} as const
+
+export type AssessmentStatus = (typeof AssessmentStatus)[keyof typeof AssessmentStatus]
+
+
+export const MealType = {
+  BREAKFAST: 'BREAKFAST',
+  LUNCH: 'LUNCH',
+  DINNER: 'DINNER',
+  SNACK: 'SNACK'
+} as const
+
+export type MealType = (typeof MealType)[keyof typeof MealType]
+
+
+export const MealStatus = {
+  NOT_RECORDED: 'NOT_RECORDED',
+  PLANNED: 'PLANNED',
+  CHANGED: 'CHANGED',
+  SKIPPED: 'SKIPPED'
+} as const
+
+export type MealStatus = (typeof MealStatus)[keyof typeof MealStatus]
+
+
+export const CheckInStatus = {
+  SCHEDULED: 'SCHEDULED',
+  SUBMITTED: 'SUBMITTED',
+  REVIEWED: 'REVIEWED',
+  MISSED: 'MISSED'
+} as const
+
+export type CheckInStatus = (typeof CheckInStatus)[keyof typeof CheckInStatus]
