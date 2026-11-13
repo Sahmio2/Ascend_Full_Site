@@ -38,6 +38,9 @@ export default function ClientLoginForm() {
 
       // Store email temporarily in sessionStorage for verify page
       sessionStorage.setItem("ascend_login_email", email.trim().toLowerCase());
+      if (data.devCode) {
+        sessionStorage.setItem("ascend_dev_otp", data.devCode);
+      }
       router.push(`/verify-email?email=${encodeURIComponent(email.trim().toLowerCase())}`);
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");

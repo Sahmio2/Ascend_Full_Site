@@ -16,6 +16,7 @@ export default function VerifyEmailForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState(0);
+  const [devOtp, setDevOtp] = useState<string | null>(null);
 
   useEffect(() => {
     const qEmail = searchParams?.get("email");
@@ -28,6 +29,11 @@ export default function VerifyEmailForm() {
     } else {
       const stored = sessionStorage.getItem("ascend_login_email");
       if (stored) setEmail(stored);
+    }
+
+    const storedDevOtp = sessionStorage.getItem("ascend_dev_otp");
+    if (storedDevOtp) {
+      setDevOtp(storedDevOtp);
     }
   }, [searchParams]);
 
@@ -107,6 +113,11 @@ export default function VerifyEmailForm() {
         throw new Error(data.message || data.error || "Failed to resend code.");
       }
 
+      if (data.devCode) {
+        sessionStorage.setItem("ascend_dev_otp", data.devCode);
+        setDevOtp(data.devCode);
+      }
+
       setSuccess("A fresh 6-digit verification code has been dispatched.");
       setCooldown(60);
     } catch (err: any) {
@@ -160,6 +171,19 @@ export default function VerifyEmailForm() {
             disabled={loading}
           />
         </div>
+
+        {devOtp && (
+          <div style={{ marginTop: "-8px", marginBottom: "16px", padding: "8px 12px", background: "rgba(199, 164, 91, 0.12)", border: "1px dashed rgba(199, 164, 91, 0.4)", borderRadius: "8px", fontSize: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#f7f5ed" }}>
+            <span>Dev code: <strong style={{ color: "#dfbf77", letterSpacing: "0.1em" }}>{devOtp}</strong></span>
+            <button
+              type="button"
+              onClick={() => setCode(devOtp)}
+              style={{ background: "#dfbf77", color: "#0c100e", border: "none", borderRadius: "4px", padding: "4px 10px", fontSize: "11px", fontWeight: "700", cursor: "pointer" }}
+            >
+              Fill code
+            </button>
+          </div>
+        )}
 
         <button type="submit" className="access-btn-main" disabled={loading || code.length !== 6}>
           {loading ? "Verifying..." : "Verify and continue →"}

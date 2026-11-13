@@ -37,6 +37,9 @@ export default function RegisterForm() {
       }
 
       sessionStorage.setItem("ascend_login_email", email.trim().toLowerCase());
+      if (data.devCode) {
+        sessionStorage.setItem("ascend_dev_otp", data.devCode);
+      }
       router.push(`/verify-email?email=${encodeURIComponent(email.trim().toLowerCase())}&context=signup`);
     } catch (err: any) {
       setError(err.message || "Failed to start registration. Please try again.");

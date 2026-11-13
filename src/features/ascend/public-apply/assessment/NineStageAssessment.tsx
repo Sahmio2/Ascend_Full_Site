@@ -410,7 +410,36 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
                   </div>
                 )}
 
-                {['parq', 'imported', 'equipment', 'exercise', 'meals', 'budget', 'sleep', 'workload', 'recovery', 'emergency'].includes(q.type) && (
+                {q.type === 'imported' && (
+                  <div className="imported-display-card">
+                    <div className="imported-row">
+                      <span className="imported-label">Account Email</span>
+                      <div className="imported-value-wrap">
+                        <strong className="imported-value">
+                          {prefillProfile?.email || (typeof answers[q.id] === 'object' && answers[q.id]?.email) || answers[q.id] || 'athlete@ascend.fitness'}
+                        </strong>
+                        <span className="verified-pill">✓ Verified</span>
+                      </div>
+                    </div>
+                    <div className="imported-row">
+                      <span className="imported-label">Registration Record</span>
+                      <div className="imported-value-wrap">
+                        <strong className="imported-value">Confirmed Cohort Profile</strong>
+                      </div>
+                    </div>
+                    <div className="imported-row">
+                      <span className="imported-label">Coaching Track</span>
+                      <div className="imported-value-wrap">
+                        <strong className="imported-value">ASCEND 1-on-1 Physique Coaching</strong>
+                      </div>
+                    </div>
+                    <p className="imported-subtext">
+                      🔒 Your registration details are verified and securely linked to your account. You will not register again.
+                    </p>
+                  </div>
+                )}
+
+                {['parq', 'equipment', 'exercise', 'meals', 'budget', 'sleep', 'workload', 'recovery', 'emergency'].includes(q.type) && (
                   <textarea
                     className="assessment-textarea"
                     rows={3}
@@ -745,6 +774,63 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
           color: #f7f5ed;
           background: rgba(11, 15, 13, 0.88);
           outline: none;
+        }
+        .imported-display-card {
+          background: rgba(13, 17, 15, 0.85);
+          border: 1px solid rgba(199, 164, 91, 0.25);
+          border-radius: 12px;
+          padding: 20px 22px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+        .imported-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 16px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .imported-row:last-of-type {
+          border-bottom: none;
+          padding-bottom: 0;
+        }
+        .imported-label {
+          font-size: 12px;
+          font-weight: 600;
+          color: #9ba398;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+        }
+        .imported-value-wrap {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .imported-value {
+          font-size: 14px;
+          color: #f7f5ed;
+          font-weight: 600;
+          font-family: inherit;
+        }
+        .verified-pill {
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          color: #dfbf77;
+          background: rgba(199, 164, 91, 0.16);
+          border: 1px solid rgba(199, 164, 91, 0.35);
+          padding: 3px 8px;
+          border-radius: 999px;
+          display: inline-flex;
+          align-items: center;
+        }
+        .imported-subtext {
+          font-size: 12px;
+          color: #8c9489;
+          margin: 4px 0 0;
+          line-height: 1.5;
         }
         .rating-row {
           display: flex;
