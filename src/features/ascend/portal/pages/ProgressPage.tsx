@@ -7,13 +7,20 @@ import { useClientPortalData } from "../data/useClientPortalData";
 import type { PortalScope } from "../data/types";
 import type { ProgressRecord, ProgressResponse } from "@/contracts/progress";
 
+import ProgressInteractivePage from "./ProgressInteractivePage";
+
 export default function ProgressPage({ scope }: { scope: PortalScope }) {
+  const [viewMode, setViewMode] = useState<"modern" | "classic">("modern");
   const data = useClientPortalData(scope);
   const [showCheckIn, setShowCheckIn] = useState(false);
   const [notice, setNotice] = useState("");
   const [liveRecords, setLiveRecords] = useState<ProgressRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ bodyweight: "", sleep: "7", energy: "7", recovery: "7", nutrition: "85", reflection: "" });
+
+  if (viewMode === "modern") {
+    return <ProgressInteractivePage scope={scope} onSwitchToClassic={() => setViewMode("classic")} />;
+  }
 
   const fetchLiveProgress = async () => {
     if (scope !== "live") return;
@@ -106,6 +113,35 @@ export default function ProgressPage({ scope }: { scope: PortalScope }) {
 
   return (
     <PortalShell scope={scope} current="progress" clientName={data.client.fullName} phase={data.client.phaseName}>
+      <div style={{
+        background: "#1c1c1b",
+        border: "1px solid #37342e",
+        borderRadius: "12px",
+        padding: "10px 16px",
+        marginBottom: "20px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}>
+        <span style={{ fontSize: "12px", color: "var(--sub, #bcb6ab)" }}>
+          Viewing <strong>Classic Progress View</strong>
+        </span>
+        <button
+          onClick={() => setViewMode("modern")}
+          style={{
+            background: "var(--gold, #d6b87a)",
+            color: "#1c1913",
+            border: "none",
+            borderRadius: "6px",
+            padding: "6px 12px",
+            fontSize: "11px",
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+        >
+          ← Return to Interactive Progress (Approved UX)
+        </button>
+      </div>
       {notice && <div className="portal-notice" role="status"><span>Update</span><p>{notice}</p><button type="button" onClick={() => setNotice("")} aria-label="Dismiss update">×</button></div>}
       <section className="portal-page-heading">
         <div>

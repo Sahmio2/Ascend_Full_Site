@@ -6,8 +6,10 @@ import PortalShell from "../components/PortalShell";
 import { clientPortalAdapter } from "../data/clientPortalAdapter";
 import { useClientPortalData } from "../data/useClientPortalData";
 import { nutritionTotals, type PortalScope } from "../data/types";
+import NutritionMealsPage from "./NutritionMealsPage";
 
 export default function NutritionPage({ scope }: { scope: PortalScope }) {
+  const [viewMode, setViewMode] = useState<"modern" | "classic">("modern");
   const data = useClientPortalData(scope);
   const totals = nutritionTotals(data);
   const targets = data.nutrition.targets;
@@ -15,6 +17,10 @@ export default function NutritionPage({ scope }: { scope: PortalScope }) {
   const [name, setName] = useState("");
   const [calories, setCalories] = useState("");
   const [notice, setNotice] = useState("");
+
+  if (viewMode === "modern") {
+    return <NutritionMealsPage scope={scope} onSwitchToClassic={() => setViewMode("classic")} />;
+  }
 
   function addFood() {
     const caloriesNumber = Number(calories);
@@ -25,6 +31,36 @@ export default function NutritionPage({ scope }: { scope: PortalScope }) {
 
   return (
     <PortalShell scope={scope} current="nutrition" clientName={data.client.fullName} phase={data.client.phaseName}>
+      <div style={{
+        background: "#1c1c1b",
+        border: "1px solid #37342e",
+        borderRadius: "12px",
+        padding: "10px 16px",
+        marginBottom: "20px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}>
+        <span style={{ fontSize: "12px", color: "var(--sub, #bcb6ab)" }}>
+          Viewing <strong>Classic Nutrition View</strong>
+        </span>
+        <button
+          onClick={() => setViewMode("modern")}
+          style={{
+            background: "var(--gold, #d6b87a)",
+            color: "#1c1913",
+            border: "none",
+            borderRadius: "6px",
+            padding: "6px 12px",
+            fontSize: "11px",
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+        >
+          ← Return to Today&apos;s Meals (Approved UX)
+        </button>
+      </div>
+
       {notice && <div className="portal-notice" role="status"><span>Update</span><p>{notice}</p><button type="button" onClick={() => setNotice("")} aria-label="Dismiss update">×</button></div>}
       <section className="portal-page-heading"><div><p className="portal-kicker">Nutrition</p><h1>Fuel the form.</h1><p>Your daily targets, meals, hydration and coaching guidance in one place.</p></div><Link className="portal-page-action" href={`${basePath}/bmi`}>Open calculators <span>→</span></Link></section>
       <section className="portal-target-grid"><article className="portal-target-primary"><span>Daily target</span><strong>{targets.calories.toLocaleString()}</strong><small>kcal / day</small><p>{Math.max(0, targets.calories - totals.calories).toLocaleString()} calories remaining</p></article><article><span>Maintenance</span><strong>{targets.maintenance.toLocaleString()}</strong><small>kcal / day</small></article><article><span>Deficit</span><strong>{targets.deficit.toLocaleString()}</strong><small>goal estimate</small></article><article><span>Surplus</span><strong>{targets.surplus.toLocaleString()}</strong><small>goal estimate</small></article></section>

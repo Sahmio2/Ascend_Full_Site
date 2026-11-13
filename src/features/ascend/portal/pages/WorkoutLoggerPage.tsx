@@ -6,9 +6,12 @@ import { clientPortalAdapter } from "../data/clientPortalAdapter";
 import { useClientPortalData } from "../data/useClientPortalData";
 import type { ExerciseSet, PortalScope } from "../data/types";
 
+import WorkoutsFocusPage from "./WorkoutsFocusPage";
+
 type DraftSet = ExerciseSet & { previousLoad: string; previousReps: string };
 
 export default function WorkoutLoggerPage({ scope }: { scope: PortalScope }) {
+  const [viewMode, setViewMode] = useState<"modern" | "classic">("modern");
   const data = useClientPortalData(scope);
   const [selectedId, setSelectedId] = useState("");
   const [draft, setDraft] = useState<Record<string, DraftSet[]>>({});
@@ -19,6 +22,10 @@ export default function WorkoutLoggerPage({ scope }: { scope: PortalScope }) {
   const [notice, setNotice] = useState("");
   const selectedDay = data.programme.days.find((day) => day.id === selectedId);
   const recordedSets = useMemo(() => Object.values(draft).flat().filter((set) => set.completed || set.load || set.reps).length, [draft]);
+
+  if (viewMode === "modern") {
+    return <WorkoutsFocusPage scope={scope} onSwitchToClassic={() => setViewMode("classic")} />;
+  }
 
   useEffect(() => {
     if (!selectedDay) { setDraft({}); return; }
@@ -54,6 +61,35 @@ export default function WorkoutLoggerPage({ scope }: { scope: PortalScope }) {
 
   return (
     <PortalShell scope={scope} current="logger" clientName={data.client.fullName} phase={data.client.phaseName}>
+      <div style={{
+        background: "#1c1c1b",
+        border: "1px solid #37342e",
+        borderRadius: "12px",
+        padding: "10px 16px",
+        marginBottom: "20px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}>
+        <span style={{ fontSize: "12px", color: "var(--sub, #bcb6ab)" }}>
+          Viewing <strong>Classic Workout Logger</strong>
+        </span>
+        <button
+          onClick={() => setViewMode("modern")}
+          style={{
+            background: "var(--gold, #d6b87a)",
+            color: "#1c1913",
+            border: "none",
+            borderRadius: "6px",
+            padding: "6px 12px",
+            fontSize: "11px",
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+        >
+          ← Return to Focus Mode (Approved UX)
+        </button>
+      </div>
       <section className="portal-page-heading logger-hero"><div><p className="portal-kicker">Programme-powered logger</p><h1>Your workout is already here.</h1><p>Choose today’s programme day. Exercises, targets and last performance load automatically—record only what you do now.</p></div><div className="logger-hero-stat"><span>Current programme</span><strong>{data.programme.title}</strong><small>{data.programme.days.length} workout days loaded</small></div></section>
       {notice && <div className="client-notice" role="status"><span>Update</span><p>{notice}</p><button type="button" onClick={() => setNotice("")} aria-label="Dismiss update">×</button></div>}
       <section className="programme-day-picker" aria-labelledby="programme-day-heading"><div className="client-section-head"><div><p className="eyebrow">Step 01</p><h2 id="programme-day-heading">Select today’s day.</h2><p>Your coach’s programme created this list automatically. No exercise entry is required.</p></div><span>{data.programme.days.length} days</span></div><div className="programme-day-grid">{data.programme.days.map((day, index) => <button key={day.id} type="button" className={selectedId === day.id ? "selected" : ""} onClick={() => setSelectedId(day.id)}><span>Day {String(index + 1).padStart(2, "0")}</span><strong>{day.name}</strong><small>{day.exercises.length} exercises <b>{selectedId === day.id ? "Loaded" : "Open →"}</b></small></button>)}</div></section>
