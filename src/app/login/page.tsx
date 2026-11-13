@@ -1,6 +1,10 @@
-import DemoLoginPage from "@/features/ascend/portal/pages/DemoLoginPage";
+import ClientLoginForm from "@/features/ascend/access/ClientLoginForm";
 
-export default function Page() {
-  return <DemoLoginPage />;
+export const metadata = {
+  title: "ASCEND · Client Login",
+  description: "Sign in to your private ASCEND coaching account.",
+};
+
+export default function LoginPage() {
+  return <ClientLoginForm />;
 }
-

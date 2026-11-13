@@ -10,6 +10,7 @@
  */
 export type * from './models/User'
 export type * from './models/Session'
+export type * from './models/AuthChallenge'
 export type * from './models/Observation'
 export type * from './models/Exercise'
 export type * from './models/Workout'

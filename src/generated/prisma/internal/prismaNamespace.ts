@@ -399,6 +399,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Session: 'Session',
+  AuthChallenge: 'AuthChallenge',
   Observation: 'Observation',
   Exercise: 'Exercise',
   Workout: 'Workout',
@@ -438,7 +439,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "observation" | "exercise" | "workout" | "workoutSet" | "achievementGroup" | "achievementDefinition" | "achievementAward" | "capacityPolicy" | "capacityReservation" | "membership" | "payment" | "providerEventInbox" | "waitlistEntry" | "registrantScreening" | "clientAssessment" | "assessmentStageData" | "dailyMealLog" | "nutritionTarget" | "exerciseSwap" | "clientWorkoutSession" | "clientWorkoutSetLog" | "programmeDraft" | "coachingCheckIn" | "priorityMessage"
+    modelProps: "user" | "session" | "authChallenge" | "observation" | "exercise" | "workout" | "workoutSet" | "achievementGroup" | "achievementDefinition" | "achievementAward" | "capacityPolicy" | "capacityReservation" | "membership" | "payment" | "providerEventInbox" | "waitlistEntry" | "registrantScreening" | "clientAssessment" | "assessmentStageData" | "dailyMealLog" | "nutritionTarget" | "exerciseSwap" | "clientWorkoutSession" | "clientWorkoutSetLog" | "programmeDraft" | "coachingCheckIn" | "priorityMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -571,6 +572,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SessionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    AuthChallenge: {
+      payload: Prisma.$AuthChallengePayload<ExtArgs>
+      fields: Prisma.AuthChallengeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AuthChallengeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthChallengePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AuthChallengeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthChallengePayload>
+        }
+        findFirst: {
+          args: Prisma.AuthChallengeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthChallengePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AuthChallengeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthChallengePayload>
+        }
+        findMany: {
+          args: Prisma.AuthChallengeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthChallengePayload>[]
+        }
+        create: {
+          args: Prisma.AuthChallengeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthChallengePayload>
+        }
+        createMany: {
+          args: Prisma.AuthChallengeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.AuthChallengeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthChallengePayload>
+        }
+        update: {
+          args: Prisma.AuthChallengeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthChallengePayload>
+        }
+        deleteMany: {
+          args: Prisma.AuthChallengeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AuthChallengeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.AuthChallengeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthChallengePayload>
+        }
+        aggregate: {
+          args: Prisma.AuthChallengeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAuthChallenge>
+        }
+        groupBy: {
+          args: Prisma.AuthChallengeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthChallengeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AuthChallengeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthChallengeCountAggregateOutputType> | number
         }
       }
     }
@@ -2219,6 +2286,21 @@ export const SessionScalarFieldEnum = {
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
+export const AuthChallengeScalarFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  codeHash: 'codeHash',
+  challengeType: 'challengeType',
+  expiresAt: 'expiresAt',
+  attempts: 'attempts',
+  maxAttempts: 'maxAttempts',
+  consumedAt: 'consumedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AuthChallengeScalarFieldEnum = (typeof AuthChallengeScalarFieldEnum)[keyof typeof AuthChallengeScalarFieldEnum]
+
+
 export const ObservationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -2609,6 +2691,15 @@ export const SessionOrderByRelevanceFieldEnum = {
 export type SessionOrderByRelevanceFieldEnum = (typeof SessionOrderByRelevanceFieldEnum)[keyof typeof SessionOrderByRelevanceFieldEnum]
 
 
+export const AuthChallengeOrderByRelevanceFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  codeHash: 'codeHash'
+} as const
+
+export type AuthChallengeOrderByRelevanceFieldEnum = (typeof AuthChallengeOrderByRelevanceFieldEnum)[keyof typeof AuthChallengeOrderByRelevanceFieldEnum]
+
+
 export const ObservationOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -2900,6 +2991,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
 
 
 /**
+ * Reference to a field of type 'ChallengeType'
+ */
+export type EnumChallengeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChallengeType'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
  * Reference to a field of type 'Metric'
  */
 export type EnumMetricFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Metric'>
@@ -2910,13 +3015,6 @@ export type EnumMetricFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
 
 
@@ -3163,6 +3261,7 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
+  authChallenge?: Prisma.AuthChallengeOmit
   observation?: Prisma.ObservationOmit
   exercise?: Prisma.ExerciseOmit
   workout?: Prisma.WorkoutOmit

@@ -6,6 +6,7 @@ import { z } from 'zod';
 const WaitlistPostSchema = z.object({
   consentGiven: z.literal(true),
   channel: z.string().optional().default('email_whatsapp'),
+  email: z.string().email().optional(),
 });
 
 export const GET = handler(async (request: Request) => {
@@ -24,13 +25,29 @@ export const GET = handler(async (request: Request) => {
 
 export const POST = handler(async (request: Request) => {
   assertOrigin(request);
-  const userId = await requireUser(request);
   const raw = await body(request);
   const parsed = WaitlistPostSchema.parse(raw);
-
   const prisma = db();
+
+  let targetUserId: string;
+  try {
+    targetUserId = await requireUser(request);
+  } catch {
+    if (!parsed.email) {
+      throw new ApiError(400, 'EMAIL_REQUIRED_FOR_UNAUTHENTICATED_WAITLIST');
+    }
+    const normalizedEmail = parsed.email.toLowerCase().trim();
+    let user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+    if (!user) {
+      user = await prisma.user.create({
+        data: { email: normalizedEmail, role: 'CLIENT' },
+      });
+    }
+    targetUserId = user.id;
+  }
+
   const entry = await prisma.waitlistEntry.upsert({
-    where: { userId },
+    where: { userId: targetUserId },
     update: {
       status: 'WAITING',
       optInProof: {
@@ -40,7 +57,7 @@ export const POST = handler(async (request: Request) => {
       },
     },
     create: {
-      userId,
+      userId: targetUserId,
       status: 'WAITING',
       optInProof: {
         consentGiven: parsed.consentGiven,

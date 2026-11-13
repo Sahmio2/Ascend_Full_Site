@@ -127,6 +127,17 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
     } else {
       setIsSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Persist to server if user is logged in
+      try {
+        fetch('/api/assessment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Origin: window.location.origin,
+          },
+          body: JSON.stringify({ answers, isSubmitted: true }),
+        }).catch(() => {});
+      } catch {}
     }
   };
 

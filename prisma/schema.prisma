@@ -52,6 +52,25 @@ model Session {
   @@index([userId, expiresAt])
 }
 
+enum ChallengeType {
+  CLIENT_EMAIL_OTP
+  COACH_MFA
+}
+
+model AuthChallenge {
+  id            String        @id @default(cuid())
+  identifier    String        @db.VarChar(191)
+  codeHash      String        @db.VarChar(128)
+  challengeType ChallengeType @default(CLIENT_EMAIL_OTP)
+  expiresAt     DateTime
+  attempts      Int           @default(0)
+  maxAttempts   Int           @default(5)
+  consumedAt    DateTime?
+  createdAt     DateTime      @default(now())
+
+  @@index([identifier, challengeType, expiresAt])
+}
+
 model Observation {
   id          String    @id @default(cuid())
   userId      String

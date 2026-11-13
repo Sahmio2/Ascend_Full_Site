@@ -1,6 +1,5 @@
-import ClientLoginPage from "@/pages/auth/ClientLoginPage";
+import { redirect } from "next/navigation";
 
-export default function Page() {
-  return <ClientLoginPage />;
+export default function ClientLoginPage() {
+  redirect("/login");
 }
-

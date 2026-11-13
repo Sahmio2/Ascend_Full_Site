@@ -25,6 +25,14 @@ export const Metric = {
 export type Metric = (typeof Metric)[keyof typeof Metric]
 
 
+export const ChallengeType = {
+  CLIENT_EMAIL_OTP: 'CLIENT_EMAIL_OTP',
+  COACH_MFA: 'COACH_MFA'
+} as const
+
+export type ChallengeType = (typeof ChallengeType)[keyof typeof ChallengeType]
+
+
 export const MembershipStatus = {
   PENDING: 'PENDING',
   ACTIVE_RENEWING: 'ACTIVE_RENEWING',

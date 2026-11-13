@@ -1,6 +1,5 @@
-import CoachLoginPage from "@/pages/auth/CoachLoginPage";
+import { redirect } from "next/navigation";
 
-export default function Page() {
-  return <CoachLoginPage />;
+export default function CoachPage() {
+  redirect("/coach-portal");
 }
-
