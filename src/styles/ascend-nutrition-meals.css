@@ -1,6 +1,6 @@
 
 :root{color-scheme:dark;--bg:#0d0d0d;--panel:#20201e;--raised:#292824;--border:#393630;--ink:#f4f0e8;--muted:#b7afa3;--dim:#888276;--gold:#d9bc80;--goldDark:#30291d;--green:#a8c9a4;--red:#d49d90}
-*{box-sizing:border-box}html{scroll-behavior:smooth}.nutrition-meals-root {margin:0;background:#070707;color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:default}.app {
+*{box-sizing:border-box}html{scroll-behavior:smooth}.nutrition-meals-root {margin:0;background:#070707;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:default}.app {
   max-width: 1140px;
   min-height: calc(100vh - 56px);
   margin: 0 auto;
@@ -35,151 +35,290 @@
 .consumed-today{font-size:12px;color:#8c867a;margin-bottom:14px}
 .goalchip-target{text-align:right;font-size:11px;color:#8c867a}
 .goalchip-target b{font-size:20px;font-weight:700;color:#f4efe6}
+.nutrition-mode-switcher-container {
+  margin: 16px 0 20px;
+}
+
 .nutrition-mode-switcher {
-  display: inline-flex;
-  gap: 4px;
-  background: #181715;
-  border: 1px solid #332f28;
-  border-radius: 999px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #141311;
+  border: 1px solid #2d2922;
+  border-radius: 14px;
   padding: 4px;
-  margin: 14px 0 16px;
-  width: fit-content;
+  gap: 6px;
+  max-width: 560px;
 }
 
 .nutrition-mode-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 14px;
+  border-radius: 10px;
   background: transparent;
-  border: none;
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: #a8a093;
+  border: 1px solid transparent;
+  text-align: left;
   transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
 }
 
 .nutrition-mode-btn:hover {
-  color: #f4efe6;
+  background: #1c1b18;
 }
 
 .nutrition-mode-btn.active {
-  background: #2b271f;
-  color: var(--gold);
-  border: 1px solid #5a4b35;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  background: #25221b;
+  border-color: #5d4f36;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
-.simple-mode-banner, .precision-mode-banner {
-  background: #151412;
-  border: 1px solid #332d24;
-  border-radius: 16px;
-  padding: 16px 18px;
-  margin-bottom: 20px;
-}
-
-.mode-banner-head {
+.nutrition-mode-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #c5bba8;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-  gap: 8px;
+  gap: 7px;
 }
 
-.mode-badge {
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  font-weight: 700;
-  text-transform: uppercase;
+.nutrition-mode-btn.active .nutrition-mode-title {
+  color: #f6efe2;
+}
+
+.nutrition-mode-title svg {
   color: var(--gold);
-  background: rgba(217, 188, 128, 0.12);
-  border: 1px solid rgba(217, 188, 128, 0.25);
-  border-radius: 999px;
-  padding: 3px 8px;
 }
 
-.mode-hint-text {
-  font-size: 11.5px;
-  color: var(--muted);
+.nutrition-mode-desc {
+  font-size: 11px;
+  color: #7d776d;
+  margin-top: 3px;
+  line-height: 1.3;
 }
 
-.portion-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+.nutrition-mode-btn.active .nutrition-mode-desc {
+  color: #d6b87a;
 }
 
-.portion-card {
-  background: #1e1d1a;
-  border: 1px solid #363229;
-  border-radius: 12px;
-  padding: 12px;
-  text-align: left;
+/* Simple Summary Card */
+.simple-summary-card {
+  background: #161513;
+  border: 1px solid #2d2a24;
+  border-radius: 20px;
+  padding: 20px 22px 18px;
+  margin: 18px 0 22px;
 }
 
-.portion-icon {
-  font-size: 18px;
-  display: block;
+.summary-title-clean {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.adherence-counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 10px;
   margin-bottom: 6px;
 }
 
-.portion-card strong {
+.adherence-val {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.adherence-sub {
+  font-size: 14px;
+  color: #9c968b;
+  font-weight: 500;
+}
+
+.adherence-note {
+  font-size: 12px;
+  color: #8c867a;
+  margin-bottom: 14px;
+}
+
+.hydration-badge {
+  text-align: right;
+  font-size: 11px;
+  color: #8c867a;
+}
+
+.hydration-label {
   display: block;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a8a092;
+}
+
+.hydration-badge strong {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #68ba7f;
+  margin: 3px 0 1px;
+}
+
+.hydration-badge small {
+  font-size: 11px;
+  color: #8c867a;
+}
+
+.simple-coach-principle {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #1c1b18;
+  border: 1px solid #332f27;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 14px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #d1c8b8;
+}
+
+.principle-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--gold);
+}
+
+.simple-coach-principle strong {
+  color: #f6efe2;
+}
+
+/* Meal Card Header Chips */
+.meal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 3px;
+}
+
+.meal-macro-chip {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  background: rgba(214, 184, 122, 0.12);
+  border: 1px solid rgba(214, 184, 122, 0.25);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+
+.meal-portion-chip {
+  font-size: 11px;
+  font-weight: 500;
+  color: #c9bfae;
+  background: #252420;
+  border: 1px solid #3c382f;
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+
+/* Simple Meal Details */
+.simple-meal-content {
+  display: grid;
+  gap: 14px;
+}
+
+.simple-guideline-box {
+  background: #181714;
+  border: 1px solid #322d24;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.simple-guideline-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.simple-guideline-summary {
   font-size: 13px;
+  font-weight: 600;
   color: #f4efe6;
 }
 
-.portion-card small {
-  display: block;
-  font-size: 11px;
-  color: var(--gold);
-  margin-top: 2px;
-  font-weight: 600;
-}
-
-.portion-desc {
-  font-size: 10.5px;
-  color: #9c9588;
-  margin-top: 6px;
-  line-height: 1.35;
-}
-
-.precision-macro-grid {
+.simple-portion-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.simple-portion-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 10px;
+  background: #23221f;
+  border-radius: 8px;
+  border: 1px solid #35312a;
+}
+
+.simple-item-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ede6d9;
+}
+
+.simple-item-portion {
+  font-size: 12px;
+  color: #b8af9f;
+  text-align: right;
+}
+
+.simple-actions {
+  display: grid;
   gap: 10px;
 }
 
-.precision-metric {
-  background: #1e1d1a;
-  border: 1px solid #363229;
-  border-radius: 12px;
-  padding: 12px;
+/* Structured Mode Macro Bar */
+.meal-macro-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  background: #181715;
+  border: 1px solid #322e26;
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  text-align: center;
 }
 
-.precision-metric span {
+.macro-bar-item span {
   display: block;
-  font-size: 10px;
-  color: var(--muted);
+  font-size: 9.5px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  color: #8c867a;
 }
 
-.precision-metric strong {
+.macro-bar-item strong {
   display: block;
-  font-size: 20px;
-  color: var(--gold);
-  margin: 4px 0 2px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ede6d9;
+  margin-top: 2px;
 }
 
-.precision-metric small {
-  display: block;
-  font-size: 10.5px;
-  color: #9c9588;
-}
-
-@media (max-width: 768px) {
-  .portion-grid, .precision-macro-grid {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 540px) {
+  .nutrition-mode-switcher {
+    grid-template-columns: 1fr;
   }
 }
 

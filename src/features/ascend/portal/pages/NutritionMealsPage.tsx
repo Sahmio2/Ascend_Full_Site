@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import ModernClientBottomNav from "../components/ModernClientBottomNav";
 import { useClientPortalData } from "../data/useClientPortalData";
@@ -14,11 +14,20 @@ interface FoodItem {
   amount: string;
 }
 
+interface SimplePortionItem {
+  item: string;
+  portion: string;
+}
+
 interface PlannedMeal {
   id: string;
   label: string;
   name: string;
   foods: FoodItem[];
+  simplePortion: {
+    summary: string;
+    items: SimplePortionItem[];
+  };
   kcal: number;
   protein: number;
   carbs: number;
@@ -34,6 +43,13 @@ const INITIAL_MEALS: PlannedMeal[] = [
       { name: "Dry oats", amount: "60 g" },
       { name: "Boiled eggs", amount: "100 g" },
     ],
+    simplePortion: {
+      summary: "1 medium bowl warm oats + 2 whole boiled eggs",
+      items: [
+        { item: "Rolled oats", portion: "1 cupped hand dry (cooked thick with water)" },
+        { item: "Whole eggs", portion: "2 whole boiled eggs (or 3 egg whites + 1 whole)" },
+      ],
+    },
     kcal: 430,
     protein: 25,
     carbs: 42,
@@ -47,6 +63,13 @@ const INITIAL_MEALS: PlannedMeal[] = [
       { name: "Cooked rice", amount: "180 g" },
       { name: "Cooked mackerel", amount: "130 g" },
     ],
+    simplePortion: {
+      summary: "1 palm grilled mackerel + 1 fist jollof or white rice",
+      items: [
+        { item: "Grilled mackerel", portion: "1 palm-sized filet (high protein source)" },
+        { item: "Cooked rice", portion: "1 tight fist-sized portion (about 1 ladle)" },
+      ],
+    },
     kcal: 610,
     protein: 39,
     carbs: 56,
@@ -60,6 +83,13 @@ const INITIAL_MEALS: PlannedMeal[] = [
       { name: "Prepared eba", amount: "220 g" },
       { name: "Finished egusi soup", amount: "250 g" },
     ],
+    simplePortion: {
+      summary: "1 moderate wrap eba + 1 bowl egusi soup with lean beef or fish",
+      items: [
+        { item: "Prepared eba", portion: "1 medium palm-sized wrap" },
+        { item: "Egusi soup & protein", portion: "1 ladle soup with 1-2 palm-sized meat pieces" },
+      ],
+    },
     kcal: 710,
     protein: 23,
     carbs: 83,
@@ -118,7 +148,26 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
   const [foodState, setFoodState] = useState("cooked");
   const [searchText, setSearchText] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [nutritionMode, setNutritionMode] = useState<"structured" | "simple" | "precision">("structured");
+  const [nutritionMode, setNutritionMode] = useState<"structured" | "simple">("structured");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("ascend_nutrition_mode");
+      if (saved === "structured" || saved === "simple") {
+        setNutritionMode(saved);
+      }
+    } catch {}
+  }, []);
+
+  const handleModeChange = (mode: "structured" | "simple") => {
+    setNutritionMode(mode);
+    try {
+      localStorage.setItem("ascend_nutrition_mode", mode);
+    } catch {}
+    showToast(mode === "structured" ? "Structured & Macros view active" : "Simple Guide view active");
+  };
+
+  const completedMealsCount = INITIAL_MEALS.filter((m) => log[m.id]?.kind === "planned").length;
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -219,9 +268,12 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
           <div className="screen">
             <div className="row">
               <div>
-                <div className="eyebrow">TODAY · NUTRITION</div>
-                <h1>Today&apos;s Meals</h1>
-                <div className="sub">Record meals against your coach-approved plan.</div>
+                <h1 style={{ margin: "0 0 4px", fontSize: "28px", fontWeight: 700, letterSpacing: "-0.04em" }}>Today&apos;s Meals</h1>
+                <div className="sub">
+                  {nutritionMode === "structured"
+                    ? "Weighing and tracking precise grams, calories & macro targets."
+                    : "Simple meal guideline and portion benchmarks for busy days."}
+                </div>
               </div>
               <div className="hstack">
                 {onSwitchToClassic && (
@@ -245,162 +297,148 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
               </div>
             </div>
 
-            {/* Mode Switcher: Simple, Structured, Precision */}
-            <div className="nutrition-mode-switcher" role="tablist" aria-label="Nutrition tracking mode">
-              <button
-                type="button"
-                className={`nutrition-mode-btn ${nutritionMode === "structured" ? "active" : ""}`}
-                onClick={() => setNutritionMode("structured")}
-                aria-selected={nutritionMode === "structured"}
-              >
-                Structured (Grams)
-              </button>
-              <button
-                type="button"
-                className={`nutrition-mode-btn ${nutritionMode === "simple" ? "active" : ""}`}
-                onClick={() => setNutritionMode("simple")}
-                aria-selected={nutritionMode === "simple"}
-              >
-                Simple (Portions)
-              </button>
-              <button
-                type="button"
-                className={`nutrition-mode-btn ${nutritionMode === "precision" ? "active" : ""}`}
-                onClick={() => setNutritionMode("precision")}
-                aria-selected={nutritionMode === "precision"}
-              >
-                Precision (Macros)
-              </button>
+            {/* Segmented Dual-Mode Switcher */}
+            <div className="nutrition-mode-switcher-container">
+              <div className="nutrition-mode-switcher" role="tablist" aria-label="Nutrition tracking mode">
+                <button
+                  type="button"
+                  className={`nutrition-mode-btn ${nutritionMode === "structured" ? "active" : ""}`}
+                  onClick={() => handleModeChange("structured")}
+                  role="tab"
+                  aria-selected={nutritionMode === "structured"}
+                >
+                  <div className="nutrition-mode-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 7V4h16v3M9 20h6M12 4v16" />
+                    </svg>
+                    <span>Structured &amp; Macros</span>
+                  </div>
+                  <div className="nutrition-mode-desc">Exact grams, calories &amp; protein targets</div>
+                </button>
+
+                <button
+                  type="button"
+                  className={`nutrition-mode-btn ${nutritionMode === "simple" ? "active" : ""}`}
+                  onClick={() => handleModeChange("simple")}
+                  role="tab"
+                  aria-selected={nutritionMode === "simple"}
+                >
+                  <div className="nutrition-mode-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                      <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                    <span>Simple Guide</span>
+                  </div>
+                  <div className="nutrition-mode-desc">Portion benchmarks · No macro math</div>
+                </button>
+              </div>
             </div>
 
-            {/* Mode-Specific Insight Banner */}
-            {nutritionMode === "simple" && (
-              <div className="simple-mode-banner">
-                <div className="mode-banner-head">
-                  <span className="mode-badge">Simple Mode Active</span>
-                  <span className="mode-hint-text">For travel, dining out & unweighed meals</span>
+            {/* DYNAMIC TOP CARD */}
+            {nutritionMode === "simple" ? (
+              <div className="simple-summary-card">
+                <div className="summary-top">
+                  <div>
+                    <div className="summary-title-clean">Daily Nutrition Focus</div>
+                    <div className="adherence-counter">
+                      <span className="adherence-val">{completedMealsCount} of {INITIAL_MEALS.length}</span>
+                      <span className="adherence-sub">meals logged on track</span>
+                    </div>
+                    <div className="adherence-note">
+                      {completedMealsCount === INITIAL_MEALS.length
+                        ? "All planned meals checked off today · Excellent discipline"
+                        : completedMealsCount > 0
+                        ? "On track · Consistency beats perfection"
+                        : "Start your day by logging Breakfast when ready"}
+                    </div>
+                  </div>
+                  <div className="hydration-badge">
+                    <span className="hydration-label">Hydration Target</span>
+                    <strong>{portalData.nutrition.targets.waterLitres || 3.5} Litres</strong>
+                    <small>1 tall glass with each meal</small>
+                  </div>
                 </div>
-                <div className="portion-grid">
-                  <div className="portion-card">
-                    <span className="portion-icon">✋</span>
-                    <strong>1 Palm</strong>
-                    <small>Protein (~30–35g)</small>
-                    <div className="portion-desc">E.g., grilled chicken breast, mackerel filet</div>
+
+                <div className="progress">
+                  <span
+                    style={{
+                      width: `${Math.round((completedMealsCount / INITIAL_MEALS.length) * 100)}%`,
+                    }}
+                  />
+                </div>
+
+                <div className="simple-coach-principle">
+                  <svg className="principle-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="16" x2="12" y2="12" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                  </svg>
+                  <div>
+                    <strong>Coach Principle:</strong> Fill your plate with a palm of lean protein first, a fist of whole carbohydrates, and chew unhurriedly. Stop when 80% satisfied. No calorie counting required.
                   </div>
-                  <div className="portion-card">
-                    <span className="portion-icon">✊</span>
-                    <strong>1 Fist</strong>
-                    <small>Carbohydrates (~40g)</small>
-                    <div className="portion-desc">E.g., 1 ladle jollof rice, boiled yam chunk</div>
+                </div>
+              </div>
+            ) : (
+              <div className="energy-budget-card">
+                <div className="summary-top">
+                  <div>
+                    <div className="summary-title-clean">Energy &amp; Macro Budget</div>
+                    <div className="budget-pill">
+                      <span className="val">{rem}</span>
+                      <span className="unit">kcal left</span>
+                    </div>
+                    <div className="consumed-today">{s.kcal} kcal consumed today</div>
                   </div>
-                  <div className="portion-card">
-                    <span className="portion-icon">👍</span>
-                    <strong>1 Thumb</strong>
-                    <small>Healthy Fats (~12g)</small>
-                    <div className="portion-desc">E.g., groundnut oil, palm oil in stew, avocado</div>
+                  <div className="goalchip-target">
+                    <small>Daily target</small>
+                    <div style={{ marginTop: "3px" }}>
+                      <b>{TARGETS.kcal}</b>{" "}
+                      <span style={{ color: "var(--muted)", fontSize: "13px", fontWeight: 400 }}>
+                        kcal
+                      </span>
+                    </div>
                   </div>
-                  <div className="portion-card">
-                    <span className="portion-icon">🤲</span>
-                    <strong>2 Cupped Hands</strong>
-                    <small>Vegetables & Fiber</small>
-                    <div className="portion-desc">E.g., efo riro, steamed greens, garden salad</div>
-                  </div>
+                </div>
+
+                <div className="progress">
+                  <span
+                    style={{
+                      width: `${Math.min(100, Math.round((s.kcal / TARGETS.kcal) * 100))}%`,
+                    }}
+                  />
+                </div>
+
+                <div className="metric">
+                  {[
+                    ["Protein", s.p, TARGETS.protein, "#68ba7f"],
+                    ["Carbs", s.c, TARGETS.carbs, "#e5b869"],
+                    ["Fat", s.f, TARGETS.fat, "#c68766"],
+                  ].map(([name, val, target, color]) => (
+                    <div key={name as string}>
+                      <small>
+                        <i className="dot" style={{ background: color as string }} />
+                        {name}
+                      </small>
+                      <strong>
+                        {val} / {target} g
+                      </strong>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="infoNote">
+                  Gram portions and preparation states are coach-prescribed. Unverified foods have no calculated micronutrients.
                 </div>
               </div>
             )}
-
-            {nutritionMode === "precision" && (
-              <div className="precision-mode-banner">
-                <div className="mode-banner-head">
-                  <span className="mode-badge">Precision Mode Active</span>
-                  <span className="mode-hint-text">Peak physique & competition macro breakdown</span>
-                </div>
-                <div className="precision-macro-grid">
-                  <div className="precision-metric">
-                    <span>Protein Ratio</span>
-                    <strong>{Math.round((TARGETS.protein * 4 / TARGETS.kcal) * 100)}%</strong>
-                    <small>{TARGETS.protein}g · {TARGETS.protein * 4} kcal</small>
-                  </div>
-                  <div className="precision-metric">
-                    <span>Carbs Ratio</span>
-                    <strong>{Math.round((TARGETS.carbs * 4 / TARGETS.kcal) * 100)}%</strong>
-                    <small>{TARGETS.carbs}g · {TARGETS.carbs * 4} kcal</small>
-                  </div>
-                  <div className="precision-metric">
-                    <span>Fat Ratio</span>
-                    <strong>{Math.round((TARGETS.fat * 9 / TARGETS.kcal) * 100)}%</strong>
-                    <small>{TARGETS.fat}g · {TARGETS.fat * 9} kcal</small>
-                  </div>
-                  <div className="precision-metric">
-                    <span>Target Hydration</span>
-                    <strong>{portalData.nutrition.targets.waterLitres || 3.5}L</strong>
-                    <small>{portalData.nutrition.hydrationLoggedLitres || 2.0}L recorded</small>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* STACKED FIRST: Energy Budget Macro Summary Card */}
-            <div className="energy-budget-card">
-              <div className="summary-top">
-                <div>
-                  <div className="eyebrow" style={{ color: "#d2b477", letterSpacing: "0.14em" }}>
-                    ENERGY BUDGET
-                  </div>
-                  <div className="budget-pill">
-                    <span className="val">{rem}</span>
-                    <span className="unit">kcal left</span>
-                  </div>
-                  <div className="consumed-today">{s.kcal} kcal consumed today</div>
-                </div>
-                <div className="goalchip-target">
-                  <small>Daily target</small>
-                  <div style={{ marginTop: "3px" }}>
-                    <b>{TARGETS.kcal}</b>{" "}
-                    <span style={{ color: "var(--muted)", fontSize: "13px", fontWeight: 400 }}>
-                      kcal
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="progress">
-                <span
-                  style={{
-                    width: `${Math.min(100, Math.round((s.kcal / TARGETS.kcal) * 100))}%`,
-                  }}
-                />
-              </div>
-
-              <div className="metric">
-                {[
-                  ["Protein", s.p, TARGETS.protein, "#68ba7f"],
-                  ["Carbs", s.c, TARGETS.carbs, "#e5b869"],
-                  ["Fat", s.f, TARGETS.fat, "#c68766"],
-                ].map(([name, val, target, color]) => (
-                  <div key={name as string}>
-                    <small>
-                      <i className="dot" style={{ background: color as string }} />
-                      {name}
-                    </small>
-                    <strong>
-                      {val} / {target} g
-                    </strong>
-                  </div>
-                ))}
-              </div>
-
-              <div className="infoNote">
-                Gram portions and preparation states are coach-prescribed. Unverified foods have no calculated micronutrients.
-              </div>
-            </div>
 
             {/* Desktop 2-Column Responsive Layout */}
             <div className="nutrition-grid" style={{ marginTop: "20px" }}>
               {/* Left Column: Prescribed Meals & Logged Extras */}
               <div>
                 <div className="row" style={{ marginBottom: "11px" }}>
-                  <h2>Prescribed Meals</h2>
+                  <h2>{nutritionMode === "structured" ? "Prescribed Meals (Gram Precision)" : "Today's Meal Guidelines"}</h2>
                   <span className="tiny">{INITIAL_MEALS.length} planned today</span>
                 </div>
 
@@ -416,7 +454,14 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
                       >
                         <div className="text">
                           <div className="meal-label">{m.label}</div>
-                          <div className="meal-title">{m.name}</div>
+                          <div className="meal-title-row">
+                            <span className="meal-title">{m.name}</span>
+                            {nutritionMode === "structured" ? (
+                              <span className="meal-macro-chip">{m.kcal} kcal · {m.protein}g P</span>
+                            ) : (
+                              <span className="meal-portion-chip">{m.simplePortion.summary.split("+")[0].trim()}</span>
+                            )}
+                          </div>
                         </div>
                         {handleMealStatus(m)}
                         <span className="chev">{isOpen ? "⌃" : "⌄"}</span>
@@ -424,42 +469,108 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
 
                       {isOpen && (
                         <div className="details">
-                          <div className="ingredients">
-                            {m.foods.map((f, i) => (
-                              <div key={i} className="ingredient">
-                                <span>{f.name}</span>
-                                <span>{f.amount}</span>
+                          {nutritionMode === "simple" ? (
+                            <div className="simple-meal-content">
+                              <div className="simple-guideline-box">
+                                <div className="simple-guideline-label">Portion Benchmark</div>
+                                <div className="simple-guideline-summary">{m.simplePortion.summary}</div>
                               </div>
-                            ))}
-                          </div>
 
-                          {!entry ? (
-                            <>
-                              <button
-                                className="actionPrimary"
-                                onClick={() => recordPlanned(m.id)}
-                              >
-                                ✓ Ate as planned
-                              </button>
-                              <div className="textActions">
-                                <button onClick={() => openAdd(m.id, "search")}>
-                                  Log substitute / change
-                                </button>
-                                <button onClick={() => recordSkipped(m.id)}>
-                                  Didn&apos;t eat
-                                </button>
+                              <div className="simple-portion-list">
+                                {m.simplePortion.items.map((it, idx) => (
+                                  <div key={idx} className="simple-portion-item">
+                                    <div className="simple-item-name">{it.item}</div>
+                                    <div className="simple-item-portion">{it.portion}</div>
+                                  </div>
+                                ))}
                               </div>
-                            </>
+
+                              {!entry ? (
+                                <div className="simple-actions">
+                                  <button
+                                    className="actionPrimary"
+                                    onClick={() => recordPlanned(m.id)}
+                                  >
+                                    ✓ Had this meal
+                                  </button>
+                                  <div className="textActions">
+                                    <button onClick={() => recordSkipped(m.id)}>
+                                      Didn&apos;t eat
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="savedRow">
+                                  <span>
+                                    {entry.kind === "planned"
+                                      ? "✓ Logged as eaten"
+                                      : entry.kind === "skipped"
+                                      ? "Marked not eaten"
+                                      : `Substituted: ${entry.note || "Custom"}`}
+                                  </span>
+                                  <button onClick={() => undoRecord(m.id)}>Undo</button>
+                                </div>
+                              )}
+                            </div>
                           ) : (
-                            <div className="savedRow">
-                              <span>
-                                {entry.kind === "planned"
-                                  ? "Recorded as planned"
-                                  : entry.kind === "skipped"
-                                  ? "Marked not eaten"
-                                  : `Substituted: ${entry.note || "Custom"}`}
-                              </span>
-                              <button onClick={() => undoRecord(m.id)}>Undo</button>
+                            <div>
+                              <div className="meal-macro-bar">
+                                <div className="macro-bar-item">
+                                  <span>Calories</span>
+                                  <strong>{m.kcal} kcal</strong>
+                                </div>
+                                <div className="macro-bar-item">
+                                  <span>Protein</span>
+                                  <strong style={{ color: "#68ba7f" }}>{m.protein} g</strong>
+                                </div>
+                                <div className="macro-bar-item">
+                                  <span>Carbs</span>
+                                  <strong style={{ color: "#e5b869" }}>{m.carbs} g</strong>
+                                </div>
+                                <div className="macro-bar-item">
+                                  <span>Fat</span>
+                                  <strong style={{ color: "#c68766" }}>{m.fat} g</strong>
+                                </div>
+                              </div>
+
+                              <div className="ingredients">
+                                {m.foods.map((f, i) => (
+                                  <div key={i} className="ingredient">
+                                    <span>{f.name}</span>
+                                    <span>{f.amount}</span>
+                                  </div>
+                                ))}
+                              </div>
+
+                              {!entry ? (
+                                <>
+                                  <button
+                                    className="actionPrimary"
+                                    onClick={() => recordPlanned(m.id)}
+                                  >
+                                    ✓ Ate as planned
+                                  </button>
+                                  <div className="textActions">
+                                    <button onClick={() => openAdd(m.id, "search")}>
+                                      Log substitute / change
+                                    </button>
+                                    <button onClick={() => recordSkipped(m.id)}>
+                                      Didn&apos;t eat
+                                    </button>
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="savedRow">
+                                  <span>
+                                    {entry.kind === "planned"
+                                      ? "Recorded as planned"
+                                      : entry.kind === "skipped"
+                                      ? "Marked not eaten"
+                                      : `Substituted: ${entry.note || "Custom"}`}
+                                  </span>
+                                  <button onClick={() => undoRecord(m.id)}>Undo</button>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
@@ -540,8 +651,7 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
                   ‹
                 </button>
                 <div style={{ flex: 1 }}>
-                  <div className="eyebrow">ASCEND · NUTRITION</div>
-                  <h1 style={{ fontSize: "23px" }}>Add Food</h1>
+                  <h1 style={{ fontSize: "23px", margin: "0 0 4px" }}>Add Food</h1>
                   <div className="sub">
                     {currentMeal
                       ? `Changing ${INITIAL_MEALS.find((m) => m.id === currentMeal)?.label}`
@@ -556,10 +666,49 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
 
               <div className="methodGrid">
                 {[
-                  { id: "barcode" as const, icon: "▦", title: "Scan Barcode", sub: "Packaged foods" },
-                  { id: "photo" as const, icon: "📷", title: "Snap Meal", sub: "Photo estimate" },
-                  { id: "search" as const, icon: "🔍", title: "Search Food", sub: "Nigerian catalog" },
-                  { id: "voice" as const, icon: "🎙", title: "Speak & Weigh", sub: "Voice input" },
+                  {
+                    id: "barcode" as const,
+                    icon: (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                        <path d="M3 5v14M6 5v14M11 5v14M15 5v14M18 5v14M21 5v14" />
+                      </svg>
+                    ),
+                    title: "Scan Barcode",
+                    sub: "Packaged foods",
+                  },
+                  {
+                    id: "photo" as const,
+                    icon: (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                        <circle cx="12" cy="13" r="4" />
+                      </svg>
+                    ),
+                    title: "Snap Meal",
+                    sub: "Photo estimate",
+                  },
+                  {
+                    id: "search" as const,
+                    icon: (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                      </svg>
+                    ),
+                    title: "Search Food",
+                    sub: "Nigerian catalog",
+                  },
+                  {
+                    id: "voice" as const,
+                    icon: (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8" />
+                      </svg>
+                    ),
+                    title: "Speak & Weigh",
+                    sub: "Voice input",
+                  },
                 ].map((item) => (
                   <button
                     key={item.id}
@@ -588,8 +737,7 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
                   ‹
                 </button>
                 <div style={{ flex: 1 }}>
-                  <div className="eyebrow">ASCEND · NUTRITION</div>
-                  <h1 style={{ fontSize: "23px" }}>Record Food</h1>
+                  <h1 style={{ fontSize: "23px", margin: "0 0 4px" }}>Record Food</h1>
                   <div className="sub">Specify item, preparation state, and exact grams.</div>
                 </div>
               </div>
@@ -665,8 +813,7 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
                   ‹
                 </button>
                 <div style={{ flex: 1 }}>
-                  <div className="eyebrow">ASCEND · NUTRITION</div>
-                  <h1 style={{ fontSize: "23px" }}>Weekly Meal Plan</h1>
+                  <h1 style={{ fontSize: "23px", margin: "0 0 4px" }}>Weekly Meal Plan</h1>
                   <div className="sub">Coach-approved rotation for your active training phase.</div>
                 </div>
               </div>
@@ -697,8 +844,7 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
                   ‹
                 </button>
                 <div style={{ flex: 1 }}>
-                  <div className="eyebrow">ASCEND · NUTRITION</div>
-                  <h1 style={{ fontSize: "23px" }}>Shopping & Food Stock</h1>
+                  <h1 style={{ fontSize: "23px", margin: "0 0 4px" }}>Shopping &amp; Food Stock</h1>
                   <div className="sub">Aggregated weekly ingredient quantities for Nigerian meal prep.</div>
                 </div>
               </div>
