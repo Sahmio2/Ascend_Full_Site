@@ -243,6 +243,61 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
               </div>
             </div>
 
+            {/* STACKED FIRST: Energy Budget Macro Summary Card */}
+            <div className="energy-budget-card">
+              <div className="summary-top">
+                <div>
+                  <div className="eyebrow" style={{ color: "#d2b477", letterSpacing: "0.14em" }}>
+                    ENERGY BUDGET
+                  </div>
+                  <div className="budget-pill">
+                    <span className="val">{rem}</span>
+                    <span className="unit">kcal left</span>
+                  </div>
+                  <div className="consumed-today">{s.kcal} kcal consumed today</div>
+                </div>
+                <div className="goalchip-target">
+                  <small>Daily target</small>
+                  <div style={{ marginTop: "3px" }}>
+                    <b>{TARGETS.kcal}</b>{" "}
+                    <span style={{ color: "var(--muted)", fontSize: "13px", fontWeight: 400 }}>
+                      kcal
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="progress">
+                <span
+                  style={{
+                    width: `${Math.min(100, Math.round((s.kcal / TARGETS.kcal) * 100))}%`,
+                  }}
+                />
+              </div>
+
+              <div className="metric">
+                {[
+                  ["Protein", s.p, TARGETS.protein, "#68ba7f"],
+                  ["Carbs", s.c, TARGETS.carbs, "#e5b869"],
+                  ["Fat", s.f, TARGETS.fat, "#c68766"],
+                ].map(([name, val, target, color]) => (
+                  <div key={name as string}>
+                    <small>
+                      <i className="dot" style={{ background: color as string }} />
+                      {name}
+                    </small>
+                    <strong>
+                      {val} / {target} g
+                    </strong>
+                  </div>
+                ))}
+              </div>
+
+              <div className="infoNote">
+                Gram portions and preparation states are coach-prescribed. Unverified foods have no calculated micronutrients.
+              </div>
+            </div>
+
             {/* Desktop 2-Column Responsive Layout */}
             <div className="nutrition-grid" style={{ marginTop: "20px" }}>
               {/* Left Column: Prescribed Meals & Logged Extras */}
@@ -332,47 +387,10 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
                 )}
               </div>
 
-              {/* Right Column: Macro Summary, Quick Entry & Navigation Links */}
+              {/* Right Column: Quick Entry & Navigation Links */}
               <div>
-                {/* Macro Summary Card */}
-                <div className="panel summary" style={{ margin: 0 }}>
-                  <div className="summary-top">
-                    <div>
-                      <div className="eyebrow" style={{ color: "#d2b477" }}>ENERGY BUDGET</div>
-                      <div className="number">{rem} <span style={{ fontSize: "16px", color: "var(--muted)", fontWeight: 500 }}>kcal left</span></div>
-                      <div className="tiny">{s.kcal} kcal consumed today</div>
-                    </div>
-                    <div className="goalchip">
-                      <small>Daily target</small>
-                      <br />
-                      <b>{TARGETS.kcal}</b> kcal
-                    </div>
-                  </div>
-                  <div className="progress">
-                    <span style={{ width: `${Math.min(100, Math.round((s.kcal / TARGETS.kcal) * 100))}%` }} />
-                  </div>
-                  <div className="metric">
-                    {[
-                      ["Protein", s.p, TARGETS.protein, "#a5c69e"],
-                      ["Carbs", s.c, TARGETS.carbs, "#d5b36b"],
-                      ["Fat", s.f, TARGETS.fat, "#caa087"],
-                    ].map(([name, val, target, color]) => (
-                      <div key={name as string}>
-                        <small>
-                          <i className="dot" style={{ background: color as string }} />
-                          {name}
-                        </small>
-                        <strong>{val} / {target} g</strong>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="infoNote">
-                    Gram portions and preparation states are coach-prescribed. Unverified foods have no calculated micronutrients.
-                  </div>
-                </div>
-
                 {/* Quick Add Food Action Card */}
-                <div className="panel" style={{ marginTop: "14px" }}>
+                <div className="panel" style={{ marginTop: 0 }}>
                   <div className="row">
                     <div>
                       <div style={{ fontWeight: 650, fontSize: "14px" }}>Quick Food Entry</div>
