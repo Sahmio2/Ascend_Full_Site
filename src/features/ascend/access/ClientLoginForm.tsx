@@ -85,7 +85,7 @@ export default function ClientLoginForm() {
 
         <div className="access-rule">New to ASCEND?</div>
 
-        <Link href="/apply" className="access-btn-secondary" style={{ width: "100%" }}>
+        <Link href="/register" className="access-btn-secondary" style={{ width: "100%" }}>
           Register for coaching →
         </Link>
 

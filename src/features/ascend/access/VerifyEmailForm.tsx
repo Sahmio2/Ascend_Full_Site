@@ -11,7 +11,7 @@ export default function VerifyEmailForm() {
 
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
-  const [context, setContext] = useState<"client" | "coach" | "recovery">("client");
+  const [context, setContext] = useState<"client" | "coach" | "recovery" | "signup">("client");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -19,7 +19,7 @@ export default function VerifyEmailForm() {
 
   useEffect(() => {
     const qEmail = searchParams?.get("email");
-    const qContext = searchParams?.get("context") as "client" | "coach" | "recovery" | null;
+    const qContext = searchParams?.get("context") as "client" | "coach" | "recovery" | "signup" | null;
 
     if (qContext) setContext(qContext);
 
@@ -71,7 +71,10 @@ export default function VerifyEmailForm() {
       }
 
       setSuccess("Verification successful. Redirecting...");
-      const destination = data.nextPath || (isCoach ? "/coach-portal" : "/account");
+      const destination =
+        context === "signup"
+          ? "/apply"
+          : data.nextPath || (isCoach ? "/coach-portal" : "/account");
       setTimeout(() => router.push(destination), 400);
     } catch (err: any) {
       setError(err.message || "Invalid or expired verification code.");

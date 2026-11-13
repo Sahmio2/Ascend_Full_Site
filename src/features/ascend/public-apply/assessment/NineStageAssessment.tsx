@@ -473,64 +473,93 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
       <style jsx>{`
         .nine-assessment-wrapper {
           min-height: 100vh;
-          background: #f7f5f0;
-          color: #242821;
+          background: radial-gradient(circle at 50% 25%, rgba(199, 164, 91, 0.12), transparent 48%),
+                      radial-gradient(circle at 15% 15%, rgba(199, 164, 91, 0.06), transparent 32%),
+                      #0a0d0c;
+          color: #f0f1ec;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          position: relative;
+          overflow-x: hidden;
+        }
+        .nine-assessment-wrapper::before {
+          content: "";
+          position: fixed;
+          top: 45%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: min(88vw, 880px);
+          aspect-ratio: 1;
+          border: 1px solid rgba(199, 164, 91, 0.15);
+          border-radius: 50%;
+          box-shadow: 
+            0 0 0 65px rgba(199, 164, 91, 0.04),
+            0 0 0 135px rgba(199, 164, 91, 0.03),
+            0 0 0 210px rgba(199, 164, 91, 0.02),
+            0 0 0 290px rgba(199, 164, 91, 0.015),
+            0 0 0 380px rgba(199, 164, 91, 0.01);
+          pointer-events: none;
+          z-index: 0;
         }
         .assessment-topbar {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 16px 28px;
-          background: #fffefa;
-          border-bottom: 1px solid #e5e2da;
+          padding: 16px 36px;
+          background: rgba(12, 16, 14, 0.88);
+          backdrop-filter: blur(14px);
+          border-bottom: 1px solid rgba(199, 164, 91, 0.2);
           position: sticky;
           top: 0;
-          z-index: 20;
+          z-index: 30;
         }
         .assessment-brand strong {
-          font-family: Georgia, serif;
-          font-size: 22px;
+          font-family: 'Cormorant Garamond', Georgia, serif;
+          font-size: 24px;
           letter-spacing: 0.15em;
-          color: #171816;
+          color: #f7f5ed;
         }
         .assessment-brand span {
           display: block;
           font-size: 8px;
-          letter-spacing: 0.2em;
-          color: #9b8156;
+          letter-spacing: 0.22em;
+          color: #dfbf77;
           font-weight: 700;
         }
         .assessment-progress-indicator {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 14px;
           font-size: 11px;
           font-weight: 700;
           letter-spacing: 0.08em;
-          color: #697066;
+          color: #b8c0b5;
         }
         .assessment-progress-bar {
           width: 140px;
           height: 6px;
-          background: #e2ded5;
+          background: rgba(255, 255, 255, 0.12);
           border-radius: 999px;
           overflow: hidden;
         }
         .assessment-progress-bar div {
           height: 100%;
-          background: #a98f5a;
+          background: linear-gradient(90deg, #c5a359, #dfbf77);
+          box-shadow: 0 0 10px rgba(223, 191, 119, 0.5);
           transition: width 0.3s ease;
         }
         .assessment-layout {
           display: grid;
           grid-template-columns: minmax(0, 1fr) 340px;
-          max-width: 1260px;
+          max-width: 1220px;
           margin: 0 auto;
           min-height: calc(100vh - 65px);
+          position: relative;
+          z-index: 10;
+          gap: 28px;
+          padding: 24px 24px 60px;
         }
         .assessment-main {
-          padding: 36px 40px 60px;
+          padding: 12px 0 40px;
         }
         .stage-meta-strip {
           display: flex;
@@ -542,112 +571,114 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 44px;
-          height: 44px;
+          width: 46px;
+          height: 46px;
           border-radius: 50%;
-          background: #ede6d8;
-          border: 1px solid #d4c6aa;
-          color: #695839;
+          background: rgba(199, 164, 91, 0.16);
+          border: 1px solid rgba(199, 164, 91, 0.35);
+          color: #dfbf77;
           font-weight: 800;
           font-size: 14px;
           flex-shrink: 0;
         }
         .stage-overline {
           font-size: 11px;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.14em;
           font-weight: 800;
-          color: #9b8156;
+          color: #d4b875;
           text-transform: uppercase;
         }
         .stage-title {
-          font-family: Georgia, serif;
-          font-size: 32px;
-          font-weight: 400;
+          font-family: 'Cormorant Garamond', Georgia, serif;
+          font-size: 36px;
+          font-weight: 500;
           margin: 4px 0 6px;
-          color: #171816;
+          color: #f7f5ed;
           line-height: 1.15;
         }
         .stage-desc {
-          color: #626960;
-          font-size: 14px;
-          line-height: 1.5;
+          color: #aeb6ac;
+          font-size: 14.5px;
+          line-height: 1.55;
           margin: 0;
         }
         .assessment-error-banner {
-          background: #fdf2ef;
-          border: 1px solid #eecbc4;
-          color: #9c3325;
-          padding: 12px 16px;
-          border-radius: 8px;
-          margin-bottom: 22px;
-          font-size: 13px;
+          background: rgba(156, 51, 37, 0.16);
+          border: 1px solid rgba(238, 203, 196, 0.3);
+          color: #ff9d91;
+          padding: 13px 18px;
+          border-radius: 10px;
+          margin-bottom: 24px;
+          font-size: 13.5px;
           font-weight: 600;
         }
         .question-item-card {
-          background: #fffefa;
-          border: 1px solid #e1ded6;
-          border-radius: 14px;
-          padding: 22px 24px;
-          margin-bottom: 22px;
-          box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+          background: rgba(20, 26, 23, 0.82);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(199, 164, 91, 0.2);
+          border-radius: 16px;
+          padding: 26px 28px;
+          margin-bottom: 24px;
+          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
         }
         .question-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 8px;
+          margin-bottom: 10px;
         }
         .question-id {
           font-size: 11px;
           font-weight: 800;
-          color: #9b8156;
-          letter-spacing: 0.08em;
+          color: #dfbf77;
+          letter-spacing: 0.1em;
         }
         .req-pill {
-          font-size: 9px;
+          font-size: 9.5px;
           font-weight: 700;
-          color: #795d32;
-          background: #f4ecdc;
-          padding: 2px 7px;
+          color: #dfbf77;
+          background: rgba(199, 164, 91, 0.16);
+          border: 1px solid rgba(199, 164, 91, 0.3);
+          padding: 3px 8px;
           border-radius: 4px;
           text-transform: uppercase;
         }
         .opt-pill {
-          font-size: 9px;
+          font-size: 9.5px;
           font-weight: 700;
-          color: #7d8479;
-          background: #ebebe5;
-          padding: 2px 7px;
+          color: #92998f;
+          background: rgba(255, 255, 255, 0.08);
+          padding: 3px 8px;
           border-radius: 4px;
           text-transform: uppercase;
         }
         .question-prompt {
-          font-size: 17px;
-          font-weight: 650;
-          color: #1f241d;
-          line-height: 1.35;
-          margin: 0 0 6px;
+          font-size: 18px;
+          font-weight: 600;
+          color: #f7f5ed;
+          line-height: 1.4;
+          margin: 0 0 8px;
         }
         .question-help {
-          font-size: 12.5px;
-          color: #6c7368;
-          line-height: 1.45;
-          margin: 0 0 16px;
+          font-size: 13px;
+          color: #a4aca0;
+          line-height: 1.5;
+          margin: 0 0 18px;
         }
         .choice-list, .multi-list {
           display: flex;
           flex-direction: column;
-          gap: 9px;
+          gap: 10px;
         }
         .choice-card {
           display: flex;
           align-items: center;
-          gap: 13px;
-          padding: 13px 15px;
-          border: 1px solid #dad6cb;
-          border-radius: 9px;
-          background: #fffefa;
-          color: #272d24;
+          gap: 14px;
+          padding: 14px 16px;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 10px;
+          background: rgba(13, 17, 15, 0.8);
+          color: #e2e5df;
           font-size: 14px;
           font-weight: 550;
           cursor: pointer;
@@ -655,20 +686,20 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
           transition: all 0.15s ease;
         }
         .choice-card:hover {
-          border-color: #b59f74;
-          background: #fcf9f2;
+          border-color: rgba(199, 164, 91, 0.6);
+          background: rgba(30, 38, 33, 0.9);
         }
         .choice-card.active {
-          border-color: #9d8252;
-          background: #f8f2e4;
-          color: #151814;
-          box-shadow: inset 0 0 0 1px #9d8252;
+          border-color: #dfbf77;
+          background: rgba(199, 164, 91, 0.18);
+          color: #ffffff;
+          box-shadow: inset 0 0 0 1px #dfbf77, 0 0 18px rgba(223, 191, 119, 0.18);
         }
         .choice-dot, .choice-square {
           width: 18px;
           height: 18px;
           border-radius: 50%;
-          border: 1.5px solid #b8b3a7;
+          border: 1.5px solid #6d7569;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -677,100 +708,101 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
           flex-shrink: 0;
         }
         .choice-card.active .choice-dot {
-          background: #9d8252;
-          border-color: #9d8252;
-          color: #fff;
+          background: #dfbf77;
+          border-color: #dfbf77;
+          color: #0c100e;
         }
         .choice-card.multi .choice-square {
           border-radius: 4px;
         }
         .choice-card.multi.active .choice-square {
-          background: #9d8252;
-          border-color: #9d8252;
-          color: #fff;
+          background: #dfbf77;
+          border-color: #dfbf77;
+          color: #0c100e;
         }
         .assessment-textarea {
           width: 100%;
-          border: 1px solid #dcd8cf;
-          border-radius: 8px;
-          padding: 12px 14px;
-          font-size: 14px;
-          color: #242921;
-          background: #fffefa;
+          border: 1px solid rgba(199, 164, 91, 0.25);
+          border-radius: 10px;
+          padding: 13px 15px;
+          font-size: 14.5px;
+          color: #f7f5ed;
+          background: rgba(11, 15, 13, 0.88);
           outline: none;
           font-family: inherit;
         }
         .assessment-textarea:focus, .assessment-input:focus {
-          border-color: #9d8252;
-          box-shadow: 0 0 0 2px rgba(157, 130, 82, 0.15);
+          border-color: #dfbf77;
+          box-shadow: 0 0 0 3px rgba(223, 191, 119, 0.2);
         }
         .assessment-input {
-          height: 44px;
+          height: 46px;
           width: 100%;
-          border: 1px solid #dcd8cf;
-          border-radius: 8px;
-          padding: 0 14px;
-          font-size: 14px;
-          color: #242921;
-          background: #fffefa;
+          border: 1px solid rgba(199, 164, 91, 0.25);
+          border-radius: 10px;
+          padding: 0 15px;
+          font-size: 14.5px;
+          color: #f7f5ed;
+          background: rgba(11, 15, 13, 0.88);
           outline: none;
         }
         .rating-row {
           display: flex;
-          gap: 8px;
+          gap: 9px;
           flex-wrap: wrap;
         }
         .rating-btn {
           width: 44px;
           height: 44px;
-          border-radius: 8px;
-          border: 1px solid #d6d1c4;
-          background: #fffefa;
-          color: #2c3228;
+          border-radius: 9px;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          background: rgba(13, 17, 15, 0.8);
+          color: #dce0d9;
           font-weight: 700;
           font-size: 15px;
           cursor: pointer;
         }
         .rating-btn:hover {
-          border-color: #b59f74;
-          background: #fbf8f0;
+          border-color: #dfbf77;
+          background: rgba(30, 38, 33, 0.9);
         }
         .rating-btn.active {
-          background: #9d8252;
-          color: #fff;
-          border-color: #9d8252;
+          background: #dfbf77;
+          color: #0d110f;
+          border-color: #dfbf77;
+          box-shadow: 0 0 12px rgba(223, 191, 119, 0.4);
         }
         .checks-list {
           display: flex;
           flex-direction: column;
-          gap: 11px;
+          gap: 12px;
         }
         .check-row {
           display: flex;
-          gap: 11px;
+          gap: 12px;
           align-items: flex-start;
-          font-size: 13.5px;
-          color: #3b4237;
-          line-height: 1.45;
+          font-size: 14px;
+          color: #d8ddd5;
+          line-height: 1.5;
           cursor: pointer;
         }
         .check-row input {
-          margin-top: 2px;
-          accent-color: #9d8252;
-          width: 17px;
-          height: 17px;
+          margin-top: 3px;
+          accent-color: #dfbf77;
+          width: 18px;
+          height: 18px;
         }
         .measurement-row {
           display: flex;
           gap: 10px;
         }
         .measurement-select {
-          height: 44px;
+          height: 46px;
           padding: 0 14px;
-          border: 1px solid #dcd8cf;
-          border-radius: 8px;
-          background: #fffefa;
-          color: #242921;
+          border: 1px solid rgba(199, 164, 91, 0.25);
+          border-radius: 10px;
+          background: rgba(11, 15, 13, 0.88);
+          color: #f7f5ed;
           font-weight: 600;
           font-size: 13px;
         }
@@ -779,17 +811,36 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
           justify-content: space-between;
           align-items: center;
           gap: 14px;
-          margin-top: 32px;
-          padding-top: 20px;
-          border-top: 1px solid #e2ded5;
+          margin-top: 36px;
+          padding-top: 24px;
+          border-top: 1px solid rgba(199, 164, 91, 0.2);
         }
         .btn-gold {
-          background: #171816;
-          color: #fff;
-          border: 1px solid #171816;
-          padding: 13px 24px;
-          border-radius: 8px;
+          background: linear-gradient(135deg, #dfbf77 0%, #b89855 100%);
+          color: #0c100e;
+          border: none;
+          padding: 14px 28px;
+          border-radius: 10px;
           font-weight: 700;
+          font-size: 14px;
+          cursor: pointer;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 8px 24px rgba(223, 191, 119, 0.28);
+          transition: filter 0.15s;
+        }
+        .btn-gold:hover {
+          filter: brightness(1.1);
+        }
+        .btn-secondary {
+          background: rgba(255, 255, 255, 0.06);
+          color: #d6dbd4;
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          padding: 14px 22px;
+          border-radius: 10px;
+          font-weight: 650;
           font-size: 14px;
           cursor: pointer;
           text-decoration: none;
@@ -798,62 +849,48 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
           justify-content: center;
           transition: background 0.15s;
         }
-        .btn-gold:hover {
-          background: #3a3a34;
-        }
-        .btn-secondary {
-          background: transparent;
-          color: #555b51;
-          border: 1px solid #d2cdc2;
-          padding: 13px 20px;
-          border-radius: 8px;
-          font-weight: 650;
-          font-size: 14px;
-          cursor: pointer;
-          text-decoration: none;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-        }
         .btn-secondary:hover {
-          background: #ebe6dc;
+          background: rgba(255, 255, 255, 0.12);
         }
         .assessment-sidebar {
-          background: #171917;
+          background: rgba(16, 21, 19, 0.84);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(199, 164, 91, 0.18);
+          border-radius: 16px;
           color: #ece7db;
-          padding: 38px 30px;
-          border-left: 1px solid #282c28;
+          padding: 32px 26px;
+          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
         }
         .sidebar-sticky-box {
           position: sticky;
-          top: 85px;
+          top: 95px;
         }
         .sidebar-overline {
           font-size: 9.5px;
-          letter-spacing: 0.18em;
-          color: #c9af7e;
+          letter-spacing: 0.2em;
+          color: #dfbf77;
           font-weight: 800;
           display: block;
           margin-bottom: 12px;
         }
         .sidebar-title {
-          font-family: Georgia, serif;
-          font-size: 24px;
+          font-family: 'Cormorant Garamond', Georgia, serif;
+          font-size: 26px;
           margin: 0 0 10px;
-          color: #fff;
-          font-weight: 400;
+          color: #f7f5ed;
+          font-weight: 500;
         }
         .sidebar-copy {
-          color: #aaa599;
+          color: #9ea69b;
           font-size: 13px;
           line-height: 1.6;
           margin: 0 0 28px;
         }
         .sidebar-stages-list h4 {
           font-size: 11px;
-          letter-spacing: 0.1em;
+          letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: #928b7e;
+          color: #8c9489;
           margin: 0 0 12px;
         }
         .sidebar-stages-list ol {
@@ -862,35 +899,36 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
           margin: 0;
           display: flex;
           flex-direction: column;
-          gap: 9px;
+          gap: 8px;
         }
         .sidebar-stages-list li {
           display: flex;
           align-items: center;
           gap: 10px;
           font-size: 12.5px;
-          color: #8c877b;
-          padding: 6px 8px;
-          border-radius: 6px;
+          color: #828a7f;
+          padding: 7px 10px;
+          border-radius: 8px;
           cursor: default;
+          transition: all 0.15s ease;
         }
         .sidebar-stages-list li.done {
-          color: #d8d2c3;
+          color: #d1d6ce;
           cursor: pointer;
         }
         .sidebar-stages-list li.done:hover {
-          background: #252a25;
+          background: rgba(255, 255, 255, 0.06);
         }
         .sidebar-stages-list li.current {
-          background: #2a2e2a;
-          color: #e8c891;
+          background: rgba(199, 164, 91, 0.18);
+          color: #dfbf77;
           font-weight: 700;
         }
         .stage-bullet {
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          border: 1px solid #4a4f48;
+          border: 1px solid rgba(255, 255, 255, 0.2);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -898,9 +936,10 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
           flex-shrink: 0;
         }
         .sidebar-stages-list li.current .stage-bullet {
-          border-color: #d6ba83;
-          background: #d6ba83;
-          color: #171917;
+          border-color: #dfbf77;
+          background: #dfbf77;
+          color: #0c100e;
+          font-weight: 800;
         }
         .sidebar-stages-list li.done .stage-bullet {
           border-color: #7b8e75;
@@ -909,57 +948,62 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
         .sidebar-footer {
           margin-top: 36px;
           padding-top: 20px;
-          border-top: 1px solid #282c28;
-          color: #7b7569;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          color: #7b8278;
           font-size: 10px;
-          letter-spacing: 0.1em;
+          letter-spacing: 0.12em;
         }
         .assessment-finished-card {
           max-width: 680px;
           margin: 60px auto;
-          background: #fffefa;
-          border: 1px solid #dfdbd1;
+          background: rgba(20, 26, 23, 0.88);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(199, 164, 91, 0.24);
           border-radius: 16px;
           padding: 44px 40px;
-          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+          box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+          color: #f7f5ed;
+          position: relative;
+          z-index: 10;
         }
         .finished-badge {
           display: inline-block;
           font-size: 10px;
           letter-spacing: 0.15em;
           font-weight: 800;
-          color: #70582d;
-          background: #f6ecdc;
-          padding: 5px 12px;
+          color: #0c100e;
+          background: #dfbf77;
+          padding: 6px 14px;
           border-radius: 20px;
           margin-bottom: 16px;
         }
         .assessment-finished-card h1 {
-          font-family: Georgia, serif;
-          font-size: 34px;
+          font-family: 'Cormorant Garamond', Georgia, serif;
+          font-size: 36px;
           margin: 0 0 12px;
-          color: #171816;
+          color: #f7f5ed;
         }
         .finished-lede {
           font-size: 15px;
-          color: #555d51;
-          line-height: 1.6;
+          color: #b0b8ad;
+          line-height: 1.65;
           margin: 0 0 26px;
         }
         .safety-alert-banner {
-          background: #fdf5e8;
-          border: 1px solid #ebd3a6;
-          color: #8c5b1b;
-          padding: 14px 16px;
-          border-radius: 8px;
-          font-size: 13px;
-          line-height: 1.5;
+          background: rgba(199, 164, 91, 0.15);
+          border: 1px solid rgba(199, 164, 91, 0.35);
+          color: #f2cb85;
+          padding: 14px 18px;
+          border-radius: 10px;
+          font-size: 13.5px;
+          line-height: 1.55;
           margin-bottom: 26px;
         }
         .stage-review-grid {
-          background: #f7f5ef;
-          border-radius: 10px;
-          padding: 18px 20px;
+          background: rgba(12, 16, 14, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          padding: 20px 22px;
           margin-bottom: 30px;
         }
         .stage-review-grid h3 {
@@ -967,7 +1011,7 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
           font-size: 13px;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: #6a7165;
+          color: #dfbf77;
         }
         .stage-review-grid ul {
           list-style: none;
@@ -984,14 +1028,14 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
           font-size: 12.5px;
         }
         .stage-check {
-          color: #497843;
+          color: #79c8a8;
           font-weight: 800;
         }
         .stage-review-grid strong {
-          color: #272d24;
+          color: #f0f2ed;
         }
         .stage-review-grid small {
-          color: #7e8579;
+          color: #8c9489;
           margin-left: 4px;
         }
         .finished-actions {
@@ -1002,12 +1046,13 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
         @media (max-width: 900px) {
           .assessment-layout {
             grid-template-columns: 1fr;
+            padding: 18px 16px 45px;
           }
           .assessment-sidebar {
             display: none;
           }
           .assessment-main {
-            padding: 24px 18px 45px;
+            padding: 12px 0 35px;
           }
           .stage-review-grid ul {
             grid-template-columns: 1fr;

@@ -76,14 +76,13 @@ export default function Home() {
             Client Login
           </Link>
           <ThemeToggle />
-          <button
-            type="button"
+          <Link
+            href="/register"
             className="nav-cta"
-            onClick={openRegistration}
             aria-label="Register for Coaching"
           >
             Register for Coaching <span aria-hidden="true">↗</span>
-          </button>
+          </Link>
         </nav>
       </header>
 
@@ -139,13 +138,12 @@ export default function Home() {
             Build a stronger physique with a training plan that fits your week and nutrition guidance built around the Nigerian meals you already eat.
           </p>
           <div className="hero-actions" style={{ display: "flex", flexWrap: "wrap", gap: "12px", justifyContent: "center", marginTop: "16px" }}>
-            <button
-              type="button"
+            <Link
+              href="/register"
               className="btn btn-dark"
-              onClick={openRegistration}
             >
               REGISTER FOR COACHING <span aria-hidden="true">↗</span>
-            </button>
+            </Link>
             <a className="btn btn-outline" href="#method">
               EXPLORE THE METHOD <span aria-hidden="true">↓</span>
             </a>
@@ -465,13 +463,12 @@ export default function Home() {
             </p>
           </div>
           <div className="final-cta-action">
-            <button
-              type="button"
+            <Link
+              href="/register"
               className="btn btn-dark"
-              onClick={openRegistration}
             >
               REGISTER FOR COACHING <span aria-hidden="true">↗</span>
-            </button>
+            </Link>
             <p style={{ margin: "14px 0 0", fontSize: "12px", color: "#716D63" }}>
               Age and safety safeguards apply. No payment is taken during the registration questions.
             </p>
