@@ -61,6 +61,34 @@ export default function CoachLoginPage() {
           <button className="button button-gold" type="submit" style={{ marginTop: "16px" }}>
             Enter Command Centre →
           </button>
+
+          {process.env.NODE_ENV !== "production" && (
+            <button
+              type="button"
+              onClick={() => {
+                authStore.setSession({
+                  role: "coach",
+                  mode: "live",
+                  coachName: "Sahmi El",
+                });
+                router.push("/coach-portal");
+              }}
+              style={{
+                marginTop: "12px",
+                width: "100%",
+                padding: "10px",
+                background: "rgba(209, 181, 136, 0.15)",
+                border: "1px dashed #d1b588",
+                borderRadius: "6px",
+                color: "#d1b588",
+                fontSize: "12px",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              ⚡ Dev 1-Click Login: Enter Studio as Sahmi El
+            </button>
+          )}
         </form>
       </section>
     </main>
