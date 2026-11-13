@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import ModernClientBottomNav from "../components/ModernClientBottomNav";
 import { useClientPortalData } from "../data/useClientPortalData";
 import { clientPortalAdapter } from "../data/clientPortalAdapter";
 import "@/styles/ascend-workouts-focus.css";
 import type { PortalScope } from "../data/types";
 
-// SVG Icon paths
+// SVG Icon paths matching approved prototype
 const SVGS: Record<string, string> = {
   arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
   back: '<path d="m15 18-6-6 6-6"/>',
@@ -35,7 +34,7 @@ const SVGS: Record<string, string> = {
   save: '<path d="M4 4h14l3 3v13H3V4h1Zm3 0v6h10V4M7 20v-8h10v8"/>',
 };
 
-function WorkoutGlyph({
+function Glyph({
   name,
   className = "",
   style,
@@ -62,13 +61,13 @@ function WorkoutGlyph({
 }
 
 // Exercise models
-interface ExerciseSwap {
+export interface ExerciseSwap {
   id: string;
   name: string;
   note: string;
 }
 
-interface ExerciseDef {
+export interface ExerciseDef {
   id: string;
   name: string;
   sets: number;
@@ -98,7 +97,9 @@ const EXERCISES_A: ExerciseDef[] = [
     reps: "8–12",
     rest: 150,
     previous: { date: "3 Nov", rows: [["20", "10"], ["20", "10"]] },
-    swaps: [{ id: "extension", name: "Back Extension", note: "Coach-approved alternative" }],
+    swaps: [
+      { id: "extension", name: "Back Extension", note: "Coach-approved alternative" },
+    ],
   },
   {
     id: "bench",
@@ -107,7 +108,9 @@ const EXERCISES_A: ExerciseDef[] = [
     reps: "8–12",
     rest: 120,
     previous: { date: "4 Nov", rows: [["15", "10"], ["15", "9"]] },
-    swaps: [{ id: "machinepress", name: "Machine Chest Press", note: "Coach-approved alternative" }],
+    swaps: [
+      { id: "machinepress", name: "Machine Chest Press", note: "Coach-approved alternative" },
+    ],
   },
   {
     id: "row",
@@ -116,7 +119,9 @@ const EXERCISES_A: ExerciseDef[] = [
     reps: "8–12",
     rest: 120,
     previous: { date: "3 Nov", rows: [["32", "11"], ["32", "10"]] },
-    swaps: [{ id: "chestrow", name: "Chest-Supported Dumbbell Row", note: "Coach-approved alternative" }],
+    swaps: [
+      { id: "chestrow", name: "Chest-Supported Dumbbell Row", note: "Coach-approved alternative" },
+    ],
   },
   {
     id: "lat",
@@ -125,196 +130,256 @@ const EXERCISES_A: ExerciseDef[] = [
     reps: "8–12",
     rest: 120,
     previous: { date: "4 Nov", rows: [["35", "10"], ["35", "9"]] },
-    swaps: [{ id: "assisted", name: "Assisted Pull-Up", note: "Coach-approved alternative" }],
+    swaps: [
+      { id: "assisted", name: "Assisted Pull-Up", note: "Coach-approved alternative" },
+    ],
   },
 ];
 
-const WORKOUT_PLANS: Record<"a" | "b" | "c", { name: string; exercises: ExerciseDef[] }> = {
-  a: { name: "Full Body A", exercises: EXERCISES_A },
-  b: {
-    name: "Full Body B",
-    exercises: [
-      { ...EXERCISES_A[2], id: "bbench" },
-      { ...EXERCISES_A[0], id: "bleg" },
-      { ...EXERCISES_A[3], id: "brow" },
-      { ...EXERCISES_A[1], id: "brdl" },
-    ],
-  },
-  c: {
-    name: "Full Body C",
-    exercises: [
-      { ...EXERCISES_A[0], id: "cleg" },
-      { ...EXERCISES_A[4], id: "clat" },
-      { ...EXERCISES_A[2], id: "cbench" },
-      { ...EXERCISES_A[1], id: "crdl" },
-    ],
-  },
+const EXERCISE_PLAN: Record<string, ExerciseDef[]> = {
+  a: EXERCISES_A,
+  b: [
+    { ...EXERCISES_A[2], id: "bbench" },
+    { ...EXERCISES_A[0], id: "bleg" },
+    { ...EXERCISES_A[3], id: "brow" },
+    { ...EXERCISES_A[1], id: "brdl" },
+  ],
+  c: [
+    { ...EXERCISES_A[0], id: "cleg" },
+    { ...EXERCISES_A[4], id: "clat" },
+    { ...EXERCISES_A[2], id: "cbench" },
+    { ...EXERCISES_A[1], id: "crdl" },
+  ],
 };
 
-interface SetRow {
-  load: string;
-  reps: string;
-  done: boolean;
-}
+const WEEK_ROUTINES = [
+  { id: "a", name: "Full Body A", day: "Monday", short: "MON", num: "16", status: "today" },
+  { id: "b", name: "Full Body B", day: "Wednesday", short: "WED", num: "18", status: "upcoming" },
+  { id: "c", name: "Full Body C", day: "Friday", short: "FRI", num: "20", status: "upcoming" },
+];
 
 export interface WorkoutsFocusPageProps {
   scope?: PortalScope;
   onSwitchToClassic?: () => void;
 }
 
-export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }: WorkoutsFocusPageProps) {
-  const data = useClientPortalData(scope);
-  // Navigation & Page State
-  const [page, setPage] = useState<"workouts" | "preview" | "logger" | "summary" | "share">("workouts");
-  const [selectedWorkoutKey, setSelectedWorkoutKey] = useState<"a" | "b" | "c">("a");
-  const [mode, setMode] = useState<"focus" | "session">("focus");
-  const [currentExIndex, setCurrentExIndex] = useState(0);
+export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageProps) {
+  const portalData = useClientPortalData(scope);
 
-  // Sets state: Record<exerciseId, SetRow[]>
-  const [setRows, setSetRows] = useState<Record<string, SetRow[]>>({});
-  const [swappedExercises, setSwappedExercises] = useState<Record<string, ExerciseSwap>>({});
-  const [warmOpen, setWarmOpen] = useState(false);
-  const [swapSheetExId, setSwapSheetExId] = useState<string | null>(null);
-  const [mediaEx, setMediaEx] = useState<ExerciseDef | null>(null);
+  // Core navigation view
+  const [screen, setScreen] = useState<"workouts" | "preview" | "logger" | "share" | "summary">("workouts");
+  const [workoutId, setWorkoutId] = useState<string>("a");
+  const [viewMode, setViewMode] = useState<"focus" | "session">("focus");
+  const [activeExIndex, setActiveExIndex] = useState<number>(0);
+
+  // Tracking state
+  const [started, setStarted] = useState<Record<string, boolean>>({});
+  const [ended, setEnded] = useState<Record<string, { partial: boolean; recorded: number } | null>>({});
+  const [rows, setRows] = useState<Record<string, Array<{ w: string; r: string; done: boolean }>>>({});
+  const [warm, setWarm] = useState<Record<string, Array<{ w: string; r: string; done: boolean }>>>({});
+  const [warmOpen, setWarmOpen] = useState<Record<string, boolean>>({});
+  const [histOpen, setHistOpen] = useState<Record<string, boolean>>({});
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [swaps, setSwaps] = useState<Record<string, ExerciseSwap>>({});
+
+  // Rest timer
+  const [rest, setRest] = useState<{
+    status: "off" | "running" | "paused";
+    remaining: number;
+    ends: number;
+    exerciseId: string | null;
+  }>({ status: "off", remaining: 0, ends: 0, exerciseId: null });
+
+  // Share path choice
+  const [sharePath, setSharePath] = useState<"preview" | "private">("private");
+
+  // Overlays
+  const [mediaExId, setMediaExId] = useState<string | null>(null);
+  const [sheetExId, setSheetExId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  // Rest Timer State
-  const [timerActive, setTimerActive] = useState(false);
-  const [timerSeconds, setTimerSeconds] = useState(120);
-  const [timerTotal, setTimerTotal] = useState(120);
-  const [timerPaused, setTimerPaused] = useState(false);
-
-  // Completed workouts registry
-  const [completedWorkouts, setCompletedWorkouts] = useState<Record<string, { duration: number; partial: boolean }>>({
-    a: { duration: 52, partial: false },
-  });
+  const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const showToast = (msg: string) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3200);
+    toastTimerRef.current = setTimeout(() => setToastMessage(null), 2500);
   };
 
-  const currentWorkout = WORKOUT_PLANS[selectedWorkoutKey];
-  const exercises = currentWorkout.exercises;
-  const currentEx = exercises[currentExIndex] || exercises[0];
-
-  // Initialize rows for exercises if not present
+  // Rest timer ticker
   useEffect(() => {
-    const next: Record<string, SetRow[]> = { ...setRows };
-    let changed = false;
-    exercises.forEach((ex) => {
-      if (!next[ex.id]) {
-        next[ex.id] = Array.from({ length: ex.sets }, (_, i) => ({
-          load: ex.previous.rows[i]?.[0] || "60",
-          reps: ex.previous.rows[i]?.[1] || "10",
-          done: false,
-        }));
-        changed = true;
-      }
-    });
-    if (changed) setSetRows(next);
-  }, [selectedWorkoutKey, exercises]);
-
-  // Timer interval countdown
-  useEffect(() => {
-    if (!timerActive || timerPaused) return;
+    if (rest.status !== "running") return;
     const interval = setInterval(() => {
-      setTimerSeconds((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          setTimerActive(false);
-          showToast("Rest interval complete · Begin next set");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+      const left = Math.max(0, Math.ceil((rest.ends - Date.now()) / 1000));
+      if (left <= 0) {
+        setRest({ status: "off", remaining: 0, ends: 0, exerciseId: null });
+        showToast("Rest interval complete · Begin next set");
+      }
+    }, 500);
     return () => clearInterval(interval);
-  }, [timerActive, timerPaused]);
+  }, [rest.status, rest.ends]);
 
-  // Statistics
+  // Calculations
+  const currentWeekObj = WEEK_ROUTINES.find((x) => x.id === workoutId) || WEEK_ROUTINES[0];
+  const currentExercises = EXERCISE_PLAN[workoutId] || EXERCISES_A;
+  const currentEx = currentExercises[Math.min(activeExIndex, currentExercises.length - 1)] || currentExercises[0];
+
+  const exKey = (x: ExerciseDef) => `${workoutId}:${x.id}`;
+
+  const ensureRowsForEx = (x: ExerciseDef) => {
+    const k = exKey(x);
+    if (!rows[k]) {
+      const initial = Array.from({ length: x.sets }, (_, i) => ({
+        w: x.previous?.rows[i]?.[0] || "",
+        r: x.previous?.rows[i]?.[1] || "",
+        done: false,
+      }));
+      setRows((prev) => ({ ...prev, [k]: initial }));
+      return initial;
+    }
+    return rows[k];
+  };
+
+  const ensureWarmForEx = (x: ExerciseDef) => {
+    const k = exKey(x);
+    if (!warm[k]) {
+      const initial = [{ w: "", r: "", done: false }];
+      setWarm((prev) => ({ ...prev, [k]: initial }));
+      return initial;
+    }
+    return warm[k];
+  };
+
   const getStats = () => {
-    let done = 0;
     let total = 0;
-    let volume = 0;
-    exercises.forEach((ex) => {
-      const rows = setRows[ex.id] || [];
-      total += ex.sets;
-      rows.forEach((r) => {
-        if (r.done) {
-          done++;
-          const l = parseFloat(r.load) || 0;
-          const rep = parseFloat(r.reps) || 0;
-          volume += l * rep;
-        }
-      });
+    let done = 0;
+    currentExercises.forEach((x) => {
+      const r = rows[exKey(x)] || [];
+      total += x.sets;
+      done += r.filter((row) => row.done).length;
     });
-    return { done, total, volume: Math.round(volume) };
+    return { total, done, exercises: currentExercises.length };
   };
 
   const stats = getStats();
 
-  const handleCompleteSet = (exId: string, setIndex: number) => {
-    const currentList = setRows[exId] ? [...setRows[exId]] : [];
-    const isNowDone = !currentList[setIndex]?.done;
-    currentList[setIndex] = { ...currentList[setIndex], done: isNowDone };
-    setSetRows({ ...setRows, [exId]: currentList });
+  const fmtTime = (secs: number) => {
+    const t = Math.max(0, Math.ceil(secs));
+    return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
+  };
 
-    if (isNowDone) {
-      showToast(`Set ${setIndex + 1} recorded: ${currentList[setIndex].load} kg × ${currentList[setIndex].reps} reps`);
-      // Start rest timer
-      setTimerTotal(currentEx.rest);
-      setTimerSeconds(currentEx.rest);
-      setTimerActive(true);
-      setTimerPaused(false);
+  const restRemaining = () => {
+    if (rest.status === "running") {
+      return Math.max(0, Math.ceil((rest.ends - Date.now()) / 1000));
     }
+    return rest.remaining || 0;
   };
 
-  const startWorkout = (selectedMode: "focus" | "session") => {
-    setMode(selectedMode);
-    setCurrentExIndex(0);
-    setPage("logger");
+  const isResting = rest.status === "running" || rest.status === "paused";
+
+  const getExName = (x: ExerciseDef) => swaps[exKey(x)]?.name || x.name;
+
+  const getOldSummary = (x: ExerciseDef) => {
+    if (swaps[exKey(x)]) return "Not comparable";
+    if (!x.previous?.rows?.length) return "No previous record";
+    const grouped = x.previous.rows.map((a) => `${a[0]} kg × ${a[1]}`).join(" · ");
+    const allSameWeight = x.previous.rows.every((a) => a[0] === x.previous.rows[0][0]);
+    return allSameWeight
+      ? `${x.previous.rows[0][0]} kg · ${x.previous.rows.map((a) => a[1]).join(", ")}`
+      : grouped;
   };
 
-  const finishWorkout = () => {
-    setTimerActive(false);
-    setCompletedWorkouts({
-      ...completedWorkouts,
-      [selectedWorkoutKey]: { duration: 48, partial: stats.done < stats.total },
+  // Workout Actions
+  const handleSelectWorkout = (id: string) => {
+    if (!EXERCISE_PLAN[id]) return;
+    setWorkoutId(id);
+    setActiveExIndex(0);
+    setScreen("preview");
+  };
+
+  const handleStartWorkout = () => {
+    const isResuming = Boolean(started[workoutId]) && !ended[workoutId];
+    if (!isResuming) {
+      setActiveExIndex(0);
+      setEnded((prev) => ({ ...prev, [workoutId]: null }));
+    }
+    setStarted((prev) => ({ ...prev, [workoutId]: true }));
+    setScreen("logger");
+  };
+
+  const handleCompleteSet = (x: ExerciseDef, index: number) => {
+    const k = exKey(x);
+    const currentList = [...(rows[k] || ensureRowsForEx(x))];
+    const r = currentList[index];
+    if (!r) return;
+
+    if (r.done) {
+      currentList[index] = { ...r, done: false };
+      setRows((prev) => ({ ...prev, [k]: currentList }));
+      showToast("Set reopened for correction.");
+      return;
+    }
+
+    if (!r.w.trim() || !r.r.trim()) {
+      showToast("Enter a valid weight and whole-number reps.");
+      return;
+    }
+
+    currentList[index] = { ...r, done: true };
+    setRows((prev) => ({ ...prev, [k]: currentList }));
+
+    // Start rest timer
+    setRest({
+      status: "running",
+      remaining: x.rest,
+      ends: Date.now() + x.rest * 1000,
+      exerciseId: x.id,
     });
 
-    try {
-      const exerciseLogs = exercises.map((ex) => ({
-        exerciseId: ex.id,
-        name: ex.name,
-        sets: (setRows[ex.id] || []).map((row, idx) => ({
-          set: idx + 1,
-          load: row.load,
-          reps: row.reps,
-          completed: row.done,
-        })),
-      }));
-
-      clientPortalAdapter.saveWorkout(scope, {
-        programmeDayId: selectedWorkoutKey,
-        workoutName: currentWorkout.name,
-        workoutDate: new Date().toISOString().split("T")[0],
-        durationMinutes: 48,
-        effortRating: 8,
-        athleteNote: "Focus mode completed",
-        painNote: "",
-        exercises: exerciseLogs,
-      });
-    } catch (e) {
-      console.error("Failed to save workout:", e);
+    const doneForExercise = currentList.every((row) => row.done);
+    if (doneForExercise && viewMode === "focus" && activeExIndex < currentExercises.length - 1) {
+      setActiveExIndex((prev) => prev + 1);
+      showToast("Next exercise loaded. Rest timer continues.");
+    } else {
+      showToast("Working set recorded. Rest started.");
     }
-
-    setPage("summary");
   };
 
-  // Figure Illustration SVG
-  const renderFigureSvg = (ex: ExerciseDef) => {
-    const isLeg = ex.id.toLowerCase().includes("leg");
+  const handleFinishWorkout = () => {
+    const partial = stats.done < stats.total;
+    setEnded((prev) => ({ ...prev, [workoutId]: { partial, recorded: stats.done } }));
+    setRest({ status: "off", remaining: 0, ends: 0, exerciseId: null });
+
+    // Auto-save to adapter / database
+    try {
+      clientPortalAdapter.saveWorkout(scope, {
+        programmeDayId: workoutId,
+        workoutName: currentWeekObj.name,
+        workoutDate: new Date().toISOString().split("T")[0],
+        durationMinutes: 50,
+        effortRating: 8,
+        athleteNote: `${currentWeekObj.name} completed`,
+        painNote: "",
+        exercises: currentExercises.map((e) => ({
+          exerciseId: e.id,
+          name: getExName(e),
+          sets: (rows[exKey(e)] || []).map((row, idx) => ({
+            set: idx + 1,
+            load: row.w,
+            reps: row.r,
+            completed: row.done,
+          })),
+        })),
+      });
+    } catch (err) {
+      console.error("Failed to auto-save workout", err);
+    }
+
+    setScreen("share");
+  };
+
+  // Figure Illustration SVG matching prototype
+  const renderFigureSvg = (x: ExerciseDef) => {
+    const isLeg = x.id.includes("leg");
     const human = (
       <>
         <circle cx="156" cy="47" r="12" fill="#66786a" />
@@ -323,6 +388,7 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
         <path d="M103 86 85 80" stroke="#657569" strokeWidth="10" fill="none" strokeLinecap="round" />
       </>
     );
+
     const scene = isLeg ? (
       <>
         <rect x="37" y="124" width="246" height="8" rx="4" fill="#adb6ad" />
@@ -346,672 +412,918 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
     );
 
     return (
-      <svg className="illustration" viewBox="0 0 320 165" role="img" aria-label="Exercise technique animation">
-        <title>Exercise technique illustration</title>
+      <svg className="illustration" viewBox="0 0 320 165" role="img" aria-label="Exercise movement animation">
+        <title>Exercise movement animation</title>
         {scene}
       </svg>
     );
   };
 
+  const currentExRows = rows[exKey(currentEx)] || ensureRowsForEx(currentEx);
+  const nextUnfinishedSetIndex = currentExRows.findIndex((q) => !q.done);
+  const allCurrentSetsDone = nextUnfinishedSetIndex < 0;
+
   return (
     <div className="workouts-focus-root">
       <div className="frame">
-        {/* VIEW 1: WORKOUTS PLAN OVERVIEW */}
-        {page === "workouts" && (
+        {/* VIEW 1: WORKOUTS LIST */}
+        {screen === "workouts" && (
           <div className="view">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
-              <div>
-                <div className="eyebrow">{data.client.phaseName.toUpperCase()}</div>
-                <h1 className="t1">Your training week</h1>
-                <p className="small" style={{ margin: "4px 0 0" }}>
-                  {data.programme.subtitle || "Your coach-prescribed sessions, ready when you are."}
-                </p>
-              </div>
-              <span className="pill">
-                WEEK {String(data.programme.week).padStart(2, "0")} OF {String(data.programme.totalWeeks).padStart(2, "0")}
-              </span>
-            </div>
+            <div className="eyebrow">FOUNDATION PHASE</div>
+            <h1 className="t1">Your training week</h1>
+            <p className="small" style={{ margin: "7px 0 17px" }}>
+              Your approved sessions, ready when you are.
+            </p>
 
-            <div className="card padded" style={{ marginBottom: "20px" }}>
+            {/* This week consistency progress */}
+            <div className="card padded" style={{ marginBottom: "17px" }}>
               <div className="row spread">
-                <span className="strong">Weekly Consistency</span>
-                <span className="small">{`${data.workouts.length % 3} of 3 completed`}</span>
+                <span className="strong">This week</span>
+                <span className="small">
+                  {Object.values(ended).filter(Boolean).length} of 3 finished
+                </span>
               </div>
               <div className="progress-track">
-                <div style={{ width: `${Math.min(100, Math.round(((data.workouts.length % 3) / 3) * 100))}%` }} />
+                <div
+                  style={{
+                    width: `${Math.round((Object.values(ended).filter(Boolean).length / 3) * 100)}%`,
+                  }}
+                />
               </div>
             </div>
 
-            {/* Workouts 3-Column Grid */}
+            {/* 3 Workout Cards (Desktop 3-Column / Mobile 1-Column) */}
             <div className="workouts-grid">
-              {[
-                { key: "a" as const, day: "MON", num: "01", name: "Full Body A", time: "50m · Gym" },
-                { key: "b" as const, day: "WED", num: "02", name: "Full Body B", time: "50m · Gym", isToday: true },
-                { key: "c" as const, day: "FRI", num: "03", name: "Full Body C", time: "55m · Gym" },
-              ].map((w) => {
-                const isEnded = !!completedWorkouts[w.key];
+              {WEEK_ROUTINES.map((x) => {
+                const isStarted = !!started[x.id];
+                const isEnded = !!ended[x.id];
+                const isToday = x.id === "a";
                 return (
                   <button
-                    key={w.key}
-                    className={`workout-card ${w.isToday ? "is-today" : ""}`}
-                    onClick={() => {
-                      setSelectedWorkoutKey(w.key);
-                      setPage("preview");
-                    }}
+                    key={x.id}
+                    className={`workout-card ${isToday ? "is-today" : ""}`}
+                    type="button"
+                    onClick={() => handleSelectWorkout(x.id)}
                   >
-                    <div className="daybox">
-                      <span>{w.day}</span>
-                      <span>{w.num}</span>
-                    </div>
-                    <div className="grow">
-                      <div className="workout-title">{w.name}</div>
-                      <div className="workout-status">
+                    <span className="daybox">
+                      <span>{x.short}</span>
+                      <span>{x.num}</span>
+                    </span>
+                    <span className="grow">
+                      <span className="workout-title">{x.name}</span>
+                      <span className="workout-status">
                         {isEnded
-                          ? "Completed · Saved"
-                          : w.isToday
-                          ? "Today’s session · Ready"
-                          : "Scheduled"}
-                      </div>
-                    </div>
-                    <WorkoutGlyph name={isEnded ? "check" : "chevron"} />
+                          ? "Completed"
+                          : isStarted
+                          ? "In progress"
+                          : isToday
+                          ? "Ready today"
+                          : "Scheduled"}{" "}
+                        · {EXERCISE_PLAN[x.id]?.length || 5} exercises
+                      </span>
+                    </span>
+                    <Glyph name="arrow" />
                   </button>
                 );
               })}
             </div>
 
-            {/* Bottom App Navigation (Mobile Only) */}
+            {/* Coach Programme Note */}
+            <div className="card padded" style={{ marginTop: "16px" }}>
+              <div className="row spread">
+                <span className="strong">Your programme</span>
+                <span className="pill neutral">Coach-approved</span>
+              </div>
+              <p className="small" style={{ margin: "10px 0 0" }}>
+                Illustrative Full Body A/B/C beginner week. Rescheduling and permanent programme changes remain under the approved coaching rules.
+              </p>
+            </div>
+
+            {/* Mobile Bottom Dock */}
             <ModernClientBottomNav scope={scope} active="workouts" />
           </div>
         )}
 
         {/* VIEW 2: WORKOUT PREVIEW */}
-        {page === "preview" && (
+        {screen === "preview" && (
           <div className="view">
             <div className="focus-logger-wrap">
-            <div className="topbar tight">
-              <button
-                className="icon-btn flat"
-                onClick={() => setPage("workouts")}
-                aria-label="Back to Workouts"
-              >
-                <WorkoutGlyph name="back" className="lg" />
-              </button>
-              <div className="eyebrow">WORKOUT PREVIEW</div>
-              <button
-                className="icon-btn flat"
-                onClick={() => setPage("workouts")}
-                aria-label="Settings"
-              >
-                <WorkoutGlyph name="settings" />
-              </button>
-            </div>
-
-            <section className="hero">
-              <div className="eyebrow" style={{ color: "#d2b477" }}>PRE-WORKOUT PREPARATION</div>
-              <h1 className="t1" style={{ fontSize: "25px" }}>{currentWorkout.name}</h1>
-              <div className="info-strip">
-                <span><WorkoutGlyph name="timer" /> 50 min</span>
-                <span><WorkoutGlyph name="dumbbell" /> {exercises.length} exercises</span>
-                <span><WorkoutGlyph name="calendar" /> Foundation Phase</span>
-              </div>
-            </section>
-
-            <div className="section-head">
-              <h2 className="t2" style={{ fontSize: "16px" }}>Programmed Exercises</h2>
-              <span className="small">{exercises.length} movements</span>
-            </div>
-
-            {exercises.map((ex, idx) => (
-              <div key={ex.id} className="preview-ex">
-                <div
-                  className="thumb"
-                  onClick={() => setMediaEx(ex)}
-                  title="View exercise technique"
-                >
-                  <WorkoutGlyph name="dumbbell" />
-                </div>
-                <div className="middle">
-                  <div className="strong" style={{ fontSize: "14px" }}>{ex.name}</div>
-                  <div className="small" style={{ color: "var(--muted)", marginTop: "2px" }}>
-                    {ex.sets} sets × {ex.reps} reps · Rest {ex.rest}s
-                  </div>
-                </div>
+              <div className="topbar tight">
                 <button
                   className="icon-btn flat"
-                  onClick={() => setSwapSheetExId(ex.id)}
-                  title="Approved exercise substitutions"
+                  onClick={() => setScreen("workouts")}
+                  aria-label="Back to Workouts"
                 >
-                  <WorkoutGlyph name="swap" className="sm" />
+                  <Glyph name="back" className="lg" />
+                </button>
+                <div className="eyebrow">WORKOUT PREVIEW</div>
+                <button
+                  className="icon-btn flat"
+                  onClick={() => setScreen("workouts")}
+                  aria-label="Settings"
+                >
+                  <Glyph name="settings" />
                 </button>
               </div>
-            ))}
 
-            <div style={{ marginTop: "22px", display: "grid", gap: "9px" }}>
-              <button
-                className="btn primary"
-                style={{
-                  background: "var(--gold)",
-                  color: "#1a160f",
-                  padding: "15px",
-                  borderRadius: "14px",
-                  fontWeight: 750,
-                  fontSize: "15px",
-                  border: "none",
-                }}
-                onClick={() => startWorkout("focus")}
-              >
-                Start Workout in Focus Mode →
-              </button>
-              <button
-                className="btn"
-                style={{
-                  background: "#24221f",
-                  color: "#e5d3b1",
-                  border: "1px solid #4a4133",
-                  padding: "13px",
-                  borderRadius: "14px",
-                  fontWeight: 650,
-                  fontSize: "13px",
-                }}
-                onClick={() => startWorkout("session")}
-              >
-                Start in Session Mode
-              </button>
-            </div>
+              {/* Hero Banner */}
+              <section className="hero">
+                <div className="eyebrow">FOUNDATION · {currentWeekObj.day.toUpperCase()}</div>
+                <h1 className="t1" style={{ marginTop: "8px" }}>
+                  {currentWeekObj.name}
+                </h1>
+                <div className="info-strip">
+                  <span>
+                    <Glyph name="timer" /> 55–65 min
+                  </span>
+                  <span>
+                    <Glyph name="dumbbell" /> Gym
+                  </span>
+                  <span>{currentExercises.length} exercises</span>
+                </div>
+              </section>
+
+              {/* Exercises List */}
+              <div className="section-head">
+                <span className="t2">Your exercises</span>
+                <span className="mini">Coach-approved</span>
+              </div>
+
+              {currentExercises.map((e) => (
+                <div key={e.id} className="preview-ex">
+                  <button
+                    className="thumb"
+                    onClick={() => setMediaExId(e.id)}
+                    aria-label={`Expand animation for ${getExName(e)}`}
+                  >
+                    <Glyph name="dumbbell" className="lg" />
+                  </button>
+                  <div className="middle">
+                    <div className="name">{getExName(e)}</div>
+                    <div className="detail">
+                      {e.sets} sets · {e.reps} reps · {fmtTime(e.rest)} rest
+                    </div>
+                  </div>
+                  <button
+                    className="small-swap"
+                    onClick={() => setSheetExId(e.id)}
+                  >
+                    Swap
+                  </button>
+                </div>
+              ))}
+
+              {/* Pre-workout Guidance */}
+              <div className="card padded" style={{ marginTop: "10px" }}>
+                <div className="row">
+                  <Glyph name="info" /> <span className="strong">Before you begin</span>
+                </div>
+                <p className="small" style={{ margin: "8px 0 0" }}>
+                  5 minutes of easy movement, then prescribed ramp-up sets where applicable. Log warm-ups separately if you prefer.
+                </p>
+              </div>
+
+              {/* Start Workout Primary CTA */}
+              <div className="bottom-sticky">
+                <button className="cta" onClick={handleStartWorkout}>
+                  {started[workoutId] ? "Resume Workout" : "Start Workout"} <Glyph name="arrow" />
+                </button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* VIEW 3: LIVE WORKOUT LOGGER (FOCUS & SESSION MODES) */}
-        {page === "logger" && (
+        {/* VIEW 3: LIVE WORKOUT LOGGER */}
+        {screen === "logger" && (
           <div className="view">
             <div className="focus-logger-wrap">
-            <div className="topbar tight">
-              <button
-                className="icon-btn flat"
-                onClick={() => setPage("preview")}
-                aria-label="Back to preview"
-              >
-                <WorkoutGlyph name="back" className="lg" />
-              </button>
-              <div className="eyebrow" style={{ fontSize: "10px" }}>YOUR LIVE WORKOUT</div>
-              <button
-                className="icon-btn flat"
-                onClick={finishWorkout}
-                title="Finish workout"
-              >
-                <WorkoutGlyph name="save" />
-              </button>
-            </div>
-
-            {/* Status Line */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-              <div>
-                <div className="strong" style={{ fontSize: "15px" }}>{currentWorkout.name}</div>
-                <div className="small" style={{ color: "var(--muted)" }}>
-                  {stats.done} of {stats.total} working sets recorded
+              <div className="topbar tight">
+                <button
+                  className="icon-btn flat"
+                  onClick={() => setScreen("preview")}
+                  aria-label="Save and leave workout"
+                >
+                  <Glyph name="back" className="lg" />
+                </button>
+                <div className="eyebrow" style={{ fontSize: "10px" }}>
+                  YOUR LIVE WORKOUT
                 </div>
+                <button
+                  className="icon-btn flat"
+                  onClick={() => {
+                    setScreen("preview");
+                    showToast("Session preserved on this device.");
+                  }}
+                  aria-label="Leave session, saved on this device"
+                  title="Save for later"
+                >
+                  <Glyph name="save" />
+                </button>
               </div>
-              <button
-                onClick={() => setMode(mode === "focus" ? "session" : "focus")}
-                className="pill"
-                style={{ cursor: "pointer", background: mode === "focus" ? "#312a1e" : "#282827" }}
-              >
-                {mode === "focus" ? "FOCUS MODE" : "SESSION MODE"}
-              </button>
-            </div>
 
-            {/* Active Rest Timer Bar */}
-            {timerActive && (
-              <div
-                style={{
-                  background: "#282319",
-                  border: "1px solid #6b5535",
-                  borderRadius: "14px",
-                  padding: "10px 14px",
-                  marginBottom: "14px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <WorkoutGlyph name="timer" style={{ color: "var(--gold)" }} />
-                  <div>
-                    <div style={{ fontSize: "10px", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "1px" }}>
-                      Rest Interval
-                    </div>
-                    <strong style={{ fontSize: "19px", color: "#f2d392", fontVariantNumeric: "tabular-nums" }}>
-                      {Math.floor(timerSeconds / 60)}:{String(timerSeconds % 60).padStart(2, "0")}
-                    </strong>
+              {/* Status Line with Mode Switch */}
+              <div className="statusline">
+                <div>
+                  <div className="session-name">{currentWeekObj.name}</div>
+                  <div className="mini">
+                    {stats.done} of {stats.total} working sets recorded
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: "6px" }}>
-                  <button
-                    onClick={() => setTimerPaused(!timerPaused)}
-                    style={{ background: "#393226", border: "1px solid #57462f", color: "#f1dcba", borderRadius: "8px", padding: "6px 9px", fontSize: "11px" }}
-                  >
-                    {timerPaused ? "Resume" : "Pause"}
-                  </button>
-                  <button
-                    onClick={() => setTimerSeconds((prev) => prev + 30)}
-                    style={{ background: "#393226", border: "1px solid #57462f", color: "#f1dcba", borderRadius: "8px", padding: "6px 9px", fontSize: "11px" }}
-                  >
-                    +30s
-                  </button>
-                  <button
-                    onClick={() => setTimerActive(false)}
-                    style={{ background: "#393226", border: "1px solid #57462f", color: "#f1dcba", borderRadius: "8px", padding: "6px 9px", fontSize: "11px" }}
-                  >
-                    Skip
-                  </button>
-                </div>
+                <button
+                  className="smallmode"
+                  onClick={() => setViewMode(viewMode === "focus" ? "session" : "focus")}
+                  style={{ cursor: "pointer" }}
+                >
+                  {viewMode === "focus" ? "FOCUS MODE" : "SESSION MODE"}
+                </button>
               </div>
-            )}
 
-            {/* FOCUS MODE */}
-            {mode === "focus" && (
-              <div className="stack">
-                <div className="card padded" style={{ background: "#1b1a18" }}>
-                  <div className="row spread">
-                    <div>
-                      <div className="eyebrow">EXERCISE {currentExIndex + 1} OF {exercises.length}</div>
-                      <h2 className="t1" style={{ fontSize: "21px", margin: "4px 0" }}>
-                        {swappedExercises[currentEx.id]?.name || currentEx.name}
-                      </h2>
-                      <div className="small" style={{ color: "var(--muted)" }}>
-                        Target: {currentEx.sets} sets × {currentEx.reps} reps · Rest {currentEx.rest}s
-                      </div>
-                    </div>
-                    <button
-                      className="icon-btn flat"
-                      onClick={() => setSwapSheetExId(currentEx.id)}
-                      title="Swap exercise"
+              {/* FOCUS MODE */}
+              {viewMode === "focus" && (
+                <div>
+                  {/* Unified Exercise Card */}
+                  <article className="card unified">
+                    {/* Movement Animated Illustration */}
+                    <div
+                      className="media"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setMediaExId(currentEx.id)}
+                      aria-label={`Expand demonstration for ${getExName(currentEx)}`}
                     >
-                      <WorkoutGlyph name="swap" />
-                    </button>
-                  </div>
-
-                  {/* Figure Preview */}
-                  <div
-                    style={{
-                      height: "140px",
-                      background: "#161715",
-                      borderRadius: "14px",
-                      margin: "14px 0",
-                      display: "grid",
-                      placeItems: "center",
-                      cursor: "pointer",
-                      border: "1px solid #2f342f",
-                    }}
-                    onClick={() => setMediaEx(currentEx)}
-                    title="Tap to enlarge form animation"
-                  >
-                    {renderFigureSvg(currentEx)}
-                  </div>
-
-                  {/* Warm-Up Calculator Trigger */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "10px 0" }}>
-                    <button
-                      onClick={() => setWarmOpen(!warmOpen)}
-                      style={{ background: "none", border: "none", color: "var(--gold)", fontSize: "11px", fontWeight: 700, cursor: "pointer", padding: 0 }}
-                    >
-                      {warmOpen ? "Hide Warm-Up Sets ▲" : "View Warm-Up Sets ▼"}
-                    </button>
-                    <span className="small" style={{ color: "var(--muted)" }}>
-                      Last: {currentEx.previous.rows[0]?.[0]} kg × {currentEx.previous.rows[0]?.[1]}
-                    </span>
-                  </div>
-
-                  {warmOpen && (
-                    <div style={{ background: "#25231f", padding: "10px", borderRadius: "10px", margin: "8px 0", fontSize: "12px", border: "1px solid #4a3f2f" }}>
-                      <div style={{ color: "#d9bc80", fontWeight: 700, marginBottom: "4px" }}>Recommended Warm-Up</div>
-                      <div>Set 1: 50% working weight × 8 reps (warm-up)</div>
-                      <div>Set 2: 70% working weight × 4 reps (prep)</div>
-                      <div>Set 3: 85% working weight × 2 reps (readiness)</div>
-                    </div>
-                  )}
-
-                  {/* Active Working Sets List */}
-                  <div style={{ marginTop: "14px" }}>
-                    <div className="set-head">
-                      <div>LOAD (KG)</div>
-                      <div>REPS</div>
-                      <div style={{ textAlign: "right" }}>DONE</div>
+                      {renderFigureSvg(currentEx)}
+                      <span className="expand">
+                        <Glyph name="expand" />
+                      </span>
+                      <span className="media-mark">ILLUSTRATIVE MOTION</span>
                     </div>
 
-                    {(setRows[currentEx.id] || []).map((row, sIdx) => (
-                      <div key={sIdx} className="set-row">
-                        <input
-                          type="number"
-                          className="number"
-                          aria-label={`Set ${sIdx + 1} Load`}
-                          value={row.load}
-                          onChange={(e) => {
-                            const list = [...(setRows[currentEx.id] || [])];
-                            list[sIdx] = { ...list[sIdx], load: e.target.value };
-                            setSetRows({ ...setRows, [currentEx.id]: list });
-                          }}
-                        />
-                        <input
-                          type="number"
-                          className="number"
-                          aria-label={`Set ${sIdx + 1} Reps`}
-                          value={row.reps}
-                          onChange={(e) => {
-                            const list = [...(setRows[currentEx.id] || [])];
-                            list[sIdx] = { ...list[sIdx], reps: e.target.value };
-                            setSetRows({ ...setRows, [currentEx.id]: list });
-                          }}
-                        />
+                    <div className="exercise-info">
+                      <div className="name-row">
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div className="exname">{getExName(currentEx)}</div>
+                          <div className="exgoal">
+                            {currentEx.sets} sets · {currentEx.reps} reps
+                          </div>
+                        </div>
+
+                        {/* Inline Previous History Toggle */}
                         <button
-                          className={`set-check ${row.done ? "done" : ""}`}
-                          onClick={() => handleCompleteSet(currentEx.id, sIdx)}
-                          title="Complete set"
+                          className="history-mini"
+                          type="button"
+                          onClick={() => {
+                            const k = exKey(currentEx);
+                            setHistOpen((prev) => ({ ...prev, [k]: !prev[k] }));
+                          }}
+                          aria-label={`View previous session details for ${getExName(currentEx)}`}
                         >
-                          <WorkoutGlyph name={row.done ? "check" : "timer"} />
+                          <div className="histlabel">
+                            PREVIOUS{currentEx.previous ? ` · ${currentEx.previous.date}` : ""}
+                          </div>
+                          <div className="histvalue">{getOldSummary(currentEx)}</div>
                         </button>
                       </div>
-                    ))}
-                  </div>
 
-                  {/* Navigation to next exercise */}
-                  <div style={{ marginTop: "16px", display: "flex", gap: "9px" }}>
-                    <button
-                      disabled={currentExIndex === 0}
-                      className="btn"
-                      style={{ flex: 1, padding: "11px", background: "#2a2723", color: "#d9cbba", border: "1px solid #484033", borderRadius: "10px" }}
-                      onClick={() => setCurrentExIndex((prev) => Math.max(0, prev - 1))}
-                    >
-                      ← Previous
-                    </button>
-                    {currentExIndex < exercises.length - 1 ? (
-                      <button
-                        className="btn primary"
-                        style={{ flex: 1, padding: "11px", background: "var(--gold)", color: "#191610", fontWeight: 700, border: "none", borderRadius: "10px" }}
-                        onClick={() => setCurrentExIndex((prev) => prev + 1)}
-                      >
-                        Next Movement →
+                      {histOpen[exKey(currentEx)] && (
+                        <div className="hist-detail">
+                          {swaps[exKey(currentEx)]
+                            ? "A temporary exercise swap is selected. No comparison with the prescribed exercise."
+                            : currentEx.previous
+                            ? `Previous recorded working sets: ${currentEx.previous.rows
+                                .map((row) => `${row[0]} kg × ${row[1]} reps`)
+                                .join(" · ")}`
+                            : "No previous working sets available."}{" "}
+                          These figures are a reference only.
+                        </div>
+                      )}
+
+                      {/* Unified Tools Bar */}
+                      <div className="unified-tools">
+                        <span className={`rest-meta ${isResting ? "active" : ""}`}>
+                          <Glyph name="timer" className="sm" />{" "}
+                          <span>
+                            {isResting
+                              ? `${rest.status === "paused" ? "Paused " : "Rest "}${fmtTime(restRemaining())}`
+                              : `Rest · ${fmtTime(currentEx.rest)}`}
+                          </span>
+                        </span>
+
+                        <button
+                          type="button"
+                          className="small-action"
+                          onClick={() => {
+                            const k = exKey(currentEx);
+                            setWarmOpen((prev) => ({ ...prev, [k]: !prev[k] }));
+                          }}
+                        >
+                          Warm-up{" "}
+                          <Glyph name={warmOpen[exKey(currentEx)] ? "up" : "chevron"} className="sm" />
+                        </button>
+
+                        <button
+                          type="button"
+                          className="swap-ico"
+                          onClick={() => setSheetExId(currentEx.id)}
+                          aria-label="Swap Exercise"
+                          title="Swap Exercise"
+                        >
+                          <Glyph name="swap" />
+                        </button>
+                      </div>
+
+                      {/* Active Rest Countdown Bar */}
+                      {isResting && (
+                        <div className="rest-expanded">
+                          <span className="rest-clock">{fmtTime(restRemaining())}</span>
+                          <div className="rest-ctrls">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const diff = -30;
+                                if (rest.status === "running") {
+                                  const sec = Math.max(0, restRemaining() + diff);
+                                  setRest((prev) => ({ ...prev, remaining: sec, ends: Date.now() + sec * 1000 }));
+                                } else {
+                                  setRest((prev) => ({ ...prev, remaining: Math.max(0, prev.remaining + diff) }));
+                                }
+                              }}
+                            >
+                              −30s
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (rest.status === "running") {
+                                  setRest((prev) => ({ ...prev, remaining: restRemaining(), status: "paused" }));
+                                } else if (rest.status === "paused") {
+                                  setRest((prev) => ({ ...prev, ends: Date.now() + prev.remaining * 1000, status: "running" }));
+                                }
+                              }}
+                            >
+                              {rest.status === "paused" ? "Resume" : "Pause"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const diff = 30;
+                                if (rest.status === "running") {
+                                  const sec = Math.max(0, restRemaining() + diff);
+                                  setRest((prev) => ({ ...prev, remaining: sec, ends: Date.now() + sec * 1000 }));
+                                } else {
+                                  setRest((prev) => ({ ...prev, remaining: prev.remaining + diff }));
+                                }
+                              }}
+                            >
+                              +30s
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setRest({ status: "off", remaining: 0, ends: 0, exerciseId: null })}
+                            >
+                              Skip
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Warm-Up Drawer */}
+                      {warmOpen[exKey(currentEx)] && (
+                        <div className="warm-panel">
+                          <div className="warmhead">
+                            <span>Optional warm-up log · separate from working sets</span>
+                            <button
+                              type="button"
+                              className="tiny-link"
+                              onClick={() => {
+                                const k = exKey(currentEx);
+                                const list = warm[k] || [{ w: "", r: "", done: false }];
+                                if (list.length < 5) {
+                                  setWarm((prev) => ({ ...prev, [k]: [...list, { w: "", r: "", done: false }] }));
+                                } else {
+                                  showToast("Five warm-up entries is enough for this workout.");
+                                }
+                              }}
+                            >
+                              + Add warm-up
+                            </button>
+                          </div>
+
+                          {(warm[exKey(currentEx)] || ensureWarmForEx(currentEx)).map((r, i) => (
+                            <div key={i} className="warm-grid">
+                              <input
+                                className="number"
+                                type="number"
+                                step="0.5"
+                                min="0"
+                                placeholder="kg"
+                                value={r.w}
+                                onChange={(e) => {
+                                  const k = exKey(currentEx);
+                                  const list = [...(warm[k] || [{ w: "", r: "", done: false }])];
+                                  list[i] = { ...list[i], w: e.target.value };
+                                  setWarm((prev) => ({ ...prev, [k]: list }));
+                                }}
+                              />
+                              <input
+                                className="number"
+                                type="number"
+                                min="1"
+                                step="1"
+                                placeholder="reps"
+                                value={r.r}
+                                onChange={(e) => {
+                                  const k = exKey(currentEx);
+                                  const list = [...(warm[k] || [{ w: "", r: "", done: false }])];
+                                  list[i] = { ...list[i], r: e.target.value };
+                                  setWarm((prev) => ({ ...prev, [k]: list }));
+                                }}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const k = exKey(currentEx);
+                                  const list = [...(warm[k] || [{ w: "", r: "", done: false }])];
+                                  list[i] = { ...list[i], done: !list[i].done };
+                                  setWarm((prev) => ({ ...prev, [k]: list }));
+                                  showToast(list[i].done ? "Warm-up recorded separately." : "Warm-up reopened.");
+                                }}
+                              >
+                                <Glyph name={r.done ? "check" : "plus"} />
+                              </button>
+                            </div>
+                          ))}
+                          <div className="warm-caption">
+                            Warm-up entries are optional. They never count toward prescribed working-set totals.
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </article>
+
+                  {/* Focused Working Set Logger Card */}
+                  <section className="card logger-card">
+                    <div className="logger-head">
+                      <span className="eyebrow">WORKING SET</span>
+                      <span className="mini">
+                        {currentExRows.filter((q) => q.done).length} of {currentExRows.length} recorded
+                      </span>
+                    </div>
+
+                    {allCurrentSetsDone ? (
+                      <div className="complete-banner">
+                        <Glyph name="check" className="lg" />
+                        <span>All working sets recorded for this exercise.</span>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="fieldgrid">
+                          <label className="field">
+                            <span>WEIGHT (KG)</span>
+                            <input
+                              className="number"
+                              type="number"
+                              step="0.5"
+                              min="0"
+                              placeholder="0"
+                              value={currentExRows[nextUnfinishedSetIndex]?.w || ""}
+                              onChange={(e) => {
+                                const k = exKey(currentEx);
+                                const list = [...currentExRows];
+                                list[nextUnfinishedSetIndex] = {
+                                  ...list[nextUnfinishedSetIndex],
+                                  w: e.target.value,
+                                };
+                                setRows((prev) => ({ ...prev, [k]: list }));
+                              }}
+                            />
+                          </label>
+                          <label className="field">
+                            <span>REPS</span>
+                            <input
+                              className="number"
+                              type="number"
+                              min="1"
+                              step="1"
+                              placeholder="0"
+                              value={currentExRows[nextUnfinishedSetIndex]?.r || ""}
+                              onChange={(e) => {
+                                const k = exKey(currentEx);
+                                const list = [...currentExRows];
+                                list[nextUnfinishedSetIndex] = {
+                                  ...list[nextUnfinishedSetIndex],
+                                  r: e.target.value,
+                                };
+                                setRows((prev) => ({ ...prev, [k]: list }));
+                              }}
+                            />
+                          </label>
+                        </div>
+
+                        <button
+                          className="cta"
+                          type="button"
+                          onClick={() => handleCompleteSet(currentEx, nextUnfinishedSetIndex)}
+                        >
+                          <Glyph name="check" /> Complete Set
+                        </button>
+                      </>
+                    )}
+                  </section>
+
+                  {/* Navigation footer */}
+                  <div className="logger-footer">
+                    {stats.done === stats.total ? (
+                      <button className="cta" onClick={handleFinishWorkout}>
+                        Finish Workout <Glyph name="arrow" />
                       </button>
                     ) : (
-                      <button
-                        className="btn primary"
-                        style={{ flex: 1, padding: "11px", background: "#4c7943", color: "#fff", fontWeight: 700, border: "none", borderRadius: "10px" }}
-                        onClick={finishWorkout}
-                      >
-                        Finish Workout ✓
+                      <button className="secondary block" onClick={handleFinishWorkout}>
+                        End Workout Early
                       </button>
                     )}
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* SESSION MODE */}
-            {mode === "session" && (
-              <div className="stack">
-                {exercises.map((ex, exIdx) => {
-                  const rows = setRows[ex.id] || [];
-                  return (
-                    <div key={ex.id} className="card padded" style={{ background: "#1c1b19" }}>
-                      <div className="row spread">
-                        <div>
-                          <div className="eyebrow">MOVEMENT {exIdx + 1}</div>
-                          <h3 style={{ margin: "3px 0", fontSize: "16px" }}>{ex.name}</h3>
-                          <div className="small" style={{ color: "var(--muted)" }}>
-                            Target: {ex.sets} sets × {ex.reps} reps
-                          </div>
-                        </div>
-                        <button
-                          className="icon-btn flat"
-                          onClick={() => setSwapSheetExId(ex.id)}
-                          title="Swap exercise"
-                        >
-                          <WorkoutGlyph name="swap" className="sm" />
-                        </button>
-                      </div>
-
-                      <div style={{ marginTop: "10px" }}>
-                        <div className="set-head">
-                          <div>LOAD (KG)</div>
-                          <div>REPS</div>
-                          <div style={{ textAlign: "right" }}>DONE</div>
-                        </div>
-                        {rows.map((row, sIdx) => (
-                          <div key={sIdx} className="set-row">
-                            <input
-                              type="number"
-                              className="number"
-                              value={row.load}
-                              onChange={(e) => {
-                                const list = [...rows];
-                                list[sIdx] = { ...list[sIdx], load: e.target.value };
-                                setSetRows({ ...setRows, [ex.id]: list });
-                              }}
-                            />
-                            <input
-                              type="number"
-                              className="number"
-                              value={row.reps}
-                              onChange={(e) => {
-                                const list = [...rows];
-                                list[sIdx] = { ...list[sIdx], reps: e.target.value };
-                                setSetRows({ ...setRows, [ex.id]: list });
-                              }}
-                            />
+              {/* SESSION MODE */}
+              {viewMode === "session" && (
+                <div>
+                  <div className="stack" style={{ gap: "10px" }}>
+                    {currentExercises.map((x) => {
+                      const k = exKey(x);
+                      const exRows = rows[k] || ensureRowsForEx(x);
+                      const isCollapsed = !!collapsed[k];
+                      return (
+                        <section key={x.id} className="session-ex">
+                          <div className="session-head">
                             <button
-                              className={`set-check ${row.done ? "done" : ""}`}
-                              onClick={() => handleCompleteSet(ex.id, sIdx)}
+                              className="icon-btn pill"
+                              onClick={() => setCollapsed((prev) => ({ ...prev, [k]: !prev[k] }))}
+                              aria-label={`${isCollapsed ? "Expand" : "Collapse"} ${getExName(x)}`}
                             >
-                              <WorkoutGlyph name={row.done ? "check" : "timer"} />
+                              <Glyph name={isCollapsed ? "chevron" : "up"} className="sm" />
+                            </button>
+                            <div className="part">
+                              <button
+                                onClick={() => {
+                                  setActiveExIndex(currentExercises.findIndex((q) => q.id === x.id));
+                                  setViewMode("focus");
+                                  showToast("Switched to Focus Mode");
+                                }}
+                                style={{
+                                  background: "none",
+                                  border: 0,
+                                  textAlign: "left",
+                                  color: "inherit",
+                                  padding: 0,
+                                  width: "100%",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <div className="exname">{getExName(x)}</div>
+                                <div className="exgoal">
+                                  {x.sets} sets · {x.reps} reps
+                                </div>
+                                <div className="mini" style={{ marginTop: "4px" }}>
+                                  {exRows.filter((r) => r.done).length} of {exRows.length} recorded
+                                </div>
+                              </button>
+                            </div>
+
+                            <button
+                              className="history-mini"
+                              type="button"
+                              onClick={() => setHistOpen((prev) => ({ ...prev, [k]: !prev[k] }))}
+                            >
+                              <div className="histlabel">
+                                PREVIOUS{x.previous ? ` · ${x.previous.date}` : ""}
+                              </div>
+                              <div className="histvalue">{getOldSummary(x)}</div>
                             </button>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
 
-                <button
-                  className="btn primary"
-                  style={{
-                    background: "var(--gold)",
-                    color: "#18150f",
-                    padding: "15px",
-                    borderRadius: "14px",
-                    fontWeight: 750,
-                    fontSize: "15px",
-                    border: "none",
-                    marginTop: "14px",
-                  }}
-                  onClick={finishWorkout}
-                >
-                  Complete & Save Session ✓
-                </button>
-              </div>
-            )}
+                          <div className="row-controls">
+                            <span className="rest-meta">
+                              <Glyph name="timer" className="sm" /> Rest {fmtTime(x.rest)}
+                            </span>
+                            <div className="row" style={{ gap: "5px" }}>
+                              <button
+                                className="small-action"
+                                onClick={() => setWarmOpen((prev) => ({ ...prev, [k]: !prev[k] }))}
+                              >
+                                Warm-up <Glyph name="chevron" className="sm" />
+                              </button>
+                              <button
+                                className="swap-ico"
+                                onClick={() => setSheetExId(x.id)}
+                                title="Swap Exercise"
+                              >
+                                <Glyph name="swap" />
+                              </button>
+                            </div>
+                          </div>
+
+                          {!isCollapsed && (
+                            <>
+                              <div className="set-head">
+                                <span>WEIGHT (KG)</span>
+                                <span>REPS</span>
+                                <span>DONE</span>
+                              </div>
+                              {exRows.map((r, i) => (
+                                <div key={i} className="set-row">
+                                  <input
+                                    className="number"
+                                    type="number"
+                                    step="0.5"
+                                    min="0"
+                                    placeholder="kg"
+                                    value={r.w}
+                                    onChange={(e) => {
+                                      const list = [...exRows];
+                                      list[i] = { ...list[i], w: e.target.value };
+                                      setRows((prev) => ({ ...prev, [k]: list }));
+                                    }}
+                                  />
+                                  <input
+                                    className="number"
+                                    type="number"
+                                    min="1"
+                                    step="1"
+                                    placeholder="reps"
+                                    value={r.r}
+                                    onChange={(e) => {
+                                      const list = [...exRows];
+                                      list[i] = { ...list[i], r: e.target.value };
+                                      setRows((prev) => ({ ...prev, [k]: list }));
+                                    }}
+                                  />
+                                  <button
+                                    className={`set-check ${r.done ? "done" : ""}`}
+                                    type="button"
+                                    onClick={() => handleCompleteSet(x, i)}
+                                    aria-label="Complete set"
+                                  >
+                                    <Glyph name="check" />
+                                  </button>
+                                </div>
+                              ))}
+                            </>
+                          )}
+                        </section>
+                      );
+                    })}
+                  </div>
+
+                  <div className="logger-footer">
+                    {stats.done === stats.total ? (
+                      <button className="cta" onClick={handleFinishWorkout}>
+                        Finish Workout <Glyph name="arrow" />
+                      </button>
+                    ) : (
+                      <button className="secondary block" onClick={handleFinishWorkout}>
+                        End Workout Early
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {/* VIEW 4: POST-WORKOUT SUMMARY */}
-        {page === "summary" && (
+        {/* VIEW 4: OPTIONAL SHARING */}
+        {screen === "share" && (
           <div className="view">
             <div className="focus-logger-wrap">
-            <div className="eyebrow" style={{ color: "var(--gold)" }}>PRIVATE WORKOUT SUMMARY</div>
-            <h1 className="t1">Workout Completed</h1>
-            <p className="small" style={{ color: "var(--muted)" }}>
-              {currentWorkout.name} · Foundation Phase · Performance saved
-            </p>
+              <div className="topbar">
+                <div>
+                  <div className="brand">ASCEND</div>
+                  <div className="eyebrow" style={{ fontSize: "9px" }}>
+                    OPTIONAL SHARING
+                  </div>
+                </div>
+              </div>
 
-            <div className="statgrid">
-              <div className="stat">
-                <b>{stats.done}</b>
+              <h1 className="t1">
+                {ended[workoutId]?.partial ? "Session ended early" : "Workout completed"}
+              </h1>
+              <p className="small">
+                {stats.done} of {stats.total} working sets recorded. Sharing is entirely optional.
+              </p>
+
+              {/* Golden Share Art Badge */}
+              <div className="share-art">
+                <div className="eyebrow" style={{ letterSpacing: "4px" }}>
+                  ASCEND
+                </div>
+                <div className="t1">{currentWeekObj.name.toUpperCase()}</div>
+                <div style={{ fontSize: "38px", color: "#c9ad7c" }}>✦</div>
+                <div className="large">
+                  {stats.done} / {stats.total}
+                </div>
                 <div className="small">Working sets recorded</div>
+                <div className="mini" style={{ marginTop: "18px" }}>
+                  Tame the Flesh. Forge the Form. Ascend.
+                </div>
               </div>
-              <div className="stat">
-                <b>{stats.volume.toLocaleString()}</b>
-                <div className="small">Volume load (kg)</div>
-              </div>
-            </div>
 
-            <div className="card padded" style={{ margin: "14px 0" }}>
-              <div className="eyebrow">COACH PERFORMANCE LOG</div>
-              <div style={{ marginTop: "8px", fontSize: "13px", lineHeight: "1.6", color: "#ddd3c4" }}>
-                Working sets are saved to your athlete performance ledger. Sahmi evaluates total load volume, intensity and technique adherence during your scheduled coaching review.
-              </div>
-            </div>
-
-            <div style={{ display: "grid", gap: "9px", marginTop: "22px" }}>
               <button
-                className="btn primary"
-                style={{
-                  background: "var(--gold)",
-                  color: "#1b1710",
-                  padding: "14px",
-                  borderRadius: "12px",
-                  fontWeight: 750,
-                  border: "none",
+                className="cta"
+                onClick={() => {
+                  setSharePath("preview");
+                  setScreen("summary");
                 }}
-                onClick={() => setPage("share")}
               >
-                View Shareable Card →
+                Preview Share Path
               </button>
               <button
-                className="btn"
-                style={{
-                  background: "#262420",
-                  color: "#e5d4bb",
-                  border: "1px solid #4a3e2e",
-                  padding: "12px",
-                  borderRadius: "12px",
-                  fontWeight: 650,
+                className="secondary block"
+                style={{ marginTop: "9px" }}
+                onClick={() => {
+                  setSharePath("private");
+                  setScreen("summary");
                 }}
-                onClick={() => setPage("workouts")}
               >
-                Return to Workouts Hub
+                Continue Privately
               </button>
-            </div>
             </div>
           </div>
         )}
 
-        {/* VIEW 5: SHAREABLE WORKOUT GRAPHIC */}
-        {page === "share" && (
+        {/* VIEW 5: PRIVATE WORKOUT SUMMARY */}
+        {screen === "summary" && (
           <div className="view">
             <div className="focus-logger-wrap">
-            <div className="topbar tight">
+              <div className="topbar">
+                <div>
+                  <div className="brand">ASCEND</div>
+                  <div className="eyebrow" style={{ fontSize: "9px" }}>
+                    PRIVATE WORKOUT SUMMARY
+                  </div>
+                </div>
+              </div>
+
+              <h1 className="t1">Workout Summary</h1>
+              <p className="small">
+                {currentWeekObj.name} · {ended[workoutId]?.partial ? "Partially completed" : "Completed"}
+              </p>
+
+              <div className="statgrid">
+                <div className="stat">
+                  <b>{stats.done}</b>
+                  <div className="small">Working sets recorded</div>
+                </div>
+                <div className="stat">
+                  <b>{stats.exercises}</b>
+                  <div className="small">Planned exercises</div>
+                </div>
+              </div>
+
+              {/* Recorded Exercises Breakdown */}
+              {currentExercises.map((e) => {
+                const k = exKey(e);
+                const records = (rows[k] || []).filter((r) => r.done);
+                return (
+                  <div key={e.id} className="card padded" style={{ marginBottom: "9px" }}>
+                    <div className="strong">{getExName(e)}</div>
+                    <div className="small" style={{ marginTop: "6px" }}>
+                      {records.length
+                        ? records.map((r) => `${r.w} kg × ${r.r} reps`).join(" · ")
+                        : "No working sets recorded"}
+                    </div>
+                  </div>
+                );
+              })}
+
               <button
-                className="icon-btn flat"
-                onClick={() => setPage("summary")}
-                aria-label="Back to summary"
+                className="cta"
+                style={{ marginTop: "15px" }}
+                onClick={() => setScreen("workouts")}
               >
-                <WorkoutGlyph name="back" className="lg" />
+                Back to Workouts <Glyph name="arrow" />
               </button>
-              <div className="eyebrow">SHARE PERFORMANCE</div>
-              <div style={{ width: "42px" }} />
-            </div>
-
-            <div className="share-art">
-              <div className="eyebrow" style={{ letterSpacing: "4px", color: "var(--gold)" }}>ASCEND</div>
-              <div className="t1" style={{ fontSize: "28px", color: "#fff", margin: "4px 0" }}>
-                {currentWorkout.name}
-              </div>
-              <div className="large">{stats.volume.toLocaleString()}</div>
-              <div className="small" style={{ letterSpacing: "1px", textTransform: "uppercase", color: "#d9bc80" }}>
-                Total KG Volume Moved
-              </div>
-              <div className="small" style={{ color: "#beb29e", marginTop: "12px" }}>
-                {stats.done} working sets · Foundation Phase
-              </div>
-            </div>
-
-            <button
-              className="btn"
-              style={{
-                width: "100%",
-                background: "var(--gold)",
-                color: "#17140e",
-                padding: "14px",
-                borderRadius: "12px",
-                fontWeight: 750,
-                border: "none",
-                marginTop: "16px",
-              }}
-              onClick={() => {
-                showToast("Card copied to clipboard (demo)");
-              }}
-            >
-              Export / Share Graphic
-            </button>
             </div>
           </div>
         )}
 
-        {/* SWAP SHEET MODAL */}
-        {swapSheetExId && (() => {
-          const targetEx = exercises.find((x) => x.id === swapSheetExId) || currentEx;
-          return (
-            <div className="sheet-backdrop" onClick={() => setSwapSheetExId(null)}>
-              <div className="sheet" onClick={(e) => e.stopPropagation()}>
-                <button
-                  className="close"
-                  onClick={() => setSwapSheetExId(null)}
-                  aria-label="Close swaps"
-                >
-                  <WorkoutGlyph name="close" />
-                </button>
-                <div className="eyebrow">APPROVED MOVEMENT SWAPS</div>
-                <h2>{targetEx.name}</h2>
-                <p className="small" style={{ color: "var(--muted)", margin: "4px 0 14px" }}>
-                  Select an approved alternative movement. Swaps preserve your coach’s prescribed stimulus.
-                </p>
-
-                {targetEx.swaps.map((sw) => (
-                  <button
-                    key={sw.id}
-                    className="option"
-                    onClick={() => {
-                      setSwappedExercises({ ...swappedExercises, [targetEx.id]: sw });
-                      setSwapSheetExId(null);
-                      showToast(`Movement swapped to ${sw.name}`);
-                    }}
-                  >
-                    <div>
-                      <strong>{sw.name}</strong>
-                      <small>{sw.note}</small>
-                    </div>
-                    <span className="choice">Select →</span>
-                  </button>
-                ))}
+        {/* OVERLAY: EXERCISE SWAP SHEET */}
+        {sheetExId && (
+          <div className="sheet-backdrop" onClick={() => setSheetExId(null)}>
+            <div
+              className="sheet"
+              role="dialog"
+              aria-modal="true"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="close"
+                onClick={() => setSheetExId(null)}
+                aria-label="Close swaps"
+              >
+                <Glyph name="close" />
+              </button>
+              <div className="eyebrow">CURRENT SESSION ONLY</div>
+              <h2>Swap Exercise</h2>
+              <div className="small">
+                {(() => {
+                  const x = currentExercises.find((v) => v.id === sheetExId);
+                  return x ? `${x.name} · Choose from Sahmi-approved alternatives only.` : "";
+                })()}
               </div>
-            </div>
-          );
-        })()}
 
-        {/* EXPANDED TECHNIQUE MEDIA MODAL */}
-        {mediaEx && (
-          <div className="mediamodal" onClick={() => setMediaEx(null)}>
+              {(() => {
+                const x = currentExercises.find((v) => v.id === sheetExId);
+                if (!x) return null;
+                const k = exKey(x);
+                const sel = swaps[k];
+                return (
+                  <>
+                    <button
+                      className="option"
+                      onClick={() => {
+                        const copy = { ...swaps };
+                        delete copy[k];
+                        setSwaps(copy);
+                        setSheetExId(null);
+                        showToast("Prescribed exercise restored.");
+                      }}
+                    >
+                      <span>
+                        <b>{x.name}</b>
+                        <small>Keep the prescribed exercise</small>
+                      </span>
+                      <span className="choice">{sel ? "" : "✓"}</span>
+                    </button>
+
+                    {x.swaps.map((alt) => (
+                      <button
+                        key={alt.id}
+                        className="option"
+                        onClick={() => {
+                          setSwaps({ ...swaps, [k]: alt });
+                          setSheetExId(null);
+                          showToast(`Approved demo swap applied: ${alt.name}`);
+                        }}
+                      >
+                        <span>
+                          <b>{alt.name}</b>
+                          <small>{alt.note}</small>
+                        </span>
+                        <span className="choice">{sel?.id === alt.id ? "✓" : "Select"}</span>
+                      </button>
+                    ))}
+                  </>
+                );
+              })()}
+
+              <div className="message" style={{ marginTop: "12px" }}>
+                Changing exercise because of pain or unusual symptoms needs appropriate caution and coach review. This platform does not provide medical clearance.
+              </div>
+
+              <button className="secondary block" onClick={() => setSheetExId(null)}>
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* OVERLAY: EXPANDED MEDIA MODAL */}
+        {mediaExId && (
+          <div
+            className="mediamodal"
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setMediaExId(null)}
+          >
             <button
               className="icon-btn dismiss"
-              onClick={() => setMediaEx(null)}
-              aria-label="Close media preview"
+              onClick={() => setMediaExId(null)}
+              aria-label="Close expanded media"
             >
-              <WorkoutGlyph name="close" />
+              <Glyph name="close" />
             </button>
-            <div className="media" onClick={(e) => e.stopPropagation()}>
-              {renderFigureSvg(mediaEx)}
-              <div className="small" style={{ textAlign: "center", marginTop: "14px", color: "#ddd" }}>
-                {mediaEx.name} · Proper setup and controlled cadence
-              </div>
+            <div
+              className="media"
+              style={{ height: "min(66vh, 480px)", width: "min(95vw, 560px)", borderRadius: "19px" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {(() => {
+                const x = currentExercises.find((v) => v.id === mediaExId) || currentEx;
+                return renderFigureSvg(x);
+              })()}
+            </div>
+            <div className="small" style={{ textAlign: "center", marginTop: "16px" }}>
+              {(() => {
+                const x = currentExercises.find((v) => v.id === mediaExId) || currentEx;
+                return `${getExName(x)} · Illustrative motion demonstration.`;
+              })()}
             </div>
           </div>
         )}
 
-        {/* Floating Toast */}
-        <div className={`toast ${toastMessage ? "show" : ""}`}>
-          {toastMessage}
-        </div>
+        {/* FLOATING STATUS TOAST */}
+        {toastMessage && <div className="toast show">{toastMessage}</div>}
       </div>
     </div>
   );
