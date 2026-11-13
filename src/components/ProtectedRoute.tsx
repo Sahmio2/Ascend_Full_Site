@@ -1,8 +1,6 @@
-"use client";
-
 import { ReactNode, useEffect, useState } from "react";
 import { authStore, type AuthSession, type UserRole } from "../services/authStore";
-import CoachLoginPage from "../app/coach/page";
+import CoachLoginPage from "../pages/auth/CoachLoginPage";
 
 type ProtectedRouteProps = {
   children: ReactNode;
