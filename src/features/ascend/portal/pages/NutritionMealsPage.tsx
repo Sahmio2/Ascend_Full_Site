@@ -221,7 +221,8 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
             padding: "5px",
             borderRadius: "14px",
             border: "1px solid #37342e",
-            margin: "16px 18px 0",
+            margin: "0 0 20px 0",
+            maxWidth: "520px",
             overflowX: "auto",
           }}
         >
@@ -296,196 +297,223 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
               </div>
             </div>
 
-            {/* Macro Summary Card */}
-            <div className="panel summary section">
-              <div className="summary-top">
-                <div>
-                  <div className="eyebrow" style={{ color: "#d2b477" }}>ENERGY BUDGET</div>
-                  <div className="number">{rem} <span style={{ fontSize: "16px", color: "var(--muted)", fontWeight: 500 }}>kcal left</span></div>
-                  <div className="tiny">{s.kcal} kcal consumed today</div>
+            {/* Desktop 2-Column Responsive Layout */}
+            <div className="nutrition-grid" style={{ marginTop: "20px" }}>
+              {/* Left Column: Prescribed Meals & Logged Extras */}
+              <div>
+                <div className="row" style={{ marginBottom: "11px" }}>
+                  <h2>Prescribed Meals</h2>
+                  <span className="tiny">{INITIAL_MEALS.length} planned today</span>
                 </div>
-                <div className="goalchip">
-                  <small>Daily target</small>
-                  <br />
-                  <b>{TARGETS.kcal}</b> kcal
-                </div>
-              </div>
-              <div className="progress">
-                <span style={{ width: `${Math.min(100, Math.round((s.kcal / TARGETS.kcal) * 100))}%` }} />
-              </div>
-              <div className="metric">
-                {[
-                  ["Protein", s.p, TARGETS.protein, "#a5c69e"],
-                  ["Carbs", s.c, TARGETS.carbs, "#d5b36b"],
-                  ["Fat", s.f, TARGETS.fat, "#caa087"],
-                ].map(([name, val, target, color]) => (
-                  <div key={name as string}>
-                    <small>
-                      <i className="dot" style={{ background: color as string }} />
-                      {name}
-                    </small>
-                    <strong>{val} / {target} g</strong>
-                  </div>
-                ))}
-              </div>
-              <div className="infoNote">
-                Gram portions and preparation states are coach-prescribed. Unverified foods have no calculated micronutrients.
-              </div>
-            </div>
 
-            {/* Planned Meals List */}
-            <div className="section">
-              <div className="row" style={{ marginBottom: "11px" }}>
-                <h2>Prescribed Meals</h2>
-                <span className="tiny">{INITIAL_MEALS.length} planned today</span>
-              </div>
-
-              {INITIAL_MEALS.map((m) => {
-                const isOpen = expanded === m.id;
-                const entry = log[m.id];
-                return (
-                  <section key={m.id} className="panel meal" style={{ marginTop: "10px" }}>
-                    <button
-                      className="mealhead"
-                      onClick={() => setExpanded(isOpen ? null : m.id)}
-                      aria-expanded={isOpen}
-                    >
-                      <div className="text">
-                        <div className="meal-label">{m.label}</div>
-                        <div className="meal-title">{m.name}</div>
-                      </div>
-                      {handleMealStatus(m)}
-                      <span className="chev">{isOpen ? "⌃" : "⌄"}</span>
-                    </button>
-
-                    {isOpen && (
-                      <div className="details">
-                        <div className="ingredients">
-                          {m.foods.map((f, i) => (
-                            <div key={i} className="ingredient">
-                              <span>{f.name}</span>
-                              <span>{f.amount}</span>
-                            </div>
-                          ))}
+                {INITIAL_MEALS.map((m) => {
+                  const isOpen = expanded === m.id;
+                  const entry = log[m.id];
+                  return (
+                    <section key={m.id} className="panel meal" style={{ marginTop: "10px" }}>
+                      <button
+                        className="mealhead"
+                        onClick={() => setExpanded(isOpen ? null : m.id)}
+                        aria-expanded={isOpen}
+                      >
+                        <div className="text">
+                          <div className="meal-label">{m.label}</div>
+                          <div className="meal-title">{m.name}</div>
                         </div>
+                        {handleMealStatus(m)}
+                        <span className="chev">{isOpen ? "⌃" : "⌄"}</span>
+                      </button>
 
-                        {!entry ? (
-                          <>
-                            <button
-                              className="actionPrimary"
-                              onClick={() => recordPlanned(m.id)}
-                            >
-                              ✓ Ate as planned
-                            </button>
-                            <div className="textActions">
-                              <button onClick={() => openAdd(m.id, "search")}>
-                                Log substitute / change
-                              </button>
-                              <button onClick={() => recordSkipped(m.id)}>
-                                Didn&apos;t eat
-                              </button>
-                            </div>
-                          </>
-                        ) : (
-                          <div className="savedRow">
-                            <span>
-                              {entry.kind === "planned"
-                                ? "Recorded as planned"
-                                : entry.kind === "skipped"
-                                ? "Marked not eaten"
-                                : `Substituted: ${entry.note || "Custom"}`}
-                            </span>
-                            <button onClick={() => undoRecord(m.id)}>Undo</button>
+                      {isOpen && (
+                        <div className="details">
+                          <div className="ingredients">
+                            {m.foods.map((f, i) => (
+                              <div key={i} className="ingredient">
+                                <span>{f.name}</span>
+                                <span>{f.amount}</span>
+                              </div>
+                            ))}
                           </div>
-                        )}
-                      </div>
-                    )}
-                  </section>
-                );
-              })}
-            </div>
 
-            {/* Extras Section */}
-            {extras.length > 0 && (
-              <div className="section">
-                <h2>Additional Logged Foods</h2>
-                <div className="panel" style={{ marginTop: "8px" }}>
-                  {extras.map((x, i) => (
-                    <div key={i} className="extra">
-                      <span>{x.name}</span>
-                      <strong>{x.kcal} kcal</strong>
+                          {!entry ? (
+                            <>
+                              <button
+                                className="actionPrimary"
+                                onClick={() => recordPlanned(m.id)}
+                              >
+                                ✓ Ate as planned
+                              </button>
+                              <div className="textActions">
+                                <button onClick={() => openAdd(m.id, "search")}>
+                                  Log substitute / change
+                                </button>
+                                <button onClick={() => recordSkipped(m.id)}>
+                                  Didn&apos;t eat
+                                </button>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="savedRow">
+                              <span>
+                                {entry.kind === "planned"
+                                  ? "Recorded as planned"
+                                  : entry.kind === "skipped"
+                                  ? "Marked not eaten"
+                                  : `Substituted: ${entry.note || "Custom"}`}
+                              </span>
+                              <button onClick={() => undoRecord(m.id)}>Undo</button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </section>
+                  );
+                })}
+
+                {/* Extras Section */}
+                {extras.length > 0 && (
+                  <div className="section" style={{ marginTop: "24px" }}>
+                    <h2>Additional Logged Foods</h2>
+                    <div className="panel" style={{ marginTop: "8px" }}>
+                      {extras.map((x, i) => (
+                        <div key={i} className="extra">
+                          <span>{x.name}</span>
+                          <strong>{x.kcal} kcal</strong>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
               </div>
-            )}
 
-            {/* Navigation Card Links */}
-            <div className="section">
-              <button className="cardLink" onClick={() => setView("weekly")}>
-                <div>
-                  <strong>Weekly meal plan</strong>
-                  <small>Full 7-day schedule, rotation, and coach recipes</small>
+              {/* Right Column: Macro Summary, Quick Entry & Navigation Links */}
+              <div>
+                {/* Macro Summary Card */}
+                <div className="panel summary" style={{ margin: 0 }}>
+                  <div className="summary-top">
+                    <div>
+                      <div className="eyebrow" style={{ color: "#d2b477" }}>ENERGY BUDGET</div>
+                      <div className="number">{rem} <span style={{ fontSize: "16px", color: "var(--muted)", fontWeight: 500 }}>kcal left</span></div>
+                      <div className="tiny">{s.kcal} kcal consumed today</div>
+                    </div>
+                    <div className="goalchip">
+                      <small>Daily target</small>
+                      <br />
+                      <b>{TARGETS.kcal}</b> kcal
+                    </div>
+                  </div>
+                  <div className="progress">
+                    <span style={{ width: `${Math.min(100, Math.round((s.kcal / TARGETS.kcal) * 100))}%` }} />
+                  </div>
+                  <div className="metric">
+                    {[
+                      ["Protein", s.p, TARGETS.protein, "#a5c69e"],
+                      ["Carbs", s.c, TARGETS.carbs, "#d5b36b"],
+                      ["Fat", s.f, TARGETS.fat, "#caa087"],
+                    ].map(([name, val, target, color]) => (
+                      <div key={name as string}>
+                        <small>
+                          <i className="dot" style={{ background: color as string }} />
+                          {name}
+                        </small>
+                        <strong>{val} / {target} g</strong>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="infoNote">
+                    Gram portions and preparation states are coach-prescribed. Unverified foods have no calculated micronutrients.
+                  </div>
                 </div>
-                <span className="arrow">→</span>
-              </button>
-              <button className="cardLink" onClick={() => setView("shopping")}>
-                <div>
-                  <strong>Shopping & food stock</strong>
-                  <small>Ingredients and purchase quantities for weekly prep</small>
+
+                {/* Quick Add Food Action Card */}
+                <div className="panel" style={{ marginTop: "14px" }}>
+                  <div className="row">
+                    <div>
+                      <div style={{ fontWeight: 650, fontSize: "14px" }}>Quick Food Entry</div>
+                      <div className="tiny" style={{ marginTop: "2px" }}>Search verified Nigerian ingredients or log custom portions</div>
+                    </div>
+                    <button
+                      className="circleBtn"
+                      style={{ width: "34px", height: "34px", fontSize: "18px" }}
+                      onClick={() => openAdd(null, "search")}
+                      title="Add food"
+                      aria-label="Add food"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-                <span className="arrow">→</span>
-              </button>
+
+                {/* Navigation Card Links */}
+                <div style={{ marginTop: "14px" }}>
+                  <button className="cardLink" onClick={() => setView("weekly")}>
+                    <div>
+                      <strong>Weekly meal plan</strong>
+                      <small>Full 7-day schedule, rotation, and coach recipes</small>
+                    </div>
+                    <span className="arrow">→</span>
+                  </button>
+                  <button className="cardLink" onClick={() => setView("shopping")}>
+                    <div>
+                      <strong>Shopping & food stock</strong>
+                      <small>Ingredients and purchase quantities for weekly prep</small>
+                    </div>
+                    <span className="arrow">→</span>
+                  </button>
+                </div>
+
+                <p className="disclaimer" style={{ padding: "8px 4px 0" }}>
+                  ASCEND Nigerian Nutrition · Portions and recipe yields are verified by your coach. Demo values are illustrative.
+                </p>
+              </div>
             </div>
-
-            <p className="disclaimer">
-              ASCEND Nigerian Nutrition · Portions and recipe yields are verified by your coach. Demo values are illustrative.
-            </p>
           </div>
         )}
 
         {/* VIEW 2: ADD / LOG FOOD FLOW */}
         {view === "add" && (
           <div className="screen">
-            <div className="row" style={{ marginBottom: "22px" }}>
-              <button className="iconBtn" onClick={() => setView("today")} aria-label="Go back">
-                ‹
-              </button>
-              <div style={{ flex: 1 }}>
-                <div className="eyebrow">ASCEND · NUTRITION</div>
-                <h1 style={{ fontSize: "23px" }}>Add Food</h1>
-                <div className="sub">
-                  {currentMeal
-                    ? `Changing ${INITIAL_MEALS.find((m) => m.id === currentMeal)?.label}`
-                    : "Record food outside your meal plan"}
+            <div style={{ maxWidth: "680px", margin: "0 auto" }}>
+              <div className="row" style={{ marginBottom: "22px" }}>
+                <button className="iconBtn" onClick={() => setView("today")} aria-label="Go back">
+                  ‹
+                </button>
+                <div style={{ flex: 1 }}>
+                  <div className="eyebrow">ASCEND · NUTRITION</div>
+                  <h1 style={{ fontSize: "23px" }}>Add Food</h1>
+                  <div className="sub">
+                    {currentMeal
+                      ? `Changing ${INITIAL_MEALS.find((m) => m.id === currentMeal)?.label}`
+                      : "Record food outside your meal plan"}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="helper">
-              Choose how you&apos;d like to record your food. Camera and barcode scanners are simulated for offline development.
-            </div>
+              <div className="helper">
+                Choose how you&apos;d like to record your food. Camera and barcode scanners are simulated for offline development.
+              </div>
 
-            <div className="methodGrid">
-              {[
-                { id: "barcode" as const, icon: "▦", title: "Scan Barcode", sub: "Packaged foods" },
-                { id: "photo" as const, icon: "📷", title: "Snap Meal", sub: "Photo estimate" },
-                { id: "search" as const, icon: "🔍", title: "Search Food", sub: "Nigerian catalog" },
-                { id: "voice" as const, icon: "🎙", title: "Speak & Weigh", sub: "Voice input" },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  className="method"
-                  onClick={() => {
-                    setMethod(item.id);
-                    setView("form");
-                  }}
-                >
-                  <span className="methodIcon">{item.icon}</span>
-                  <div className="methodTitle">{item.title}</div>
-                  <div className="methodSub">{item.sub}</div>
-                </button>
-              ))}
+              <div className="methodGrid">
+                {[
+                  { id: "barcode" as const, icon: "▦", title: "Scan Barcode", sub: "Packaged foods" },
+                  { id: "photo" as const, icon: "📷", title: "Snap Meal", sub: "Photo estimate" },
+                  { id: "search" as const, icon: "🔍", title: "Search Food", sub: "Nigerian catalog" },
+                  { id: "voice" as const, icon: "🎙", title: "Speak & Weigh", sub: "Voice input" },
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    className="method"
+                    onClick={() => {
+                      setMethod(item.id);
+                      setView("form");
+                    }}
+                  >
+                    <span className="methodIcon">{item.icon}</span>
+                    <div className="methodTitle">{item.title}</div>
+                    <div className="methodSub">{item.sub}</div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -493,137 +521,143 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
         {/* VIEW 3: FOOD ENTRY FORM (SEARCH & PORTION) */}
         {view === "form" && (
           <div className="screen">
-            <div className="row" style={{ marginBottom: "22px" }}>
-              <button className="iconBtn" onClick={() => setView("add")} aria-label="Go back">
-                ‹
+            <div style={{ maxWidth: "680px", margin: "0 auto" }}>
+              <div className="row" style={{ marginBottom: "22px" }}>
+                <button className="iconBtn" onClick={() => setView("add")} aria-label="Go back">
+                  ‹
+                </button>
+                <div style={{ flex: 1 }}>
+                  <div className="eyebrow">ASCEND · NUTRITION</div>
+                  <h1 style={{ fontSize: "23px" }}>Record Food</h1>
+                  <div className="sub">Specify item, preparation state, and exact grams.</div>
+                </div>
+              </div>
+
+              <div className="field">
+                <label>Search Nigerian Food Catalog</label>
+                <input
+                  type="text"
+                  placeholder="Type rice, yam, plantain, egusi..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                />
+                <div className="suggestions">
+                  {NIGERIAN_CATALOG.filter((item) =>
+                    !searchText || item.name.toLowerCase().includes(searchText.toLowerCase())
+                  ).slice(0, 5).map((item) => (
+                    <button
+                      key={item.name}
+                      type="button"
+                      onClick={() => {
+                        setSelectedFood(item.name);
+                        setSearchText(item.name);
+                      }}
+                      style={{
+                        borderColor: selectedFood === item.name ? "var(--gold)" : undefined,
+                        background: selectedFood === item.name ? "var(--goldDark)" : undefined,
+                      }}
+                    >
+                      <strong>{item.name}</strong>
+                      <small>{item.unit} · {item.kcal100} kcal / 100g (P: {item.p100}g, C: {item.c100}g, F: {item.f100}g)</small>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="field">
+                <label>Preparation State</label>
+                <select value={foodState} onChange={(e) => setFoodState(e.target.value)}>
+                  <option value="cooked">Cooked</option>
+                  <option value="raw">Raw / Dry</option>
+                  <option value="prepared">Prepared / Finished Recipe</option>
+                </select>
+              </div>
+
+              <div className="field">
+                <label>Measured Portion (Grams)</label>
+                <input
+                  type="number"
+                  min="10"
+                  max="2000"
+                  value={grams}
+                  onChange={(e) => setGrams(e.target.value)}
+                />
+              </div>
+
+              <button
+                className="actionPrimary"
+                style={{ marginTop: "18px" }}
+                onClick={submitFoodEntry}
+              >
+                ✓ Confirm & Record Entry
               </button>
-              <div style={{ flex: 1 }}>
-                <div className="eyebrow">ASCEND · NUTRITION</div>
-                <h1 style={{ fontSize: "23px" }}>Record Food</h1>
-                <div className="sub">Specify item, preparation state, and exact grams.</div>
-              </div>
             </div>
-
-            <div className="field">
-              <label>Search Nigerian Food Catalog</label>
-              <input
-                type="text"
-                placeholder="Type rice, yam, plantain, egusi..."
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-              />
-              <div className="suggestions">
-                {NIGERIAN_CATALOG.filter((item) =>
-                  !searchText || item.name.toLowerCase().includes(searchText.toLowerCase())
-                ).slice(0, 5).map((item) => (
-                  <button
-                    key={item.name}
-                    type="button"
-                    onClick={() => {
-                      setSelectedFood(item.name);
-                      setSearchText(item.name);
-                    }}
-                    style={{
-                      borderColor: selectedFood === item.name ? "var(--gold)" : undefined,
-                      background: selectedFood === item.name ? "var(--goldDark)" : undefined,
-                    }}
-                  >
-                    <strong>{item.name}</strong>
-                    <small>{item.unit} · {item.kcal100} kcal / 100g (P: {item.p100}g, C: {item.c100}g, F: {item.f100}g)</small>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="field">
-              <label>Preparation State</label>
-              <select value={foodState} onChange={(e) => setFoodState(e.target.value)}>
-                <option value="cooked">Cooked</option>
-                <option value="raw">Raw / Dry</option>
-                <option value="prepared">Prepared / Finished Recipe</option>
-              </select>
-            </div>
-
-            <div className="field">
-              <label>Measured Portion (Grams)</label>
-              <input
-                type="number"
-                min="10"
-                max="2000"
-                value={grams}
-                onChange={(e) => setGrams(e.target.value)}
-              />
-            </div>
-
-            <button
-              className="actionPrimary"
-              style={{ marginTop: "18px" }}
-              onClick={submitFoodEntry}
-            >
-              ✓ Confirm & Record Entry
-            </button>
           </div>
         )}
 
         {/* VIEW 4: WEEKLY PLAN */}
         {view === "weekly" && (
           <div className="screen">
-            <div className="row" style={{ marginBottom: "22px" }}>
-              <button className="iconBtn" onClick={() => setView("today")} aria-label="Go back">
-                ‹
-              </button>
-              <div style={{ flex: 1 }}>
-                <div className="eyebrow">ASCEND · NUTRITION</div>
-                <h1 style={{ fontSize: "23px" }}>Weekly Meal Plan</h1>
-                <div className="sub">Coach-approved rotation for your active training phase.</div>
-              </div>
-            </div>
-
-            <div className="helper">
-              Your nutrition targets maintain repeatable energy availability across workout days and rest days.
-            </div>
-
-            {INITIAL_MEALS.map((m) => (
-              <div key={m.id} className="panel" style={{ marginTop: "10px" }}>
-                <div className="meal-label">{m.label}</div>
-                <div className="meal-title">{m.name}</div>
-                <div className="tiny" style={{ marginTop: "6px" }}>
-                  {m.foods.map((f) => `${f.name} (${f.amount})`).join(" · ")}
+            <div style={{ maxWidth: "680px", margin: "0 auto" }}>
+              <div className="row" style={{ marginBottom: "22px" }}>
+                <button className="iconBtn" onClick={() => setView("today")} aria-label="Go back">
+                  ‹
+                </button>
+                <div style={{ flex: 1 }}>
+                  <div className="eyebrow">ASCEND · NUTRITION</div>
+                  <h1 style={{ fontSize: "23px" }}>Weekly Meal Plan</h1>
+                  <div className="sub">Coach-approved rotation for your active training phase.</div>
                 </div>
               </div>
-            ))}
+
+              <div className="helper">
+                Your nutrition targets maintain repeatable energy availability across workout days and rest days.
+              </div>
+
+              {INITIAL_MEALS.map((m) => (
+                <div key={m.id} className="panel" style={{ marginTop: "10px" }}>
+                  <div className="meal-label">{m.label}</div>
+                  <div className="meal-title">{m.name}</div>
+                  <div className="tiny" style={{ marginTop: "6px" }}>
+                    {m.foods.map((f) => `${f.name} (${f.amount})`).join(" · ")}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
         {/* VIEW 5: SHOPPING & GROCERY STOCK */}
         {view === "shopping" && (
           <div className="screen">
-            <div className="row" style={{ marginBottom: "22px" }}>
-              <button className="iconBtn" onClick={() => setView("today")} aria-label="Go back">
-                ‹
-              </button>
-              <div style={{ flex: 1 }}>
-                <div className="eyebrow">ASCEND · NUTRITION</div>
-                <h1 style={{ fontSize: "23px" }}>Shopping & Food Stock</h1>
-                <div className="sub">Aggregated weekly ingredient quantities for Nigerian meal prep.</div>
+            <div style={{ maxWidth: "680px", margin: "0 auto" }}>
+              <div className="row" style={{ marginBottom: "22px" }}>
+                <button className="iconBtn" onClick={() => setView("today")} aria-label="Go back">
+                  ‹
+                </button>
+                <div style={{ flex: 1 }}>
+                  <div className="eyebrow">ASCEND · NUTRITION</div>
+                  <h1 style={{ fontSize: "23px" }}>Shopping & Food Stock</h1>
+                  <div className="sub">Aggregated weekly ingredient quantities for Nigerian meal prep.</div>
+                </div>
               </div>
-            </div>
 
-            <div className="helper">
-              Purchase quantities account for cooked yield conversions and weekly training frequency.
-            </div>
+              <div className="helper">
+                Purchase quantities account for cooked yield conversions and weekly training frequency.
+              </div>
 
-            <div className="panel" style={{ marginTop: "10px" }}>
-              <h2>Essential Pantry & Produce</h2>
-              <ul style={{ paddingLeft: "20px", marginTop: "10px", lineHeight: "1.8", fontSize: "13px" }}>
-                <li><strong>Rolled Oats:</strong> ~500 g dry</li>
-                <li><strong>Fresh Eggs:</strong> 1 crate (30 eggs)</li>
-                <li><strong>White / Brown Rice:</strong> 1.5 kg uncooked</li>
-                <li><strong>Fresh / Frozen Mackerel:</strong> 1 kg</li>
-                <li><strong>White Garri (for Eba):</strong> 1 kg</li>
-                <li><strong>Melon Seeds (Egusi):</strong> 500 g ground</li>
-                <li><strong>Ugu / Spinach Leaves:</strong> 3 bunches</li>
-              </ul>
+              <div className="panel" style={{ marginTop: "10px" }}>
+                <h2>Essential Pantry & Produce</h2>
+                <ul style={{ paddingLeft: "20px", marginTop: "10px", lineHeight: "1.8", fontSize: "13px" }}>
+                  <li><strong>Rolled Oats:</strong> ~500 g dry</li>
+                  <li><strong>Fresh Eggs:</strong> 1 crate (30 eggs)</li>
+                  <li><strong>White / Brown Rice:</strong> 1.5 kg uncooked</li>
+                  <li><strong>Fresh / Frozen Mackerel:</strong> 1 kg</li>
+                  <li><strong>White Garri (for Eba):</strong> 1 kg</li>
+                  <li><strong>Melon Seeds (Egusi):</strong> 500 g ground</li>
+                  <li><strong>Ugu / Spinach Leaves:</strong> 3 bunches</li>
+                </ul>
+              </div>
             </div>
           </div>
         )}

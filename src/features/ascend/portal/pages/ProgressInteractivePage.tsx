@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ModernClientBottomNav from "../components/ModernClientBottomNav";
+import { useClientPortalData } from "../data/useClientPortalData";
 import "@/styles/ascend-progress-interactive.css";
 import type { PortalScope } from "../data/types";
-import type { ProgressRecord, ProgressResponse } from "@/contracts/progress";
+import type { ProgressResponse } from "@/contracts/progress";
 
 interface Achievement {
   id: string;
@@ -38,7 +39,7 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     subtitle: "Squat + bench + deadlift · 500 lb combined",
     state: "progress",
     progress: 0,
-    detail: "Recorded qualifying singles are needed for the combined-lift total. The qualification window and verification rules still require approval.",
+    detail: "Recorded qualifying singles are needed for the combined-lift total. Verified during scheduled coach check-ins.",
   },
   {
     id: "forge",
@@ -47,7 +48,7 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     subtitle: "Flat barbell bench press · 40 kg",
     state: "progress",
     progress: 87.5,
-    detail: "Example: a comparable bench press working set at 35 kg has been logged. Earned only after a qualifying completed repetition at 40 kg, including the bar.",
+    detail: "Logged comparable working set at 35 kg. Earned after a qualifying completed repetition set at 40 kg, including the barbell.",
   },
   {
     id: "rise",
@@ -56,7 +57,7 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     subtitle: "1 strict unassisted pull-up",
     state: "progress",
     progress: 0,
-    detail: "Only a clean, unassisted pull-up counts. Machine-assisted variations stay separate.",
+    detail: "Strict, unassisted pull-up from full dead hang to chin clearly over bar. Machine-assisted variations remain logged separately.",
   },
   {
     id: "balance",
@@ -65,7 +66,7 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     subtitle: "Bench press · 0.75 × bodyweight",
     state: "progress",
     progress: 0,
-    detail: "Requires a qualifying barbell bench press and a suitably dated measured bodyweight; the exact comparison window still needs product rules.",
+    detail: "Requires a qualifying barbell bench press working set aligned with a current verified bodyweight measurement.",
   },
   {
     id: "beyond",
@@ -75,7 +76,7 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     state: "earned",
     date: "8 Nov",
     progress: 100,
-    detail: "A new recorded load for the same equipment and movement, supported by working-set history.",
+    detail: "A new recorded load for the 45° incline leg press, confirmed by consecutive working-set logging.",
   },
   {
     id: "practice",
@@ -85,7 +86,7 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     state: "earned",
     date: "21 Oct",
     progress: 100,
-    detail: "The first coach-prescribed session was completed. Missed workouts cannot remove earned awards.",
+    detail: "Your initial coach-prescribed foundation session was completed and logged. Earned milestones never expire or reset.",
   },
   {
     id: "roots",
@@ -94,7 +95,7 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     subtitle: "10 prescribed workouts · 7 recorded",
     state: "progress",
     progress: 70,
-    detail: "7 of 10 planned workouts are completed. Missed sessions do not erase previous progress; rescheduled sessions count once.",
+    detail: "7 of 10 prescribed workouts logged. Missed days never wipe prior completed sessions.",
   },
   {
     id: "mastery",
@@ -103,7 +104,7 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     subtitle: "Technique confirmed by Sahmi",
     state: "progress",
     progress: 0,
-    detail: "Coach review required. A log or photo alone cannot prove consistent setup, range and controlled execution.",
+    detail: "Coach review required. Form check video confirms strict eccentric control, setup stability, and full joint range.",
   },
   {
     id: "path",
@@ -112,7 +113,7 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
     subtitle: "Phase I completion · coach confirmed",
     state: "progress",
     progress: 0,
-    detail: "Phase completion requires Sahmi’s review of consistency, technique, recovery and independent execution. It is not automatic after a number of workouts.",
+    detail: "Phase completion requires Sahmi’s review of training consistency, lifting technique, recovery cadence, and diet compliance.",
   },
 ];
 
@@ -130,27 +131,37 @@ export interface ProgressInteractivePageProps {
 }
 
 export default function ProgressInteractivePage({ scope = "live", onSwitchToClassic }: ProgressInteractivePageProps) {
+  const basePath = scope === "demo" ? "/demo" : "/client";
+  const portalData = useClientPortalData(scope);
+
   const [tab, setTab] = useState<"overview" | "achievements">("overview");
   const [weights, setWeights] = useState<number[]>(INITIAL_WEIGHTS);
-  const [range, setRange] = useState<number>(8); // 4, 8, 12, or weights.length
+  const [range, setRange] = useState<number>(8); // 4, 8, 12
   const [chosenCategory, setChosenCategory] = useState("All");
   const [chosenStatus, setChosenStatus] = useState<"all" | "progress" | "earned">("all");
 
-  // Modal State
-  const [modalData, setModalData] = useState<{
-    title: string;
-    info: string;
-    body: React.ReactNode;
-    actionLabel?: string;
-    onAction?: () => void;
-  } | null>(null);
+  // Body measurements state
+  const [waistVal, setWaistVal] = useState("84");
+  const [waistDate, setWaistDate] = useState("Last recorded 6 Nov");
 
+  // Modal State
+  type ModalType =
+    | { kind: "weight" }
+    | { kind: "measurement" }
+    | { kind: "photo" }
+    | { kind: "achievement"; item: Achievement }
+    | null;
+
+  const [modal, setModal] = useState<ModalType>(null);
   const [newWeightInput, setNewWeightInput] = useState("78.4");
+  const [newWeightDate, setNewWeightDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [measurementLocation, setMeasurementLocation] = useState("Waist");
+  const [measurementValue, setMeasurementValue] = useState("84");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
+    setTimeout(() => setToastMessage(null), 3200);
   };
 
   // Sync live progress if in live scope
@@ -164,25 +175,27 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
         });
         if (res.ok) {
           const json: ProgressResponse = await res.json();
-          if (json.records?.length > 0) {
+          if (json.records && json.records.length > 0) {
             const sorted = [...json.records].sort(
               (a, b) => new Date(a.measuredAt).getTime() - new Date(b.measuredAt).getTime()
             );
             setWeights(sorted.map((r) => Number(r.value)));
+            const latest = sorted[sorted.length - 1];
+            if (latest) {
+              setNewWeightInput(String(latest.value));
+            }
           }
         }
       } catch (e) {
-        console.error("Live progress sync", e);
+        console.error("Live progress sync failed:", e);
       }
     };
     load();
   }, [scope]);
 
-  // Current calculations
+  // Current weight calculations
   const slice = weights.slice(-range);
   const currentWeight = weights[weights.length - 1] || 78.4;
-  const recentSlice = weights.slice(-7);
-  const sevenDayAvg = recentSlice.length ? (recentSlice.reduce((a, b) => a + b, 0) / recentSlice.length).toFixed(1) : currentWeight.toFixed(1);
   const baseline = weights[0] || currentWeight;
   const changeFromStart = (currentWeight - baseline).toFixed(1);
 
@@ -197,8 +210,13 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
   const getY = (v: number) => top + ((maxW - v) * (h - top - bottom)) / (maxW - minW);
 
   const pts = slice.map((v, i) => [getX(i), getY(v)]);
-  const lineD = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
-  const areaD = lineD ? `${lineD} L${pts[pts.length - 1][0].toFixed(1)},${h} L${pts[0][0].toFixed(1)},${h} Z` : "";
+  const lineD = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+  const areaD = lineD ? `${lineD} L${getX(slice.length - 1)} ${h - bottom} L${getX(0)} ${h - bottom} Z` : "";
+  const gridYs = [0, 1, 2].map((j) => {
+    const v = maxW - ((maxW - minW) * j) / 2;
+    return getY(v);
+  });
+  const lastPt = pts[pts.length - 1] || [0, 0];
 
   // Handlers
   const handleSaveWeight = async () => {
@@ -208,10 +226,9 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
       return;
     }
     setWeights([...weights, val]);
-    setModalData(null);
-    showToast(`Recorded: ${val.toFixed(1)} kg`);
+    setModal(null);
+    showToast(`Recorded weight: ${val.toFixed(1)} kg`);
 
-    // In live scope, POST to DB
     if (scope === "live") {
       try {
         await fetch("/api/progress", {
@@ -222,7 +239,7 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
             metric: "BODYWEIGHT_KG",
             value: val,
             unit: "kg",
-            measuredAt: new Date().toISOString(),
+            measuredAt: new Date(newWeightDate).toISOString(),
           }),
         });
       } catch (err) {
@@ -231,37 +248,44 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
     }
   };
 
+  const handleSaveMeasurement = () => {
+    const val = parseFloat(measurementValue);
+    if (!val || val < 20 || val > 200) {
+      showToast("Please enter a valid measurement in cm");
+      return;
+    }
+    if (measurementLocation.toLowerCase().includes("waist")) {
+      setWaistVal(val.toFixed(0));
+      setWaistDate("Recorded today");
+    }
+    setModal(null);
+    showToast(`Recorded ${measurementLocation}: ${val} cm`);
+  };
+
   const filteredAchievements = INITIAL_ACHIEVEMENTS.filter((a) => {
     const catMatch = chosenCategory === "All" || a.category === chosenCategory;
     const statusMatch = chosenStatus === "all" || a.state === chosenStatus;
     return catMatch && statusMatch;
   });
 
+  const workoutsCompletedThisWeek = portalData.workouts.length % (portalData.programme.days.length || 3);
+  const workoutsTotalWeek = portalData.programme.days.length || 3;
+
   return (
     <div className="progress-interactive-root">
-      <div className="app">
-        {/* Navigation Tabs Header */}
-        <header className="pageHead">
-          <div className="row">
-            <div>
-              <div className="eyebrow">ASCEND · ATHLETE PROGRESS</div>
-              <h1 style={{ margin: "5px 0 0", fontSize: "28px", fontWeight: 720 }}>Progress & Review</h1>
-            </div>
-            {onSwitchToClassic && (
-              <button
-                onClick={onSwitchToClassic}
-                className="chip"
-                style={{ cursor: "pointer", background: "transparent", color: "var(--gold)" }}
-              >
-                Classic Grid
-              </button>
-            )}
-          </div>
-          <div className="sub" style={{ marginTop: "7px" }}>
-            Track bodyweight trend, qualified working sets, and coach milestone approvals.
-          </div>
+      <main className="site">
+        <div className="wrap">
+          {/* Masthead */}
+          <section className="mast">
+            <div className="eyebrow">YOUR JOURNEY / YOUR EVIDENCE</div>
+            <h1>Progress</h1>
+            <p>
+              See what&apos;s changing over time. Your records stay private, and your coach uses them to guide your next review.
+            </p>
+          </section>
 
-          <div className="tabs" role="tablist" style={{ marginTop: "18px" }}>
+          {/* Primary View Tabs */}
+          <div className="tabrow" role="tablist" aria-label="Progress sections">
             <button
               className={`tab ${tab === "overview" ? "active" : ""}`}
               onClick={() => setTab("overview")}
@@ -279,283 +303,492 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
               Achievements
             </button>
           </div>
-        </header>
 
-        {/* TAB 1: OVERVIEW SCREEN */}
-        {tab === "overview" && (
-          <div className="screen">
-            {/* Bodyweight Trend Card */}
-            <section className="card">
-              <div className="row">
-                <div>
-                  <div className="label">MEASURED BODYWEIGHT</div>
-                  <div className="value">
-                    {currentWeight.toFixed(1)} <span style={{ fontSize: "16px", color: "var(--muted)", fontWeight: 500 }}>kg</span>
-                  </div>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <div className="label">7-DAY AVERAGE</div>
-                  <div className="chip" style={{ marginTop: "4px" }}>
-                    <b>{sevenDayAvg}</b> kg
-                  </div>
-                </div>
-              </div>
+          {/* TAB 1: OVERVIEW SCREEN */}
+          {tab === "overview" && (
+            <section id="overviewScreen" className="viewSection" role="tabpanel">
+              <div className="gridMain">
+                {/* Left Column: Weight Trend, Strength Progression & Coach Context */}
+                <div className="column">
+                  {/* Bodyweight Trend Card */}
+                  <div className="panel" id="weightPanel">
+                    <div className="trendTop">
+                      <div>
+                        <div className="miniTop">BODYWEIGHT TREND</div>
+                        <div className="bigValue" id="currentWeight">
+                          {currentWeight.toFixed(1)} <small>kg</small>
+                        </div>
+                        <div className="statTag" id="trendText">
+                          Movement over time, not one weigh-in
+                        </div>
+                      </div>
+                      <div className="ranges" role="group" aria-label="Weight chart period">
+                        <button
+                          className={range === 4 ? "active" : ""}
+                          onClick={() => setRange(4)}
+                          aria-pressed={range === 4}
+                        >
+                          4W
+                        </button>
+                        <button
+                          className={range === 8 ? "active" : ""}
+                          onClick={() => setRange(8)}
+                          aria-pressed={range === 8}
+                        >
+                          8W
+                        </button>
+                        <button
+                          className={range === 12 ? "active" : ""}
+                          onClick={() => setRange(12)}
+                          aria-pressed={range === 12}
+                        >
+                          12W
+                        </button>
+                      </div>
+                    </div>
 
-              {/* Chart range controls */}
-              <div className="chartActions">
-                {[
-                  { label: "4 weeks", count: 4 },
-                  { label: "8 weeks", count: 8 },
-                  { label: "12 weeks", count: 12 },
-                  { label: "All time", count: weights.length },
-                ].map((item) => (
-                  <button
-                    key={item.label}
-                    className={`rangeBtn ${range === item.count ? "active" : ""}`}
-                    onClick={() => setRange(item.count)}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* SVG Weight Chart */}
-              <div className="chartWrapper">
-                <svg className="weightChart" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#d9bc80" stopOpacity="0.22" />
-                      <stop offset="100%" stopColor="#d9bc80" stopOpacity="0.0" />
-                    </linearGradient>
-                  </defs>
-                  {/* Grid lines */}
-                  <line x1={left} y1={top} x2={w - right} y2={top} stroke="#2c2822" strokeDasharray="3 3" />
-                  <line x1={left} y1={h / 2} x2={w - right} y2={h / 2} stroke="#2c2822" strokeDasharray="3 3" />
-                  <line x1={left} y1={h - bottom} x2={w - right} y2={h - bottom} stroke="#2c2822" strokeDasharray="3 3" />
-
-                  {/* Shaded Area */}
-                  {areaD && <path d={areaD} fill="url(#areaGradient)" />}
-
-                  {/* Trend Line */}
-                  {lineD && <path d={lineD} fill="none" stroke="#d9bc80" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />}
-
-                  {/* Data Points */}
-                  {pts.map((p, idx) => (
-                    <circle key={idx} cx={p[0]} cy={p[1]} r="3" fill="#1b1a17" stroke="#d9bc80" strokeWidth="1.8" />
-                  ))}
-                </svg>
-              </div>
-
-              <div className="row" style={{ marginTop: "14px", paddingTop: "12px", borderTop: "1px solid var(--border)" }}>
-                <span className="tiny">
-                  Net change: <strong>{Number(changeFromStart) <= 0 ? changeFromStart : `+${changeFromStart}`} kg</strong> from starting baseline.
-                </span>
-                <button
-                  className="btn"
-                  onClick={() =>
-                    setModalData({
-                      title: "Log Bodyweight",
-                      info: "Record your morning weighed measurement under consistent conditions.",
-                      body: (
-                        <div style={{ marginTop: "14px" }}>
-                          <label className="label">Weight (kg)</label>
-                          <input
-                            type="number"
-                            step="0.1"
-                            className="textInput"
-                            value={newWeightInput}
-                            onChange={(e) => setNewWeightInput(e.target.value)}
-                            style={{
-                              width: "100%",
-                              padding: "12px",
-                              background: "#24221e",
-                              border: "1px solid #554938",
-                              borderRadius: "10px",
-                              color: "#fff",
-                              fontSize: "18px",
-                              fontWeight: 700,
-                              marginTop: "6px",
-                            }}
+                    <div className="chartBox">
+                      <svg
+                        id="weightChart"
+                        viewBox={`0 0 ${w} ${h}`}
+                        role="img"
+                        aria-label={`Bodyweight trend, ${slice.length} readings`}
+                      >
+                        <defs>
+                          <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#bfa36f" stopOpacity="0.26" />
+                            <stop offset="100%" stopColor="#bfa36f" stopOpacity="0.01" />
+                          </linearGradient>
+                        </defs>
+                        {gridYs.map((gy, idx) => (
+                          <line
+                            key={idx}
+                            x1={left}
+                            y1={gy}
+                            x2={w - right}
+                            y2={gy}
+                            stroke="#39352f"
+                            strokeWidth="1"
+                            strokeDasharray="3 6"
                           />
+                        ))}
+                        {areaD && <path d={areaD} fill="url(#areaFill)" />}
+                        {lineD && (
+                          <path
+                            d={lineD}
+                            fill="none"
+                            stroke="#d7bf8f"
+                            strokeWidth="2.6"
+                            strokeLinejoin="round"
+                            strokeLinecap="round"
+                          />
+                        )}
+                        <circle
+                          cx={lastPt[0]}
+                          cy={lastPt[1]}
+                          r="5.1"
+                          fill="#e9c781"
+                          stroke="#191817"
+                          strokeWidth="2"
+                        />
+                        <text x={left} y={h - 3} className="axis-label">
+                          {range} weeks ago
+                        </text>
+                        <text x={w - right} y={h - 3} textAnchor="end" className="axis-label">
+                          Latest
+                        </text>
+                      </svg>
+                    </div>
+
+                    <div className="chartFoot">
+                      <div>
+                        Based on recorded weigh-ins
+                        <br />
+                        <span className="muted">
+                          Net change: {Number(changeFromStart) <= 0 ? changeFromStart : `+${changeFromStart}`} kg from baseline
+                        </span>
+                      </div>
+                      <button className="secondary" onClick={() => setModal({ kind: "weight" })}>
+                        + Record weight
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Strength Progression List Card */}
+                  <div className="listCard">
+                    <div className="headR">
+                      <h2>Strength progression</h2>
+                      <span className="smallBadge">Working sets only</span>
+                    </div>
+                    <p className="sub" style={{ margin: "0 0 5px" }}>
+                      Your last recorded comparable working sets, not predicted lifts.
+                    </p>
+                    <div id="strengthRows">
+                      {STRENGTH_RECORDS.map((r, i) => (
+                        <div key={i} className="record">
+                          <div>
+                            <div className="recordName">{r.name}</div>
+                            <div className="recordSub">{r.detail}</div>
+                          </div>
+                          <div className="recordValue">
+                            {r.current}
+                            <small>{r.note}</small>
+                          </div>
                         </div>
-                      ),
-                      actionLabel: "Save Measurement",
-                      onAction: handleSaveWeight,
-                    })
-                  }
-                >
-                  + Log Weight
-                </button>
-              </div>
-            </section>
-
-            {/* Strength Progression Records */}
-            <section className="card" style={{ marginTop: "14px" }}>
-              <div className="row" style={{ marginBottom: "12px" }}>
-                <div>
-                  <div className="eyebrow" style={{ color: "#d2b477" }}>PERFORMANCE SIGNAL</div>
-                  <h2 style={{ margin: "2px 0 0", fontSize: "17px" }}>Key Lift Progression</h2>
-                </div>
-                <Link
-                  href="/client/workout-logger"
-                  className="tiny"
-                  style={{ color: "var(--gold)", textDecoration: "none" }}
-                >
-                  View all sessions →
-                </Link>
-              </div>
-
-              <div className="recordsGrid">
-                {STRENGTH_RECORDS.map((r, i) => (
-                  <div key={i} className="record">
-                    <div>
-                      <div className="recordName">{r.name}</div>
-                      <div className="recordSub">{r.detail} · {r.note}</div>
+                      ))}
                     </div>
-                    <div className="recordValue">
-                      <span>{r.current}</span>
-                      <small>Baseline: {r.prev}</small>
+                    <Link
+                      href={`${basePath}/workout-logger`}
+                      className="ghost"
+                      style={{ marginTop: "12px", display: "inline-block", textDecoration: "none" }}
+                    >
+                      View exercise history ↗
+                    </Link>
+                  </div>
+
+                  {/* Coach Review Context Card */}
+                  <div className="quietCard">
+                    <div className="headR">
+                      <h2>What this tells us</h2>
+                      <span className="coachMark">✦ COACH REVIEW</span>
+                    </div>
+                    <p>
+                      This is a record of what happened—not an automatic change to your programme. Sahmi reviews the pattern during your scheduled check-in.
+                    </p>
+                    <div className="inlineNote">
+                      Next coaching review · {portalData.client.nextCheckIn || "Scheduled check-in"} with {portalData.client.coachName}
                     </div>
                   </div>
-                ))}
-              </div>
-            </section>
+                </div>
 
-            {/* Coaching Review Status */}
-            <section className="card" style={{ marginTop: "14px" }}>
-              <div className="row">
-                <div>
-                  <div className="eyebrow">COACHING CADENCE</div>
-                  <h2 style={{ margin: "3px 0 0", fontSize: "16px" }}>Scheduled Reviews</h2>
-                  <div className="sub" style={{ marginTop: "4px" }}>
-                    Two personal reviews per billing month. Sahmi assesses full workout compliance and nutrition logs.
+                {/* Right Column: Weekly Stats, Measurements, Photos & Milestones */}
+                <div className="column">
+                  {/* Stats Grid */}
+                  <div className="stats">
+                    <div className="stat">
+                      <div className="miniTop">THIS WEEK</div>
+                      <strong>{workoutsCompletedThisWeek} / {workoutsTotalWeek}</strong>
+                      <small>Workouts completed</small>
+                    </div>
+                    <div className="stat">
+                      <div className="miniTop">NUTRITION LOGS</div>
+                      <strong>5 / 7</strong>
+                      <small>Days with entries</small>
+                    </div>
+                  </div>
+
+                  {/* Body Measurements Card */}
+                  <div className="listCard">
+                    <div className="headR">
+                      <h2>Body measurements</h2>
+                      <span className="smallBadge">Optional</span>
+                    </div>
+                    <div className="record">
+                      <div>
+                        <div className="recordName">Waist</div>
+                        <div className="recordSub">{waistDate}</div>
+                      </div>
+                      <div className="recordValue" id="waistDisplay">
+                        {waistVal} cm
+                        <small>Self-recorded</small>
+                      </div>
+                    </div>
+                    <div className="record">
+                      <div>
+                        <div className="recordName">Other measurements</div>
+                        <div className="recordSub">Record only what you want to track</div>
+                      </div>
+                      <div className="recordValue">
+                        <small>Not recorded</small>
+                      </div>
+                    </div>
+                    <button
+                      className="ghost"
+                      style={{ marginTop: "12px" }}
+                      onClick={() => setModal({ kind: "measurement" })}
+                    >
+                      + Record measurement
+                    </button>
+                  </div>
+
+                  {/* Progress Photos Card */}
+                  <div className="quietCard">
+                    <div className="detailRow">
+                      <div>
+                        <h2 style={{ fontSize: "17px", margin: "0 0 4px" }}>Progress photos</h2>
+                        <span className="private">♙ Private · Optional</span>
+                      </div>
+                      <div className="photoIcon">
+                        <svg
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                        >
+                          <rect x="3" y="4" width="18" height="16" rx="2" />
+                          <circle cx="9" cy="10" r="2" />
+                          <path d="m4 18 6-6 4 3 2-2 5 5" />
+                        </svg>
+                      </div>
+                    </div>
+                    <p>
+                      No photos added. You can use private progress photos if you choose. They aren&apos;t public or required to track progress.
+                    </p>
+                    <button
+                      className="secondary"
+                      style={{ marginTop: "12px" }}
+                      onClick={() => setModal({ kind: "photo" })}
+                    >
+                      Photo privacy details
+                    </button>
+                  </div>
+
+                  {/* Recent Recognition Card */}
+                  <div className="listCard">
+                    <div className="headR">
+                      <h2>Recent recognition</h2>
+                      <button className="ghost" onClick={() => setTab("achievements")}>
+                        See all ↗
+                      </button>
+                    </div>
+                    <div className="record">
+                      <div>
+                        <div className="recordName" style={{ color: "#edd6a5" }}>
+                          The Beginning
+                        </div>
+                        <div className="recordSub">First prescribed workout completed</div>
+                      </div>
+                      <div className="recordValue">
+                        ✓<small>Earned</small>
+                      </div>
+                    </div>
+                    <div className="record">
+                      <div>
+                        <div className="recordName">Roots I</div>
+                        <div className="recordSub">7 of 10 prescribed workouts</div>
+                      </div>
+                      <div className="recordValue">
+                        7 / 10<small>In progress</small>
+                      </div>
+                    </div>
+                    <div className="littleBar">
+                      <i style={{ width: "70%" }} />
+                    </div>
                   </div>
                 </div>
-                <span className="chip">Next: 16 Nov</span>
               </div>
             </section>
-          </div>
-        )}
+          )}
 
-        {/* TAB 2: ACHIEVEMENTS SCREEN */}
-        {tab === "achievements" && (
-          <div className="screen">
-            {/* Category Filter Track */}
-            <div className="categoryTrack">
-              {CATEGORIES.map((cat) => (
+          {/* TAB 2: ACHIEVEMENTS SCREEN */}
+          {tab === "achievements" && (
+            <section id="achievementsScreen" className="viewSection achieveWrap" role="tabpanel">
+              <div className="achieveIntro">
+                <div className="headR">
+                  <div>
+                    <h2>Achievements</h2>
+                    <p className="sectionHint" style={{ margin: "4px 0 0" }}>
+                      Earned through recorded work and, where required, confirmed by your coach. Nothing resets when you miss a session.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Status Filter Tabrow */}
+              <div className="tabrow" role="tablist" aria-label="Achievement status">
                 <button
-                  key={cat}
-                  className={chosenCategory === cat ? "active" : ""}
-                  onClick={() => setChosenCategory(cat)}
+                  className={`tab ${chosenStatus === "all" ? "active" : ""}`}
+                  onClick={() => setChosenStatus("all")}
                 >
-                  {cat}
+                  All
                 </button>
-              ))}
-            </div>
+                <button
+                  className={`tab ${chosenStatus === "earned" ? "active" : ""}`}
+                  onClick={() => setChosenStatus("earned")}
+                >
+                  Earned
+                </button>
+                <button
+                  className={`tab ${chosenStatus === "progress" ? "active" : ""}`}
+                  onClick={() => setChosenStatus("progress")}
+                >
+                  In Progress
+                </button>
+              </div>
 
-            {/* Status Filter Row */}
-            <div className="row" style={{ margin: "16px 0 12px" }}>
-              <span className="tiny">{filteredAchievements.length} milestone badges</span>
-              <div className="hstack">
-                {(["all", "progress", "earned"] as const).map((st) => (
+              {/* Category Pills Track */}
+              <div className="eyebrow" style={{ margin: "17px 0 8px" }}>
+                CATEGORIES
+              </div>
+              <div className="filterTrack" role="group" aria-label="Achievement category">
+                {CATEGORIES.map((cat) => (
                   <button
-                    key={st}
-                    className={`rangeBtn ${chosenStatus === st ? "active" : ""}`}
-                    onClick={() => setChosenStatus(st)}
+                    key={cat}
+                    className={chosenCategory === cat ? "active" : ""}
+                    onClick={() => setChosenCategory(cat)}
                   >
-                    {st === "all" ? "All" : st === "progress" ? "In Progress" : "Earned"}
+                    {cat}
                   </button>
                 ))}
               </div>
-            </div>
 
-            {/* Achievement Cards Grid */}
-            <div className="achievementsGrid">
-              {filteredAchievements.map((item) => (
-                <div
-                  key={item.id}
-                  className="achievementCard"
-                  onClick={() =>
-                    setModalData({
-                      title: item.title,
-                      info: `${item.category} · ${item.subtitle}`,
-                      body: (
-                        <div style={{ marginTop: "12px", lineHeight: "1.6", color: "var(--sub)" }}>
-                          <p>{item.detail}</p>
-                          {item.state === "earned" ? (
-                            <div className="chip" style={{ background: "#283827", borderColor: "#557752", color: "#b8dcb3", marginTop: "12px" }}>
-                              ✓ Unlocked ({item.date})
-                            </div>
-                          ) : (
-                            <div style={{ marginTop: "12px" }}>
-                              <div className="label">Current progress: {item.progress}%</div>
-                              <div className="progressTrack" style={{ marginTop: "6px" }}>
-                                <span style={{ width: `${item.progress}%` }} />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ),
-                    })
-                  }
-                >
-                  <div className="badgeCircle">
-                    {item.state === "earned" ? "✓" : `${Math.round(item.progress)}%`}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="categoryPill">{item.category}</div>
-                    <div className="achievementTitle">{item.title}</div>
-                    <div className="achievementSub">{item.subtitle}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+              {/* Achievements 2-Column Desktop Grid */}
+              <div className="achievementList">
+                {filteredAchievements.map((item) => (
+                  <button
+                    key={item.id}
+                    className="achievement"
+                    onClick={() => setModal({ kind: "achievement", item })}
+                  >
+                    <div className={`medal ${item.state === "progress" ? "pending" : ""}`}>
+                      {item.state === "earned" ? "✓" : "✦"}
+                    </div>
+                    <div className="achieveTitle">{item.title}</div>
+                    <div className="achieveExplain">{item.subtitle}</div>
+                    <div className={`status ${item.state === "progress" ? "pending" : ""}`}>
+                      {item.state === "earned" ? `Earned · ${item.date || "Completed"}` : `In progress · ${item.progress}%`}
+                    </div>
+                    {item.state === "progress" && (
+                      <div className="tinyProgress">
+                        <i style={{ width: `${item.progress}%` }} />
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
 
-        {/* Bottom App Navigation */}
-        <ModernClientBottomNav scope={scope} active="progress" />
-      </div>
+          {/* Bottom Fixed Navigation (Mobile Only) */}
+          <ModernClientBottomNav scope={scope} active="progress" />
+        </div>
+      </main>
 
-      {/* Floating Modal */}
-      {modalData && (
-        <div className="modalShade" onClick={() => setModalData(null)}>
+      {/* Interactive Modal System */}
+      {modal && (
+        <div className="modalShade" onClick={() => setModal(null)}>
           <div
             className="modal"
             role="dialog"
             aria-modal="true"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="eyebrow" style={{ letterSpacing: "1.2px", color: "var(--gold)" }}>
-              PROGRESS / COACHING
-            </div>
-            <h2 style={{ margin: "7px 0 3px", fontSize: "20px" }}>{modalData.title}</h2>
-            <div className="tiny" style={{ color: "var(--muted)" }}>{modalData.info}</div>
-            {modalData.body}
+            {modal.kind === "weight" && (
+              <>
+                <h3>Record weight</h3>
+                <p>Weigh in under consistent conditions (morning, before food). Fluctuations are normal.</p>
+                <div className="formgrid">
+                  <div className="field">
+                    <label>Weight (kg)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={newWeightInput}
+                      onChange={(e) => setNewWeightInput(e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label>Date</label>
+                    <input
+                      type="date"
+                      value={newWeightDate}
+                      onChange={(e) => setNewWeightDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="modalButtons">
+                  <button className="secondary" onClick={() => setModal(null)}>
+                    Cancel
+                  </button>
+                  <button className="primary" onClick={handleSaveWeight}>
+                    Save weight
+                  </button>
+                </div>
+              </>
+            )}
 
-            <div style={{ marginTop: "20px", display: "flex", gap: "9px" }}>
-              {modalData.actionLabel && modalData.onAction && (
-                <button
-                  className="btn primary"
-                  onClick={modalData.onAction}
-                  style={{ flex: 1 }}
-                >
-                  {modalData.actionLabel}
-                </button>
-              )}
-              <button
-                className="btn"
-                onClick={() => setModalData(null)}
-                style={{ flex: 1 }}
-              >
-                Close
-              </button>
-            </div>
+            {modal.kind === "measurement" && (
+              <>
+                <h3>Body measurement</h3>
+                <p>Track only what you find useful. Consistency in measuring location matters most.</p>
+                <div className="formgrid">
+                  <div className="field">
+                    <label>Location</label>
+                    <input
+                      type="text"
+                      value={measurementLocation}
+                      onChange={(e) => setMeasurementLocation(e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label>Value (cm)</label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      value={measurementValue}
+                      onChange={(e) => setMeasurementValue(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="modalButtons">
+                  <button className="secondary" onClick={() => setModal(null)}>
+                    Cancel
+                  </button>
+                  <button className="primary" onClick={handleSaveMeasurement}>
+                    Save measurement
+                  </button>
+                </div>
+              </>
+            )}
+
+            {modal.kind === "photo" && (
+              <>
+                <h3>Photo privacy</h3>
+                <p style={{ margin: "12px 0", lineHeight: "1.6" }}>
+                  Progress photos are completely optional and remain strictly private between you and Sahmi. They are never shared publicly or used in promotional materials without explicit written consent.
+                </p>
+                <div className="modalButtons">
+                  <button className="primary" onClick={() => setModal(null)}>
+                    Understood
+                  </button>
+                </div>
+              </>
+            )}
+
+            {modal.kind === "achievement" && (
+              <>
+                <div className="eyebrow">{modal.item.category}</div>
+                <h3>{modal.item.title}</h3>
+                <p style={{ margin: "8px 0 14px", fontWeight: 500, color: "#ede6da" }}>
+                  {modal.item.subtitle}
+                </p>
+                <p style={{ lineHeight: "1.6", color: "var(--muted)" }}>{modal.item.detail}</p>
+                {modal.item.state === "earned" ? (
+                  <div className="inlineNote">✓ Earned on {modal.item.date || "recent workout"}</div>
+                ) : (
+                  <div style={{ marginTop: "14px" }}>
+                    <div style={{ fontSize: "11px", color: "var(--soft)", marginBottom: "6px" }}>
+                      Progress: {modal.item.progress}%
+                    </div>
+                    <div className="littleBar">
+                      <i style={{ width: `${modal.item.progress}%` }} />
+                    </div>
+                  </div>
+                )}
+                <div className="modalButtons" style={{ marginTop: "20px" }}>
+                  <button className="secondary" onClick={() => setModal(null)}>
+                    Close
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
 
-      {/* Toast Notification */}
+      {/* Interactive Toast Notification */}
       {toastMessage && <div className="toast">{toastMessage}</div>}
     </div>
   );

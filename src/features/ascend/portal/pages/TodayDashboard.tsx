@@ -82,48 +82,14 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
 
   return (
     <div className="today-dashboard-root">
-      <main className="workspace">
-        {/* Phone Shell */}
-        <div className="shell">
-          <div className="screen" id="screen">
-            {/* Header Brand Bar */}
-            <header className="brand">
-              <div>
-                <div className="brandname">ASCEND</div>
-                <div className="eyebrow">{data.client.phaseName.toUpperCase()} · DAILY DIRECTION</div>
-              </div>
-              <div className="headBtns">
-                <button
-                  className="iconBtn"
-                  onClick={() =>
-                    setModalData({
-                      title: `Message from ${data.client.coachName}`,
-                      body:
-                        latestCoachFeedback?.message ||
-                        "Your programme is active. Execute each session with controlled tempo and log your working sets in the logger.",
-                    })
-                  }
-                  aria-label="Coach inbox"
-                  title="Coach inbox"
-                >
-                  <TodayIcon name="msg" />
-                </button>
-                <Link
-                  href="/account"
-                  className="iconBtn"
-                  aria-label="Profile and account"
-                  title="Profile and account"
-                  style={{ textDecoration: "none" }}
-                >
-                  <TodayIcon name="user" />
-                </Link>
-              </div>
-            </header>
-
-            {/* Date Tag */}
+      <main className="today-container">
+        {/* Responsive 2-Column Dashboard Grid */}
+        <div className="today-grid">
+          {/* Left Column: Next Action, Direction & Updates */}
+          <div className="today-col">
             <div className="daylabel">{todayLabel}</div>
 
-            {/* Next Action Primary Card */}
+            {/* Next Action Primary Hero Card */}
             <section className="primary">
               <div className="kicker">YOUR NEXT ACTION</div>
               <h1>{nextWorkout ? nextWorkout.name : "Active Recovery & Mobility"}</h1>
@@ -150,9 +116,17 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
               </p>
             </section>
 
-            <div className="divider" />
+            {/* Latest Coach Update */}
+            {latestCoachFeedback && (
+              <section className="update">
+                <strong>Latest coach update · {latestCoachFeedback.date}</strong>
+                <p>{latestCoachFeedback.message}</p>
+              </section>
+            )}
+          </div>
 
-            {/* Day at a Glance Stats */}
+          {/* Right Column: Day at a Glance Stats & Schedule */}
+          <div className="today-col">
             <section>
               <h2 className="sectionHeader">Your day at a glance</h2>
               <div className="statgrid">
@@ -201,22 +175,31 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
               </span>
             </section>
 
-            {/* Latest Coach Update */}
-            {latestCoachFeedback && (
-              <section className="update">
-                <strong>Latest coach update · {latestCoachFeedback.date}</strong>
-                <p>{latestCoachFeedback.message}</p>
-              </section>
-            )}
-
-            <p className="mini">
-              Streak: {data.client.streakDays} days active · {data.client.fullName}
-            </p>
+            {/* Quick Profile / Streak Summary Card */}
+            <section className="direction" style={{ background: "#151413" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div className="daylabel" style={{ fontSize: "10px", marginBottom: "4px" }}>ACTIVE ATHLETE</div>
+                  <strong style={{ fontSize: "15px", color: "#f5f0e9" }}>{data.client.fullName}</strong>
+                  <p style={{ margin: "4px 0 0", fontSize: "12px", color: "var(--sub)" }}>
+                    {data.client.phaseName} · {data.client.primaryGoal || "Physique progression"}
+                  </p>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: "22px", fontWeight: 700, color: "var(--gold)" }}>
+                    {data.client.streakDays}d
+                  </div>
+                  <div style={{ fontSize: "10px", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    Active Streak
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
-
-          {/* Sticky Bottom Navigation */}
-          <ModernClientBottomNav scope={scope} active="today" />
         </div>
+
+        {/* Mobile Sticky Bottom Navigation */}
+        <ModernClientBottomNav scope={scope} active="today" />
       </main>
 
       {/* Interactive Modal */}

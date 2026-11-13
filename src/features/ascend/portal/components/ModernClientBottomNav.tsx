@@ -106,55 +106,77 @@ export default function ModernClientBottomNav({
   ];
 
   return (
-    <nav
-      className="modern-client-bottom-nav"
-      aria-label="Primary navigation"
-      style={{
-        position: "sticky",
-        bottom: 0,
-        zIndex: 50,
-        display: "grid",
-        gridTemplateColumns: "repeat(4, 1fr)",
-        background: "rgba(20, 19, 18, 0.96)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        boxShadow: "0 -15px 28px rgba(12, 12, 12, 0.94)",
-        borderTop: "1px solid #34322f",
-        padding: "9px 10px max(10px, env(safe-area-inset-bottom))",
-        marginTop: "auto",
-        width: "100%",
-      }}
-    >
-      {navItems.map((item) => {
-        const isCurrent = currentActive === item.id;
-        return (
-          <Link
-            key={item.id}
-            href={item.href}
-            aria-current={isCurrent ? "page" : undefined}
-            style={{
-              border: 0,
-              background: isCurrent ? "rgba(41, 36, 28, 0.9)" : "transparent",
-              color: isCurrent ? "#e5c891" : "#aaa499",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "4px",
-              padding: "8px 2px",
-              borderRadius: "10px",
-              fontSize: "11px",
-              fontWeight: isCurrent ? 700 : 500,
-              minHeight: "54px",
-              textDecoration: "none",
-              transition: "all 0.15s ease",
-            }}
-          >
-            {item.icon}
-            <span>{item.label}</span>
-          </Link>
-        );
-      })}
-    </nav>
+    <>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+        @media (min-width: 769px) {
+          .modern-client-bottom-nav {
+            display: none !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .modern-client-bottom-nav {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+          }
+        }
+      `,
+        }}
+      />
+      <nav
+        className="modern-client-bottom-nav"
+        aria-label="Mobile navigation"
+        style={{
+          position: "sticky",
+          bottom: 0,
+          zIndex: 50,
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          background: "rgba(20, 19, 18, 0.96)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          boxShadow: "0 -15px 28px rgba(12, 12, 12, 0.94)",
+          borderTop: "1px solid #34322f",
+          padding: "9px 10px max(10px, env(safe-area-inset-bottom))",
+          marginTop: "auto",
+          width: "100%",
+        }}
+      >
+        {navItems.map((item) => {
+          const isCurrent = currentActive === item.id;
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              aria-current={isCurrent ? "page" : undefined}
+              style={{
+                border: 0,
+                background: isCurrent ? "rgba(41, 36, 28, 0.9)" : "transparent",
+                color: isCurrent ? "#e5c891" : "#aaa499",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4px",
+                padding: "8px 2px",
+                borderRadius: "10px",
+                fontSize: "11px",
+                fontWeight: isCurrent ? 700 : 500,
+                minHeight: "54px",
+                textDecoration: "none",
+                transition: "all 0.15s ease",
+              }}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </>
   );
 }

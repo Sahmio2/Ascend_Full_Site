@@ -359,31 +359,22 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
         {/* VIEW 1: WORKOUTS PLAN OVERVIEW */}
         {page === "workouts" && (
           <div className="view">
-            <div className="topbar">
-              <div className="brand">ASCEND</div>
-              <div className="topright">
-                {onSwitchToClassic && (
-                  <button
-                    onClick={onSwitchToClassic}
-                    className="pill neutral"
-                    style={{ cursor: "pointer" }}
-                  >
-                    Classic Grid
-                  </button>
-                )}
-                <span className="pill">WEEK 02 OF 08</span>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+              <div>
+                <div className="eyebrow">{data.client.phaseName.toUpperCase()}</div>
+                <h1 className="t1">Your training week</h1>
+                <p className="small" style={{ margin: "4px 0 0" }}>
+                  {data.programme.subtitle || "Your coach-prescribed sessions, ready when you are."}
+                </p>
               </div>
+              <span className="pill">
+                WEEK {String(data.programme.week).padStart(2, "0")} OF {String(data.programme.totalWeeks).padStart(2, "0")}
+              </span>
             </div>
 
-            <div className="eyebrow">{data.client.phaseName.toUpperCase()}</div>
-            <h1 className="t1">Your training week</h1>
-            <p className="small" style={{ margin: "7px 0 17px" }}>
-              {data.programme.subtitle || "Your coach-prescribed sessions, ready when you are."}
-            </p>
-
-            <div className="card padded" style={{ marginBottom: "17px" }}>
+            <div className="card padded" style={{ marginBottom: "20px" }}>
               <div className="row spread">
-                <span className="strong">This week</span>
+                <span className="strong">Weekly Consistency</span>
                 <span className="small">{`${data.workouts.length % 3} of 3 completed`}</span>
               </div>
               <div className="progress-track">
@@ -391,42 +382,44 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
               </div>
             </div>
 
-            {/* Workouts list */}
-            {[
-              { key: "a" as const, day: "MON", num: "01", name: "Full Body A", time: "50m · Gym" },
-              { key: "b" as const, day: "WED", num: "02", name: "Full Body B", time: "50m · Gym", isToday: true },
-              { key: "c" as const, day: "FRI", num: "03", name: "Full Body C", time: "55m · Gym" },
-            ].map((w) => {
-              const isEnded = !!completedWorkouts[w.key];
-              return (
-                <button
-                  key={w.key}
-                  className={`workout-card ${w.isToday ? "is-today" : ""}`}
-                  onClick={() => {
-                    setSelectedWorkoutKey(w.key);
-                    setPage("preview");
-                  }}
-                >
-                  <div className="daybox">
-                    <span>{w.day}</span>
-                    <span>{w.num}</span>
-                  </div>
-                  <div className="grow">
-                    <div className="workout-title">{w.name}</div>
-                    <div className="workout-status">
-                      {isEnded
-                        ? "Completed · Performance saved"
-                        : w.isToday
-                        ? "Today’s session · Ready to start"
-                        : "Scheduled"}
+            {/* Workouts 3-Column Grid */}
+            <div className="workouts-grid">
+              {[
+                { key: "a" as const, day: "MON", num: "01", name: "Full Body A", time: "50m · Gym" },
+                { key: "b" as const, day: "WED", num: "02", name: "Full Body B", time: "50m · Gym", isToday: true },
+                { key: "c" as const, day: "FRI", num: "03", name: "Full Body C", time: "55m · Gym" },
+              ].map((w) => {
+                const isEnded = !!completedWorkouts[w.key];
+                return (
+                  <button
+                    key={w.key}
+                    className={`workout-card ${w.isToday ? "is-today" : ""}`}
+                    onClick={() => {
+                      setSelectedWorkoutKey(w.key);
+                      setPage("preview");
+                    }}
+                  >
+                    <div className="daybox">
+                      <span>{w.day}</span>
+                      <span>{w.num}</span>
                     </div>
-                  </div>
-                  <WorkoutGlyph name={isEnded ? "check" : "chevron"} />
-                </button>
-              );
-            })}
+                    <div className="grow">
+                      <div className="workout-title">{w.name}</div>
+                      <div className="workout-status">
+                        {isEnded
+                          ? "Completed · Saved"
+                          : w.isToday
+                          ? "Today’s session · Ready"
+                          : "Scheduled"}
+                      </div>
+                    </div>
+                    <WorkoutGlyph name={isEnded ? "check" : "chevron"} />
+                  </button>
+                );
+              })}
+            </div>
 
-            {/* Bottom App Navigation */}
+            {/* Bottom App Navigation (Mobile Only) */}
             <ModernClientBottomNav scope={scope} active="workouts" />
           </div>
         )}
@@ -434,6 +427,7 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
         {/* VIEW 2: WORKOUT PREVIEW */}
         {page === "preview" && (
           <div className="view">
+            <div className="focus-logger-wrap">
             <div className="topbar tight">
               <button
                 className="icon-btn flat"
@@ -524,12 +518,14 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
                 Start in Session Mode
               </button>
             </div>
+            </div>
           </div>
         )}
 
         {/* VIEW 3: LIVE WORKOUT LOGGER (FOCUS & SESSION MODES) */}
         {page === "logger" && (
           <div className="view">
+            <div className="focus-logger-wrap">
             <div className="topbar tight">
               <button
                 className="icon-btn flat"
@@ -834,12 +830,14 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
                 </button>
               </div>
             )}
+            </div>
           </div>
         )}
 
         {/* VIEW 4: POST-WORKOUT SUMMARY */}
         {page === "summary" && (
           <div className="view">
+            <div className="focus-logger-wrap">
             <div className="eyebrow" style={{ color: "var(--gold)" }}>PRIVATE WORKOUT SUMMARY</div>
             <h1 className="t1">Workout Completed</h1>
             <p className="small" style={{ color: "var(--muted)" }}>
@@ -894,12 +892,14 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
                 Return to Workouts Hub
               </button>
             </div>
+            </div>
           </div>
         )}
 
         {/* VIEW 5: SHAREABLE WORKOUT GRAPHIC */}
         {page === "share" && (
           <div className="view">
+            <div className="focus-logger-wrap">
             <div className="topbar tight">
               <button
                 className="icon-btn flat"
@@ -944,6 +944,7 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
             >
               Export / Share Graphic
             </button>
+            </div>
           </div>
         )}
 
