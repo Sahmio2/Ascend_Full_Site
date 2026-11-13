@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import ModernClientBottomNav from "../components/ModernClientBottomNav";
 import "@/styles/ascend-today-dashboard.css";
 import type { PortalScope } from "../data/types";
 
@@ -182,19 +183,14 @@ export default function TodayDashboard({ scope = "live", onSwitchToClassic }: To
   const handleMainAction = () => {
     const target = s.target;
     if (target === "workout") {
-      setActiveTab("workouts");
+      router.push(`${basePath}/workout-logger`);
     } else if (target === "direction") {
       setModalData({
         title: "Today’s direction",
         body: "Prescribed recovery guidance appears here. No unverified advice is generated automatically.",
       });
     } else if (target === "checkin") {
-      setModalData({
-        title: "Coaching check-in",
-        body: "Your midpoint check-in is scheduled for Friday. Record the week as it happened.",
-        actionLabel: "Prepare Check-In in Progress",
-        actionHref: `${basePath}/progress`,
-      });
+      router.push(`${basePath}/progress`);
     } else if (target === "building") {
       setModalData({
         title: "Programme review status",
@@ -325,7 +321,8 @@ export default function TodayDashboard({ scope = "live", onSwitchToClassic }: To
                   <div className="statgrid">
                     <button
                       className="stat"
-                      onClick={() => setActiveTab("workouts")}
+                      onClick={() => router.push(`${basePath}/workout-logger`)}
+                      style={{ cursor: "pointer" }}
                     >
                       <span className="statTitle">
                         <TodayIcon name="dumb" /> Training
@@ -334,11 +331,15 @@ export default function TodayDashboard({ scope = "live", onSwitchToClassic }: To
                       <div className="small">
                         {hasPlan ? "Workouts completed this week" : "Plan not yet active"}
                       </div>
+                      {hasPlan && (
+                        <div className="next">Open Workout Logger →</div>
+                      )}
                     </button>
 
                     <button
                       className="stat"
-                      onClick={() => setActiveTab("nutrition")}
+                      onClick={() => router.push(`${basePath}/nutrition`)}
+                      style={{ cursor: "pointer" }}
                     >
                       <span className="statTitle">
                         <TodayIcon name="food" /> Nutrition
@@ -354,10 +355,14 @@ export default function TodayDashboard({ scope = "live", onSwitchToClassic }: To
                   </div>
                 </section>
 
-                <section className="under">
+                <section
+                  className="under"
+                  onClick={() => router.push(`${basePath}/progress`)}
+                  style={{ cursor: "pointer" }}
+                >
                   <div>
                     <strong>Next coaching check-in</strong>
-                    <small>{hasPlan ? "Friday · Example schedule" : "Shown after your programme is active"}</small>
+                    <small>{hasPlan ? "Friday · Example schedule (Tap for Progress)" : "Shown after your programme is active"}</small>
                   </div>
                   <span className="right">
                     <TodayIcon name="calendar" />
@@ -566,24 +571,7 @@ export default function TodayDashboard({ scope = "live", onSwitchToClassic }: To
           </div>
 
           {/* Sticky Bottom Navigation */}
-          <nav id="nav" className="nav" aria-label="Primary navigation">
-            {[
-              { id: "today" as const, name: "Today", icon: "home" },
-              { id: "workouts" as const, name: "Workouts", icon: "dumb" },
-              { id: "nutrition" as const, name: "Nutrition", icon: "food" },
-              { id: "progress" as const, name: "Progress", icon: "chart" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                className={activeTab === tab.id ? "active" : ""}
-                onClick={() => setActiveTab(tab.id)}
-                aria-current={activeTab === tab.id ? "page" : undefined}
-              >
-                <TodayIcon name={tab.icon} />
-                <span>{tab.name}</span>
-              </button>
-            ))}
-          </nav>
+          <ModernClientBottomNav scope={scope} active="today" />
         </div>
 
         {/* Prototype Footer Note */}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import ModernClientBottomNav from "../components/ModernClientBottomNav";
 import "@/styles/ascend-progress-interactive.css";
 import type { PortalScope } from "../data/types";
 import type { ProgressRecord, ProgressResponse } from "@/contracts/progress";
@@ -511,6 +512,9 @@ export default function ProgressInteractivePage({ scope = "live", onSwitchToClas
             </div>
           </div>
         )}
+
+        {/* Bottom App Navigation */}
+        <ModernClientBottomNav scope={scope} active="progress" />
       </div>
 
       {/* Floating Modal */}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import ModernClientBottomNav from "../components/ModernClientBottomNav";
 import "@/styles/ascend-workouts-focus.css";
 import type { PortalScope } from "../data/types";
 
@@ -396,24 +397,7 @@ export default function WorkoutsFocusPage({ scope = "live", onSwitchToClassic }:
             })}
 
             {/* Bottom App Navigation */}
-            <nav className="bottomnav">
-              <Link href="/client/dashboard" className="navitem">
-                <WorkoutGlyph name="home" />
-                <span>Today</span>
-              </Link>
-              <button className="navitem active">
-                <WorkoutGlyph name="dumbbell" />
-                <span>Workouts</span>
-              </button>
-              <Link href="/client/nutrition" className="navitem">
-                <WorkoutGlyph name="fork" />
-                <span>Nutrition</span>
-              </Link>
-              <Link href="/client/progress" className="navitem">
-                <WorkoutGlyph name="chart" />
-                <span>Progress</span>
-              </Link>
-            </nav>
+            <ModernClientBottomNav scope={scope} active="workouts" />
           </div>
         )}
 

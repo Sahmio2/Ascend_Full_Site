@@ -12,13 +12,11 @@ interface ScreenLink {
 }
 
 const SCREENS: ScreenLink[] = [
-  // Client Portal
-  { label: "Today Dashboard", href: "/client/dashboard", icon: "◇", category: "portal" },
-  { label: "Meal Plan & Nutrition", href: "/client/nutrition", icon: "◉", category: "portal" },
-  { label: "Workout Logger", href: "/client/workout-logger", icon: "↔", category: "portal" },
-  { label: "Progress Tracking", href: "/client/progress", icon: "↗", category: "portal" },
-  { label: "My Plan", href: "/client/plan", icon: "▤", category: "portal" },
-  { label: "BMI Calculators", href: "/client/bmi", icon: "⚖", category: "portal" },
+  // Client Portal (New Approved Suite)
+  { label: "Today Dashboard", href: "/client/dashboard", icon: "⚡", category: "portal" },
+  { label: "Workouts & Focus Mode", href: "/client/workout-logger", icon: "🏋️", category: "portal" },
+  { label: "Nigerian Nutrition & Meals", href: "/client/nutrition", icon: "🍲", category: "portal" },
+  { label: "Progress & Milestones", href: "/client/progress", icon: "📈", category: "portal" },
 
   // Account & Access
   { label: "Account Overview", href: "/account", icon: "👤", category: "access" },
@@ -29,7 +27,7 @@ const SCREENS: ScreenLink[] = [
   { label: "Login (OTP)", href: "/login", icon: "🔐", category: "access" },
 
   // Coach Space
-  { label: "Coach Studio", href: "/coach-portal", icon: "👔", category: "coach" },
+  { label: "Modern Coach Studio", href: "/coach-portal", icon: "👔", category: "coach" },
   { label: "Coach Login", href: "/coach/login", icon: "🔑", category: "coach" },
 ];
 

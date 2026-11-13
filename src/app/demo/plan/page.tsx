@@ -1,7 +1,5 @@
-export const dynamic = "force-dynamic";
-
-import PlanPage from "@/features/ascend/portal/pages/PlanPage";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <PlanPage scope="demo" />;
+  redirect("/demo/workout-logger");
 }

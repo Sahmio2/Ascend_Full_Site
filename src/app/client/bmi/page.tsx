@@ -1,7 +1,5 @@
-export const dynamic = "force-dynamic";
-
-import CalculatorPage from "@/features/ascend/portal/pages/CalculatorPage";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <CalculatorPage scope="live" />;
+  redirect("/client/nutrition");
 }

@@ -4,15 +4,13 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import type { PortalScope } from "../data/types";
 
-export type PortalSection = "dashboard" | "plan" | "nutrition" | "logger" | "progress" | "bmi";
+export type PortalSection = "dashboard" | "nutrition" | "logger" | "progress";
 
 const navItems: Array<{ id: PortalSection; label: string; path: string; glyph: string }> = [
   { id: "dashboard", label: "Today", path: "dashboard", glyph: "◇" },
-  { id: "plan", label: "My plan", path: "plan", glyph: "▤" },
+  { id: "logger", label: "Workouts", path: "workout-logger", glyph: "↔" },
   { id: "nutrition", label: "Nutrition", path: "nutrition", glyph: "◉" },
-  { id: "logger", label: "Workout", path: "workout-logger", glyph: "↔" },
   { id: "progress", label: "Progress", path: "progress", glyph: "↗" },
-  { id: "bmi", label: "Calculators", path: "bmi", glyph: "⚖" },
 ];
 
 export default function PortalShell({ scope, current, clientName, phase, children }: { scope: PortalScope; current: PortalSection; clientName: string; phase: string; children: ReactNode }) {

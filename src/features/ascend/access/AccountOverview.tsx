@@ -234,18 +234,32 @@ export default function AccountOverview() {
 
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             <Link
-              href="/client/nutrition"
-              className="access-btn-secondary"
-              style={{ minHeight: "34px", padding: "0 12px", fontSize: "12px", textDecoration: "none" }}
-            >
-              🍲 Open Meal Plan →
-            </Link>
-            <Link
               href="/client/dashboard"
               className="access-btn-secondary"
               style={{ minHeight: "34px", padding: "0 12px", fontSize: "12px", textDecoration: "none" }}
             >
-              ⚡ Open Today Portal →
+              ⚡ Today
+            </Link>
+            <Link
+              href="/client/workout-logger"
+              className="access-btn-secondary"
+              style={{ minHeight: "34px", padding: "0 12px", fontSize: "12px", textDecoration: "none" }}
+            >
+              🏋️ Workouts
+            </Link>
+            <Link
+              href="/client/nutrition"
+              className="access-btn-secondary"
+              style={{ minHeight: "34px", padding: "0 12px", fontSize: "12px", textDecoration: "none" }}
+            >
+              🍲 Nutrition
+            </Link>
+            <Link
+              href="/client/progress"
+              className="access-btn-secondary"
+              style={{ minHeight: "34px", padding: "0 12px", fontSize: "12px", textDecoration: "none" }}
+            >
+              📈 Progress
             </Link>
           </div>
         </div>
