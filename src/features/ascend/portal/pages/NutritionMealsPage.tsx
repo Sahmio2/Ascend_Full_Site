@@ -5,6 +5,7 @@ import Link from "next/link";
 import ModernClientBottomNav from "../components/ModernClientBottomNav";
 import { useClientPortalData } from "../data/useClientPortalData";
 import { clientPortalAdapter } from "../data/clientPortalAdapter";
+import ClearableSearchInput from "@/components/ClearableSearchInput";
 import "@/styles/ascend-nutrition-meals.css";
 import type { PortalScope } from "../data/types";
 
@@ -499,11 +500,11 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
 
               <div className="field">
                 <label>Search Nigerian Food Catalog</label>
-                <input
-                  type="text"
-                  placeholder="Type rice, yam, plantain, egusi..."
+                <ClearableSearchInput
                   value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
+                  onChange={setSearchText}
+                  placeholder="Type rice, yam, plantain, egusi..."
+                  ariaLabel="Search Nigerian Food Catalog"
                 />
                 <div className="suggestions">
                   {NIGERIAN_CATALOG.filter((item) =>

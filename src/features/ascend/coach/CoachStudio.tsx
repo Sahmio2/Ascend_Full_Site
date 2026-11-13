@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import ClearableSearchInput from "@/components/ClearableSearchInput";
 import "@/styles/ascend-coach-studio.css";
 
 // SVG icon library from prototype
@@ -729,11 +730,11 @@ export default function CoachStudio({
 
               <div className="card">
                 <div className="list-toolbar">
-                  <input
-                    className="search-input"
+                  <ClearableSearchInput
+                    inputClassName="search-input"
                     value={clientSearch}
-                    onChange={(e) => setClientSearch(e.target.value)}
-                    aria-label="Search clients"
+                    onChange={setClientSearch}
+                    ariaLabel="Search clients"
                     placeholder="Search by client, goal or phase"
                   />
                   <select
@@ -2146,14 +2147,13 @@ export default function CoachStudio({
             aria-label="Global search"
             onClick={(e) => e.stopPropagation()}
           >
-            <input
+            <ClearableSearchInput
               id="global-search"
-              type="search"
               autoFocus
-              autoComplete="off"
               placeholder="Search clients, programmes or reviews..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={setSearchQuery}
+              ariaLabel="Search clients, programmes or reviews"
             />
             <div className="search-results" id="search-results">
               {INITIAL_CLIENTS.filter((c) => {
