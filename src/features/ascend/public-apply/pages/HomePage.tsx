@@ -191,24 +191,35 @@ export default function Home() {
             Your plan evolves with the evidence—not with an arbitrary 30-day transformation promise. Each phase builds on what came before.
           </p>
         </div>
-        <div className="phase-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "24px", marginTop: "47px" }}>
-          <article className="phase" style={{ borderTop: "2px solid #C9A24B", paddingTop: "23px" }}>
-            <div className="phase-index">PHASE I / FOUNDATION</div>
-            <h3 className="phase-name">Tame the Flesh</h3>
-            <p className="phase-lead">Build control through consistent habits—not punishment.</p>
-            <p className="phase-copy">Learn the movements, establish your baseline and make showing up part of your routine.</p>
+        <div className="phases-triptych">
+          <article className="phase-card">
+            <span className="phase-numeral" aria-hidden="true">I</span>
+            <div className="phase-label">PHASE I</div>
+            <h3 className="phase-heading">Taming the Flesh</h3>
+            <p className="phase-description">
+              Build command over inconsistency. Establish the habits, movement quality and self-awareness that make progress repeatable.
+            </p>
+            <span className="phase-script-watermark" aria-hidden="true">Tame</span>
           </article>
-          <article className="phase" style={{ borderTop: "2px solid #C9A24B", paddingTop: "23px" }}>
-            <div className="phase-index">PHASE II / PROGRESSION</div>
-            <h3 className="phase-name">Forge the Form</h3>
-            <p className="phase-lead">Turn consistency into measurable progress.</p>
-            <p className="phase-copy">Develop strength, technique and nutritional consistency through structured, reviewed adjustments.</p>
+
+          <article className="phase-card">
+            <span className="phase-numeral" aria-hidden="true">II</span>
+            <div className="phase-label">PHASE II</div>
+            <h3 className="phase-heading">Forging the Form</h3>
+            <p className="phase-description">
+              Turn disciplined action into visible structure through purposeful training, practical nutrition and measurable progression.
+            </p>
+            <span className="phase-script-watermark" aria-hidden="true">Forge</span>
           </article>
-          <article className="phase" style={{ borderTop: "2px solid #C9A24B", paddingTop: "23px" }}>
-            <div className="phase-index">PHASE III / MASTERY</div>
-            <h3 className="phase-name">Ascend</h3>
-            <p className="phase-lead">Build confidence in your own process.</p>
-            <p className="phase-copy">Refine your physique and develop more independence as your coaching and progress support it.</p>
+
+          <article className="phase-card active">
+            <span className="phase-numeral" aria-hidden="true">III</span>
+            <div className="phase-label">PHASE III</div>
+            <h3 className="phase-heading">Ascension</h3>
+            <p className="phase-description">
+              Refine the details. Train with precision, manage fatigue intelligently and build the autonomy to sustain what you earn.
+            </p>
+            <span className="phase-script-watermark" aria-hidden="true">Ascend</span>
           </article>
         </div>
       </section>
