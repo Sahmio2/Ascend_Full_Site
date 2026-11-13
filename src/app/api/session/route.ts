@@ -4,35 +4,22 @@ import { z } from 'zod';
 import { db } from '@/server/db';
 import { requireUser, tokenHash } from '@/server/auth';
 import { handler, json, assertOrigin, body, ApiError } from '@/server/http';
+import { verifyPassword } from '@/server/passwords';
+import { checkLoginRateLimit, resetLoginRateLimit } from '@/server/rateLimit';
 
 export const runtime = 'nodejs';
 
-// In-memory rate limiter: max 5 login attempts per key (email/IP) per minute
-const loginAttempts = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const MAX_ATTEMPTS = 5;
+// Constant dummy hash to equalize response times against user enumeration timing attacks
+const DUMMY_SCRYPT_HASH =
+  'scrypt$N=16384,r=8,p=1$00000000000000000000000000000000$' +
+  '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
-export function checkLoginRateLimit(key: string) {
-  const now = Date.now();
-  const record = loginAttempts.get(key);
-  if (record && record.resetAt > now) {
-    if (record.count >= MAX_ATTEMPTS) {
-      throw new ApiError(429, 'TOO_MANY_REQUESTS');
-    }
-    record.count++;
-  } else {
-    loginAttempts.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-  }
-}
-
-export function resetLoginRateLimit(key: string) {
-  loginAttempts.delete(key);
-}
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1, 'Password required'),
-}).strict(); // strictly rejects userId or extraneous fields
+const loginSchema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(1, 'Password required'),
+  })
+  .strict(); // strictly rejects userId or extraneous fields
 
 export const POST = handler(async request => {
   assertOrigin(request);
@@ -43,29 +30,33 @@ export const POST = handler(async request => {
   // Rate limit by normalized email identifier
   checkLoginRateLimit(normalizedEmail);
 
-  const isDemo = normalizedEmail === 'demo@ascend.co';
-
-  // Demo login guard: NEVER permitted to issue database sessions in production
-  if (isDemo) {
-    if (process.env.NODE_ENV === 'production' && process.env.ALLOW_DEV_SESSIONS !== 'true') {
-      throw new ApiError(403, 'DEMO_LOGIN_DISABLED_IN_PRODUCTION');
-    }
-    if (input.password !== 'ascend-demo') {
-      throw new ApiError(401, 'INVALID_CREDENTIALS');
-    }
-  } else {
-    // Identity verification: reject invalid passwords
-    if (input.password.length < 6) {
-      throw new ApiError(401, 'INVALID_CREDENTIALS');
-    }
+  // Unconditionally block demo login bypass in production, regardless of ALLOW_DEV_SESSIONS
+  if (
+    normalizedEmail === 'demo@ascend.co' &&
+    (process.env.NODE_ENV === 'production' || process.env.VERCEL)
+  ) {
+    throw new ApiError(403, 'DEMO_LOGIN_DISABLED_IN_PRODUCTION');
   }
 
   const prisma = db();
-  const user = await prisma.user.upsert({
+
+  // Look up user by email
+  const user = await prisma.user.findUnique({
     where: { email: normalizedEmail },
-    create: { email: normalizedEmail, role: 'CLIENT' },
-    update: {},
   });
+
+  // Fail-closed policy:
+  // If user does not exist or has no stored password hash, run dummy scrypt work to resist timing enumeration
+  if (!user || !user.passwordHash) {
+    await verifyPassword(input.password, DUMMY_SCRYPT_HASH);
+    throw new ApiError(401, 'INVALID_CREDENTIALS');
+  }
+
+  // Cryptographic per-user password verification
+  const isValid = await verifyPassword(input.password, user.passwordHash);
+  if (!isValid) {
+    throw new ApiError(401, 'INVALID_CREDENTIALS');
+  }
 
   // Session rotation: revoke any existing active sessions for this user
   await prisma.session.updateMany({
@@ -77,7 +68,7 @@ export const POST = handler(async request => {
     data: { revokedAt: new Date() },
   });
 
-  // Issue new session token
+  // Issue new cryptographically random session token (32 bytes = 256 bits of entropy)
   const token = randomBytes(32).toString('hex');
   await prisma.session.create({
     data: {
@@ -87,7 +78,7 @@ export const POST = handler(async request => {
     },
   });
 
-  // Reset rate limiter on successful login
+  // Reset rate limiter on successful authentication
   resetLoginRateLimit(normalizedEmail);
 
   const response = json({ ok: true, userId: user.id, email: user.email });

@@ -384,10 +384,6 @@ export type WorkoutUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.WorkoutScalarWhereInput | Prisma.WorkoutScalarWhereInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type WorkoutCreateNestedOneWithoutSetsInput = {
   create?: Prisma.XOR<Prisma.WorkoutCreateWithoutSetsInput, Prisma.WorkoutUncheckedCreateWithoutSetsInput>
   connectOrCreate?: Prisma.WorkoutCreateOrConnectWithoutSetsInput

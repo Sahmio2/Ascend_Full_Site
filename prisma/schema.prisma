@@ -16,6 +16,7 @@ enum Metric {
 model User {
   id String @id @default(cuid())
   email String @unique @db.VarChar(191)
+  passwordHash String? @db.VarChar(255)
   role Role @default(CLIENT)
   timeZone String @default("Africa/Lagos") @db.VarChar(64)
   createdAt DateTime @default(now())
