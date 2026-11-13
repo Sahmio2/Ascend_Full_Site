@@ -212,60 +212,6 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
   return (
     <div className="nutrition-meals-root">
       <div className="app">
-        {/* Top Nutrition Sub-Nav Bar */}
-        <div
-          style={{
-            display: "flex",
-            gap: "6px",
-            background: "#181715",
-            padding: "5px",
-            borderRadius: "14px",
-            border: "1px solid #37342e",
-            margin: "0 0 20px 0",
-            maxWidth: "520px",
-            overflowX: "auto",
-          }}
-        >
-          {[
-            { id: "today" as const, label: "Today's Meals", icon: "🍽️" },
-            { id: "add" as const, label: "+ Add Food", icon: "➕" },
-            { id: "weekly" as const, label: "Weekly Plan", icon: "📅" },
-            { id: "shopping" as const, label: "Groceries", icon: "🛒" },
-          ].map((tab) => {
-            const isActive = view === tab.id || (tab.id === "add" && view === "form");
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => {
-                  if (tab.id === "add") openAdd(null, "search");
-                  else setView(tab.id);
-                }}
-                style={{
-                  flex: "1 0 auto",
-                  padding: "7px 11px",
-                  background: isActive ? "var(--gold, #d9bc80)" : "transparent",
-                  color: isActive ? "#181610" : "var(--muted, #aea79b)",
-                  border: 0,
-                  borderRadius: "9px",
-                  fontSize: "12px",
-                  fontWeight: isActive ? 700 : 500,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "5px",
-                  transition: "all 0.15s ease",
-                }}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
         {/* VIEW 1: TODAY'S MEALS */}
         {view === "today" && (
           <div className="screen">
