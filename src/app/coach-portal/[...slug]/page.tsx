@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import ProtectedRoute from "@/components/ProtectedRoute";
 import CoachPortalPage from "@/pages/coach/CoachPortalPage";
 
@@ -8,4 +10,3 @@ export default function Page() {
     </ProtectedRoute>
   );
 }
-

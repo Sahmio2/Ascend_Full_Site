@@ -22,7 +22,7 @@ export default function ClientLoginPage() {
             "Content-Type": "application/json",
             Origin: window.location.origin,
           },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email, password }),
         });
       } catch (err) {
         console.error("Failed to establish server session", err);

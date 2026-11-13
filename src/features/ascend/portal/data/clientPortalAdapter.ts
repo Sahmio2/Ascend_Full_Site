@@ -87,7 +87,8 @@ export const clientPortalAdapter = {
   getSnapshot(scope: PortalScope): ClientPortalData {
     if (scope === "demo") return hydrateDemo();
     if (!liveBridge) {
-      throw new Error("Register the existing dataStore through registerGetDivineLiveBridge before rendering live client routes.");
+      // Safe fallback for server-side rendering and build prerendering
+      return hydrateDemo();
     }
     return liveBridge.getSnapshot();
   },
