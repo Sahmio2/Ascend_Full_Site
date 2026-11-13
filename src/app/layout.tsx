@@ -4,6 +4,7 @@ import "@/styles/ascend-fonts.css";
 import "@/styles/ascend-latest-build.css";
 import "@/styles/get-divine-mobile-type.css";
 import "@/styles/get-divine-patch-02.css";
+import DevScreenNavigator from "@/components/DevScreenNavigator";
 
 export const metadata: Metadata = {
   title: "ASCEND — Personalised Online Physique Coaching",
@@ -35,7 +36,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <DevScreenNavigator />
+      </body>
     </html>
   );
 }

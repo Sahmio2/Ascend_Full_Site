@@ -113,6 +113,58 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
     return null;
   };
 
+  const fillSampleAnswers = () => {
+    setAnswers({
+      'FT-01': {
+        name: prefillProfile?.fullName || 'Athlete',
+        email: prefillProfile?.email || 'athlete@ascend.fitness',
+        whatsapp: '+234 800 000 0000',
+        goal: 'Build muscle and lose fat',
+      },
+      'FT-02': '26',
+      'FT-05': [
+        'I have read the ASCEND privacy notice.',
+        'I understand that ASCEND coaching does not provide medical care or emergency support.',
+      ],
+      'BS-01': 'No flagged medical conditions',
+      'BS-02': 'No',
+      'BS-03': 'No',
+      'BS-04': 'No',
+      'BS-05': 'No',
+      'BS-07': 'No',
+      'FS-02': 'Muscular & Lean',
+      'FS-04': { value: '178', unit: 'cm' },
+      'FS-05': { value: '78', unit: 'kg' },
+      'FS-06': 'Staying about the same',
+      'FS-07': 'Male baseline',
+      'FS-10': 'No specific date',
+      'TC-01': '6 to 24 months',
+      'TC-03': 'Training irregularly',
+      'TC-04': 3,
+      'TC-05': ['Busy work or study hours'],
+      'GB-01': ['Monday', 'Wednesday', 'Friday'],
+      'GB-02': '60 minutes',
+      'GB-04': 'Mostly fixed',
+      'GB-06': ['Dumbbells', 'Barbells', 'Bench', 'Cable machine'],
+      'MF-03': 'Squat, Bench Press, Dumbbell Rows',
+      'TR-02': 'Breakfast: Oats & boiled eggs. Lunch: Rice & grilled fish. Dinner: Eba & egusi soup.',
+      'TR-04': 'Me',
+      'TR-05': '₦50,000 / month',
+      'TR-06': 'No',
+      'TR-08': 'None',
+      'TR-09': ['Stove', 'Fridge', 'Freezer'],
+      'TR-11': ['Eggs', 'Fish', 'Chicken', 'Beef', 'Beans'],
+      'TR-12': 'Manageable',
+      'TR-13': 'Comfortable regularly',
+      'RL-01': '7 hours, good sleep',
+      'RL-04': 'Moderate desk job, low physical fatigue',
+      'RL-06': 'Good energy most days',
+      'RL-07': 'No',
+      'PP-04': ['I confirm the information is accurate to the best of my knowledge.'],
+    });
+    setError(null);
+  };
+
   const handleNext = () => {
     const err = validateCurrentStage();
     if (err) {
@@ -479,10 +531,11 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
                       key={st.code}
                       className={`${isCurrent ? 'current' : ''} ${isDone ? 'done' : ''}`}
                       onClick={() => {
-                        if (isDone || isCurrent) {
-                          setCurrentStageIndex(idx);
-                        }
+                        setCurrentStageIndex(idx);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
+                      style={{ cursor: 'pointer' }}
+                      title={`Jump to Stage ${idx + 1}: ${st.name}`}
                     >
                       <span className="stage-bullet">{isDone ? '✓' : idx + 1}</span>
                       <span>{st.name}</span>
@@ -493,6 +546,25 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
             </div>
 
             <div className="sidebar-footer">
+              <button
+                type="button"
+                onClick={fillSampleAnswers}
+                style={{
+                  background: "rgba(223, 191, 119, 0.16)",
+                  color: "#dfbf77",
+                  border: "1px dashed rgba(223, 191, 119, 0.5)",
+                  borderRadius: "8px",
+                  padding: "8px 12px",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  width: "100%",
+                  cursor: "pointer",
+                  marginBottom: "14px",
+                  transition: "background 0.15s",
+                }}
+              >
+                ⚡ Fill Sample Answers (Dev)
+              </button>
               <small>ASCEND BY SAHMI EL · FOUNDING COHORT</small>
             </div>
           </div>
