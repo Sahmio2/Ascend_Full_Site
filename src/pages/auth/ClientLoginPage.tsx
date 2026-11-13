@@ -11,9 +11,22 @@ export default function ClientLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleClientLogin(e: FormEvent) {
+  async function handleClientLogin(e: FormEvent) {
     e.preventDefault();
     if (email && password) {
+      setLoading(true);
+      try {
+        await fetch("/api/session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Origin: window.location.origin,
+          },
+          body: JSON.stringify({ email }),
+        });
+      } catch (err) {
+        console.error("Failed to establish server session", err);
+      }
       authStore.setSession({
         role: "client",
         mode: "live",
