@@ -148,23 +148,56 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
   const [foodState, setFoodState] = useState("cooked");
   const [searchText, setSearchText] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [nutritionMode, setNutritionMode] = useState<"structured" | "simple">("structured");
+  const [nutritionMode, setNutritionMode] = useState<"structured" | "simple" | "precision">("structured");
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem("ascend_nutrition_mode");
-      if (saved === "structured" || saved === "simple") {
+      if (saved === "structured" || saved === "simple" || saved === "precision") {
         setNutritionMode(saved);
       }
     } catch {}
   }, []);
 
-  const handleModeChange = (mode: "structured" | "simple") => {
+  // Hydrate live meals from /api/client/meals
+  useEffect(() => {
+    if (scope !== "live") return;
+    async function loadLiveMeals() {
+      try {
+        const res = await fetch("/api/client/meals");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.ok && Array.isArray(data.loggedMeals)) {
+          const newLog: Record<string, { kind: "planned" | "skipped" | "changed"; note?: string }> = {};
+          for (const item of data.loggedMeals) {
+            const key = item.mealType.toLowerCase();
+            if (item.status === "PLANNED") {
+              newLog[key] = { kind: "planned" };
+            } else if (item.status === "SKIPPED") {
+              newLog[key] = { kind: "skipped" };
+            } else if (item.status === "CHANGED") {
+              newLog[key] = { kind: "changed", note: item.notes || undefined };
+            }
+          }
+          setLog(newLog);
+        }
+      } catch {}
+    }
+    loadLiveMeals();
+  }, [scope]);
+
+  const handleModeChange = (mode: "structured" | "simple" | "precision") => {
     setNutritionMode(mode);
     try {
       localStorage.setItem("ascend_nutrition_mode", mode);
     } catch {}
-    showToast(mode === "structured" ? "Structured & Macros view active" : "Simple Guide view active");
+    const label =
+      mode === "precision"
+        ? "Precision Gram View active"
+        : mode === "structured"
+        ? "Structured Plan active"
+        : "Simple Guide active";
+    showToast(label);
   };
 
   const completedMealsCount = INITIAL_MEALS.filter((m) => log[m.id]?.kind === "planned").length;
@@ -203,21 +236,68 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
     return <span className="status changed">Changed</span>;
   };
 
+  const mapIdToType = (mealId: string) => {
+    const upper = mealId.toUpperCase();
+    if (['BREAKFAST', 'LUNCH', 'DINNER', 'SNACK'].includes(upper)) return upper;
+    return 'SNACK';
+  };
+
   const recordPlanned = (mealId: string) => {
-    setLog({ ...log, [mealId]: { kind: "planned" } });
+    setLog((prev) => ({ ...prev, [mealId]: { kind: "planned" } }));
     showToast("Recorded as planned");
+
+    if (scope === "live") {
+      const m = INITIAL_MEALS.find((x) => x.id === mealId);
+      fetch("/api/client/meals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mealType: mapIdToType(mealId),
+          mealName: m?.name || mealId,
+          status: "PLANNED",
+        }),
+      }).catch(() => {});
+    }
   };
 
   const recordSkipped = (mealId: string) => {
-    setLog({ ...log, [mealId]: { kind: "skipped" } });
+    setLog((prev) => ({ ...prev, [mealId]: { kind: "skipped" } }));
     showToast("Marked as not eaten");
+
+    if (scope === "live") {
+      const m = INITIAL_MEALS.find((x) => x.id === mealId);
+      fetch("/api/client/meals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mealType: mapIdToType(mealId),
+          mealName: m?.name || mealId,
+          status: "SKIPPED",
+        }),
+      }).catch(() => {});
+    }
   };
 
   const undoRecord = (mealId: string) => {
-    const copy = { ...log };
-    delete copy[mealId];
-    setLog(copy);
+    setLog((prev) => {
+      const copy = { ...prev };
+      delete copy[mealId];
+      return copy;
+    });
     showToast("Record removed");
+
+    if (scope === "live") {
+      const m = INITIAL_MEALS.find((x) => x.id === mealId);
+      fetch("/api/client/meals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mealType: mapIdToType(mealId),
+          mealName: m?.name || mealId,
+          status: "NOT_RECORDED",
+        }),
+      }).catch(() => {});
+    }
   };
 
   const openAdd = (mealId: string | null, defaultMethod: "barcode" | "photo" | "search" | "voice" = "search") => {
@@ -240,6 +320,21 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
     if (currentMeal) {
       setLog({ ...log, [currentMeal]: { kind: "changed", note: `${found.name} (${g} g)` } });
       showToast(`Recorded substitution: ${found.name} (${g} g)`);
+
+      if (scope === "live") {
+        const m = INITIAL_MEALS.find((x) => x.id === currentMeal);
+        fetch("/api/client/meals", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            mealType: mapIdToType(currentMeal),
+            mealName: m?.name || currentMeal,
+            status: "CHANGED",
+            customFoods: [{ name: found.name, grams: g, state: foodState }],
+            notes: `Swapped with ${found.name} (${g} g)`,
+          }),
+        }).catch(() => {});
+      }
     } else {
       setExtras([...extras, { name: `${found.name} (${g} g)`, amount: `${g} g`, kcal: computedKcal }]);
       showToast(`Added: ${found.name} (${g} g) · ${computedKcal} kcal`);
@@ -331,6 +426,23 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
                     <span>Simple Guide</span>
                   </div>
                   <div className="nutrition-mode-desc">Portion benchmarks · No macro math</div>
+                </button>
+
+                <button
+                  type="button"
+                  className={`nutrition-mode-btn ${nutritionMode === "precision" ? "active" : ""}`}
+                  onClick={() => handleModeChange("precision")}
+                  role="tab"
+                  aria-selected={nutritionMode === "precision"}
+                >
+                  <div className="nutrition-mode-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 7v5l3 2" />
+                    </svg>
+                    <span>Precision</span>
+                  </div>
+                  <div className="nutrition-mode-desc">Exact weighed grams · Variance tracking</div>
                 </button>
               </div>
             </div>

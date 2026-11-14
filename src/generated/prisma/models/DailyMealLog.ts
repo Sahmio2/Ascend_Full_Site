@@ -30,6 +30,8 @@ export type DailyMealLogMinAggregateOutputType = {
   date: string | null
   mealType: $Enums.MealType | null
   mealName: string | null
+  programmeVersion: string | null
+  programmeDraftId: string | null
   status: $Enums.MealStatus | null
   notes: string | null
   recordedAt: Date | null
@@ -43,6 +45,8 @@ export type DailyMealLogMaxAggregateOutputType = {
   date: string | null
   mealType: $Enums.MealType | null
   mealName: string | null
+  programmeVersion: string | null
+  programmeDraftId: string | null
   status: $Enums.MealStatus | null
   notes: string | null
   recordedAt: Date | null
@@ -56,6 +60,8 @@ export type DailyMealLogCountAggregateOutputType = {
   date: number
   mealType: number
   mealName: number
+  programmeVersion: number
+  programmeDraftId: number
   status: number
   customFoods: number
   notes: number
@@ -72,6 +78,8 @@ export type DailyMealLogMinAggregateInputType = {
   date?: true
   mealType?: true
   mealName?: true
+  programmeVersion?: true
+  programmeDraftId?: true
   status?: true
   notes?: true
   recordedAt?: true
@@ -85,6 +93,8 @@ export type DailyMealLogMaxAggregateInputType = {
   date?: true
   mealType?: true
   mealName?: true
+  programmeVersion?: true
+  programmeDraftId?: true
   status?: true
   notes?: true
   recordedAt?: true
@@ -98,6 +108,8 @@ export type DailyMealLogCountAggregateInputType = {
   date?: true
   mealType?: true
   mealName?: true
+  programmeVersion?: true
+  programmeDraftId?: true
   status?: true
   customFoods?: true
   notes?: true
@@ -185,6 +197,8 @@ export type DailyMealLogGroupByOutputType = {
   date: string
   mealType: $Enums.MealType
   mealName: string
+  programmeVersion: string | null
+  programmeDraftId: string | null
   status: $Enums.MealStatus
   customFoods: runtime.JsonValue | null
   notes: string | null
@@ -220,6 +234,8 @@ export type DailyMealLogWhereInput = {
   date?: Prisma.StringFilter<"DailyMealLog"> | string
   mealType?: Prisma.EnumMealTypeFilter<"DailyMealLog"> | $Enums.MealType
   mealName?: Prisma.StringFilter<"DailyMealLog"> | string
+  programmeVersion?: Prisma.StringNullableFilter<"DailyMealLog"> | string | null
+  programmeDraftId?: Prisma.StringNullableFilter<"DailyMealLog"> | string | null
   status?: Prisma.EnumMealStatusFilter<"DailyMealLog"> | $Enums.MealStatus
   customFoods?: Prisma.JsonNullableFilter<"DailyMealLog">
   notes?: Prisma.StringNullableFilter<"DailyMealLog"> | string | null
@@ -227,6 +243,7 @@ export type DailyMealLogWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"DailyMealLog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DailyMealLog"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  programmeDraft?: Prisma.XOR<Prisma.ProgrammeDraftNullableScalarRelationFilter, Prisma.ProgrammeDraftWhereInput> | null
 }
 
 export type DailyMealLogOrderByWithRelationInput = {
@@ -235,6 +252,8 @@ export type DailyMealLogOrderByWithRelationInput = {
   date?: Prisma.SortOrder
   mealType?: Prisma.SortOrder
   mealName?: Prisma.SortOrder
+  programmeVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  programmeDraftId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   customFoods?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -242,6 +261,7 @@ export type DailyMealLogOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  programmeDraft?: Prisma.ProgrammeDraftOrderByWithRelationInput
   _relevance?: Prisma.DailyMealLogOrderByRelevanceInput
 }
 
@@ -255,6 +275,8 @@ export type DailyMealLogWhereUniqueInput = Prisma.AtLeast<{
   date?: Prisma.StringFilter<"DailyMealLog"> | string
   mealType?: Prisma.EnumMealTypeFilter<"DailyMealLog"> | $Enums.MealType
   mealName?: Prisma.StringFilter<"DailyMealLog"> | string
+  programmeVersion?: Prisma.StringNullableFilter<"DailyMealLog"> | string | null
+  programmeDraftId?: Prisma.StringNullableFilter<"DailyMealLog"> | string | null
   status?: Prisma.EnumMealStatusFilter<"DailyMealLog"> | $Enums.MealStatus
   customFoods?: Prisma.JsonNullableFilter<"DailyMealLog">
   notes?: Prisma.StringNullableFilter<"DailyMealLog"> | string | null
@@ -262,6 +284,7 @@ export type DailyMealLogWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"DailyMealLog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DailyMealLog"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  programmeDraft?: Prisma.XOR<Prisma.ProgrammeDraftNullableScalarRelationFilter, Prisma.ProgrammeDraftWhereInput> | null
 }, "id" | "userId_date_mealType">
 
 export type DailyMealLogOrderByWithAggregationInput = {
@@ -270,6 +293,8 @@ export type DailyMealLogOrderByWithAggregationInput = {
   date?: Prisma.SortOrder
   mealType?: Prisma.SortOrder
   mealName?: Prisma.SortOrder
+  programmeVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  programmeDraftId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   customFoods?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -290,6 +315,8 @@ export type DailyMealLogScalarWhereWithAggregatesInput = {
   date?: Prisma.StringWithAggregatesFilter<"DailyMealLog"> | string
   mealType?: Prisma.EnumMealTypeWithAggregatesFilter<"DailyMealLog"> | $Enums.MealType
   mealName?: Prisma.StringWithAggregatesFilter<"DailyMealLog"> | string
+  programmeVersion?: Prisma.StringNullableWithAggregatesFilter<"DailyMealLog"> | string | null
+  programmeDraftId?: Prisma.StringNullableWithAggregatesFilter<"DailyMealLog"> | string | null
   status?: Prisma.EnumMealStatusWithAggregatesFilter<"DailyMealLog"> | $Enums.MealStatus
   customFoods?: Prisma.JsonNullableWithAggregatesFilter<"DailyMealLog">
   notes?: Prisma.StringNullableWithAggregatesFilter<"DailyMealLog"> | string | null
@@ -303,6 +330,7 @@ export type DailyMealLogCreateInput = {
   date: string
   mealType: $Enums.MealType
   mealName: string
+  programmeVersion?: string | null
   status?: $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
@@ -310,6 +338,7 @@ export type DailyMealLogCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMealLogsInput
+  programmeDraft?: Prisma.ProgrammeDraftCreateNestedOneWithoutMealLogsInput
 }
 
 export type DailyMealLogUncheckedCreateInput = {
@@ -318,6 +347,8 @@ export type DailyMealLogUncheckedCreateInput = {
   date: string
   mealType: $Enums.MealType
   mealName: string
+  programmeVersion?: string | null
+  programmeDraftId?: string | null
   status?: $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
@@ -331,6 +362,7 @@ export type DailyMealLogUpdateInput = {
   date?: Prisma.StringFieldUpdateOperationsInput | string
   mealType?: Prisma.EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
   mealName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -338,6 +370,7 @@ export type DailyMealLogUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMealLogsNestedInput
+  programmeDraft?: Prisma.ProgrammeDraftUpdateOneWithoutMealLogsNestedInput
 }
 
 export type DailyMealLogUncheckedUpdateInput = {
@@ -346,6 +379,8 @@ export type DailyMealLogUncheckedUpdateInput = {
   date?: Prisma.StringFieldUpdateOperationsInput | string
   mealType?: Prisma.EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
   mealName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  programmeDraftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -360,6 +395,8 @@ export type DailyMealLogCreateManyInput = {
   date: string
   mealType: $Enums.MealType
   mealName: string
+  programmeVersion?: string | null
+  programmeDraftId?: string | null
   status?: $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
@@ -373,6 +410,7 @@ export type DailyMealLogUpdateManyMutationInput = {
   date?: Prisma.StringFieldUpdateOperationsInput | string
   mealType?: Prisma.EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
   mealName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -387,6 +425,8 @@ export type DailyMealLogUncheckedUpdateManyInput = {
   date?: Prisma.StringFieldUpdateOperationsInput | string
   mealType?: Prisma.EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
   mealName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  programmeDraftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -423,6 +463,8 @@ export type DailyMealLogCountOrderByAggregateInput = {
   date?: Prisma.SortOrder
   mealType?: Prisma.SortOrder
   mealName?: Prisma.SortOrder
+  programmeVersion?: Prisma.SortOrder
+  programmeDraftId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   customFoods?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -437,6 +479,8 @@ export type DailyMealLogMaxOrderByAggregateInput = {
   date?: Prisma.SortOrder
   mealType?: Prisma.SortOrder
   mealName?: Prisma.SortOrder
+  programmeVersion?: Prisma.SortOrder
+  programmeDraftId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   recordedAt?: Prisma.SortOrder
@@ -450,6 +494,8 @@ export type DailyMealLogMinOrderByAggregateInput = {
   date?: Prisma.SortOrder
   mealType?: Prisma.SortOrder
   mealName?: Prisma.SortOrder
+  programmeVersion?: Prisma.SortOrder
+  programmeDraftId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   recordedAt?: Prisma.SortOrder
@@ -507,17 +553,61 @@ export type EnumMealStatusFieldUpdateOperationsInput = {
   set?: $Enums.MealStatus
 }
 
+export type DailyMealLogCreateNestedManyWithoutProgrammeDraftInput = {
+  create?: Prisma.XOR<Prisma.DailyMealLogCreateWithoutProgrammeDraftInput, Prisma.DailyMealLogUncheckedCreateWithoutProgrammeDraftInput> | Prisma.DailyMealLogCreateWithoutProgrammeDraftInput[] | Prisma.DailyMealLogUncheckedCreateWithoutProgrammeDraftInput[]
+  connectOrCreate?: Prisma.DailyMealLogCreateOrConnectWithoutProgrammeDraftInput | Prisma.DailyMealLogCreateOrConnectWithoutProgrammeDraftInput[]
+  createMany?: Prisma.DailyMealLogCreateManyProgrammeDraftInputEnvelope
+  connect?: Prisma.DailyMealLogWhereUniqueInput | Prisma.DailyMealLogWhereUniqueInput[]
+}
+
+export type DailyMealLogUncheckedCreateNestedManyWithoutProgrammeDraftInput = {
+  create?: Prisma.XOR<Prisma.DailyMealLogCreateWithoutProgrammeDraftInput, Prisma.DailyMealLogUncheckedCreateWithoutProgrammeDraftInput> | Prisma.DailyMealLogCreateWithoutProgrammeDraftInput[] | Prisma.DailyMealLogUncheckedCreateWithoutProgrammeDraftInput[]
+  connectOrCreate?: Prisma.DailyMealLogCreateOrConnectWithoutProgrammeDraftInput | Prisma.DailyMealLogCreateOrConnectWithoutProgrammeDraftInput[]
+  createMany?: Prisma.DailyMealLogCreateManyProgrammeDraftInputEnvelope
+  connect?: Prisma.DailyMealLogWhereUniqueInput | Prisma.DailyMealLogWhereUniqueInput[]
+}
+
+export type DailyMealLogUpdateManyWithoutProgrammeDraftNestedInput = {
+  create?: Prisma.XOR<Prisma.DailyMealLogCreateWithoutProgrammeDraftInput, Prisma.DailyMealLogUncheckedCreateWithoutProgrammeDraftInput> | Prisma.DailyMealLogCreateWithoutProgrammeDraftInput[] | Prisma.DailyMealLogUncheckedCreateWithoutProgrammeDraftInput[]
+  connectOrCreate?: Prisma.DailyMealLogCreateOrConnectWithoutProgrammeDraftInput | Prisma.DailyMealLogCreateOrConnectWithoutProgrammeDraftInput[]
+  upsert?: Prisma.DailyMealLogUpsertWithWhereUniqueWithoutProgrammeDraftInput | Prisma.DailyMealLogUpsertWithWhereUniqueWithoutProgrammeDraftInput[]
+  createMany?: Prisma.DailyMealLogCreateManyProgrammeDraftInputEnvelope
+  set?: Prisma.DailyMealLogWhereUniqueInput | Prisma.DailyMealLogWhereUniqueInput[]
+  disconnect?: Prisma.DailyMealLogWhereUniqueInput | Prisma.DailyMealLogWhereUniqueInput[]
+  delete?: Prisma.DailyMealLogWhereUniqueInput | Prisma.DailyMealLogWhereUniqueInput[]
+  connect?: Prisma.DailyMealLogWhereUniqueInput | Prisma.DailyMealLogWhereUniqueInput[]
+  update?: Prisma.DailyMealLogUpdateWithWhereUniqueWithoutProgrammeDraftInput | Prisma.DailyMealLogUpdateWithWhereUniqueWithoutProgrammeDraftInput[]
+  updateMany?: Prisma.DailyMealLogUpdateManyWithWhereWithoutProgrammeDraftInput | Prisma.DailyMealLogUpdateManyWithWhereWithoutProgrammeDraftInput[]
+  deleteMany?: Prisma.DailyMealLogScalarWhereInput | Prisma.DailyMealLogScalarWhereInput[]
+}
+
+export type DailyMealLogUncheckedUpdateManyWithoutProgrammeDraftNestedInput = {
+  create?: Prisma.XOR<Prisma.DailyMealLogCreateWithoutProgrammeDraftInput, Prisma.DailyMealLogUncheckedCreateWithoutProgrammeDraftInput> | Prisma.DailyMealLogCreateWithoutProgrammeDraftInput[] | Prisma.DailyMealLogUncheckedCreateWithoutProgrammeDraftInput[]
+  connectOrCreate?: Prisma.DailyMealLogCreateOrConnectWithoutProgrammeDraftInput | Prisma.DailyMealLogCreateOrConnectWithoutProgrammeDraftInput[]
+  upsert?: Prisma.DailyMealLogUpsertWithWhereUniqueWithoutProgrammeDraftInput | Prisma.DailyMealLogUpsertWithWhereUniqueWithoutProgrammeDraftInput[]
+  createMany?: Prisma.DailyMealLogCreateManyProgrammeDraftInputEnvelope
+  set?: Prisma.DailyMealLogWhereUniqueInput | Prisma.DailyMealLogWhereUniqueInput[]
+  disconnect?: Prisma.DailyMealLogWhereUniqueInput | Prisma.DailyMealLogWhereUniqueInput[]
+  delete?: Prisma.DailyMealLogWhereUniqueInput | Prisma.DailyMealLogWhereUniqueInput[]
+  connect?: Prisma.DailyMealLogWhereUniqueInput | Prisma.DailyMealLogWhereUniqueInput[]
+  update?: Prisma.DailyMealLogUpdateWithWhereUniqueWithoutProgrammeDraftInput | Prisma.DailyMealLogUpdateWithWhereUniqueWithoutProgrammeDraftInput[]
+  updateMany?: Prisma.DailyMealLogUpdateManyWithWhereWithoutProgrammeDraftInput | Prisma.DailyMealLogUpdateManyWithWhereWithoutProgrammeDraftInput[]
+  deleteMany?: Prisma.DailyMealLogScalarWhereInput | Prisma.DailyMealLogScalarWhereInput[]
+}
+
 export type DailyMealLogCreateWithoutUserInput = {
   id?: string
   date: string
   mealType: $Enums.MealType
   mealName: string
+  programmeVersion?: string | null
   status?: $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
   recordedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  programmeDraft?: Prisma.ProgrammeDraftCreateNestedOneWithoutMealLogsInput
 }
 
 export type DailyMealLogUncheckedCreateWithoutUserInput = {
@@ -525,6 +615,8 @@ export type DailyMealLogUncheckedCreateWithoutUserInput = {
   date: string
   mealType: $Enums.MealType
   mealName: string
+  programmeVersion?: string | null
+  programmeDraftId?: string | null
   status?: $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
@@ -568,6 +660,8 @@ export type DailyMealLogScalarWhereInput = {
   date?: Prisma.StringFilter<"DailyMealLog"> | string
   mealType?: Prisma.EnumMealTypeFilter<"DailyMealLog"> | $Enums.MealType
   mealName?: Prisma.StringFilter<"DailyMealLog"> | string
+  programmeVersion?: Prisma.StringNullableFilter<"DailyMealLog"> | string | null
+  programmeDraftId?: Prisma.StringNullableFilter<"DailyMealLog"> | string | null
   status?: Prisma.EnumMealStatusFilter<"DailyMealLog"> | $Enums.MealStatus
   customFoods?: Prisma.JsonNullableFilter<"DailyMealLog">
   notes?: Prisma.StringNullableFilter<"DailyMealLog"> | string | null
@@ -576,11 +670,69 @@ export type DailyMealLogScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"DailyMealLog"> | Date | string
 }
 
+export type DailyMealLogCreateWithoutProgrammeDraftInput = {
+  id?: string
+  date: string
+  mealType: $Enums.MealType
+  mealName: string
+  programmeVersion?: string | null
+  status?: $Enums.MealStatus
+  customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notes?: string | null
+  recordedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutMealLogsInput
+}
+
+export type DailyMealLogUncheckedCreateWithoutProgrammeDraftInput = {
+  id?: string
+  userId: string
+  date: string
+  mealType: $Enums.MealType
+  mealName: string
+  programmeVersion?: string | null
+  status?: $Enums.MealStatus
+  customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notes?: string | null
+  recordedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DailyMealLogCreateOrConnectWithoutProgrammeDraftInput = {
+  where: Prisma.DailyMealLogWhereUniqueInput
+  create: Prisma.XOR<Prisma.DailyMealLogCreateWithoutProgrammeDraftInput, Prisma.DailyMealLogUncheckedCreateWithoutProgrammeDraftInput>
+}
+
+export type DailyMealLogCreateManyProgrammeDraftInputEnvelope = {
+  data: Prisma.DailyMealLogCreateManyProgrammeDraftInput | Prisma.DailyMealLogCreateManyProgrammeDraftInput[]
+  skipDuplicates?: boolean
+}
+
+export type DailyMealLogUpsertWithWhereUniqueWithoutProgrammeDraftInput = {
+  where: Prisma.DailyMealLogWhereUniqueInput
+  update: Prisma.XOR<Prisma.DailyMealLogUpdateWithoutProgrammeDraftInput, Prisma.DailyMealLogUncheckedUpdateWithoutProgrammeDraftInput>
+  create: Prisma.XOR<Prisma.DailyMealLogCreateWithoutProgrammeDraftInput, Prisma.DailyMealLogUncheckedCreateWithoutProgrammeDraftInput>
+}
+
+export type DailyMealLogUpdateWithWhereUniqueWithoutProgrammeDraftInput = {
+  where: Prisma.DailyMealLogWhereUniqueInput
+  data: Prisma.XOR<Prisma.DailyMealLogUpdateWithoutProgrammeDraftInput, Prisma.DailyMealLogUncheckedUpdateWithoutProgrammeDraftInput>
+}
+
+export type DailyMealLogUpdateManyWithWhereWithoutProgrammeDraftInput = {
+  where: Prisma.DailyMealLogScalarWhereInput
+  data: Prisma.XOR<Prisma.DailyMealLogUpdateManyMutationInput, Prisma.DailyMealLogUncheckedUpdateManyWithoutProgrammeDraftInput>
+}
+
 export type DailyMealLogCreateManyUserInput = {
   id?: string
   date: string
   mealType: $Enums.MealType
   mealName: string
+  programmeVersion?: string | null
+  programmeDraftId?: string | null
   status?: $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: string | null
@@ -594,12 +746,14 @@ export type DailyMealLogUpdateWithoutUserInput = {
   date?: Prisma.StringFieldUpdateOperationsInput | string
   mealType?: Prisma.EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
   mealName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  programmeDraft?: Prisma.ProgrammeDraftUpdateOneWithoutMealLogsNestedInput
 }
 
 export type DailyMealLogUncheckedUpdateWithoutUserInput = {
@@ -607,6 +761,8 @@ export type DailyMealLogUncheckedUpdateWithoutUserInput = {
   date?: Prisma.StringFieldUpdateOperationsInput | string
   mealType?: Prisma.EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
   mealName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  programmeDraftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -620,6 +776,68 @@ export type DailyMealLogUncheckedUpdateManyWithoutUserInput = {
   date?: Prisma.StringFieldUpdateOperationsInput | string
   mealType?: Prisma.EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
   mealName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  programmeDraftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
+  customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DailyMealLogCreateManyProgrammeDraftInput = {
+  id?: string
+  userId: string
+  date: string
+  mealType: $Enums.MealType
+  mealName: string
+  programmeVersion?: string | null
+  status?: $Enums.MealStatus
+  customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notes?: string | null
+  recordedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DailyMealLogUpdateWithoutProgrammeDraftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.StringFieldUpdateOperationsInput | string
+  mealType?: Prisma.EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
+  mealName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
+  customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutMealLogsNestedInput
+}
+
+export type DailyMealLogUncheckedUpdateWithoutProgrammeDraftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.StringFieldUpdateOperationsInput | string
+  mealType?: Prisma.EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
+  mealName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
+  customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DailyMealLogUncheckedUpdateManyWithoutProgrammeDraftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  date?: Prisma.StringFieldUpdateOperationsInput | string
+  mealType?: Prisma.EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
+  mealName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
   customFoods?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -636,6 +854,8 @@ export type DailyMealLogSelect<ExtArgs extends runtime.Types.Extensions.Internal
   date?: boolean
   mealType?: boolean
   mealName?: boolean
+  programmeVersion?: boolean
+  programmeDraftId?: boolean
   status?: boolean
   customFoods?: boolean
   notes?: boolean
@@ -643,6 +863,7 @@ export type DailyMealLogSelect<ExtArgs extends runtime.Types.Extensions.Internal
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  programmeDraft?: boolean | Prisma.DailyMealLog$programmeDraftArgs<ExtArgs>
 }, ExtArgs["result"]["dailyMealLog"]>
 
 
@@ -653,6 +874,8 @@ export type DailyMealLogSelectScalar = {
   date?: boolean
   mealType?: boolean
   mealName?: boolean
+  programmeVersion?: boolean
+  programmeDraftId?: boolean
   status?: boolean
   customFoods?: boolean
   notes?: boolean
@@ -661,15 +884,17 @@ export type DailyMealLogSelectScalar = {
   updatedAt?: boolean
 }
 
-export type DailyMealLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "date" | "mealType" | "mealName" | "status" | "customFoods" | "notes" | "recordedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["dailyMealLog"]>
+export type DailyMealLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "date" | "mealType" | "mealName" | "programmeVersion" | "programmeDraftId" | "status" | "customFoods" | "notes" | "recordedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["dailyMealLog"]>
 export type DailyMealLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  programmeDraft?: boolean | Prisma.DailyMealLog$programmeDraftArgs<ExtArgs>
 }
 
 export type $DailyMealLogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "DailyMealLog"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    programmeDraft: Prisma.$ProgrammeDraftPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -677,6 +902,8 @@ export type $DailyMealLogPayload<ExtArgs extends runtime.Types.Extensions.Intern
     date: string
     mealType: $Enums.MealType
     mealName: string
+    programmeVersion: string | null
+    programmeDraftId: string | null
     status: $Enums.MealStatus
     customFoods: runtime.JsonValue | null
     notes: string | null
@@ -1024,6 +1251,7 @@ readonly fields: DailyMealLogFieldRefs;
 export interface Prisma__DailyMealLogClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  programmeDraft<T extends Prisma.DailyMealLog$programmeDraftArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DailyMealLog$programmeDraftArgs<ExtArgs>>): Prisma.Prisma__ProgrammeDraftClient<runtime.Types.Result.GetResult<Prisma.$ProgrammeDraftPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1058,6 +1286,8 @@ export interface DailyMealLogFieldRefs {
   readonly date: Prisma.FieldRef<"DailyMealLog", 'String'>
   readonly mealType: Prisma.FieldRef<"DailyMealLog", 'MealType'>
   readonly mealName: Prisma.FieldRef<"DailyMealLog", 'String'>
+  readonly programmeVersion: Prisma.FieldRef<"DailyMealLog", 'String'>
+  readonly programmeDraftId: Prisma.FieldRef<"DailyMealLog", 'String'>
   readonly status: Prisma.FieldRef<"DailyMealLog", 'MealStatus'>
   readonly customFoods: Prisma.FieldRef<"DailyMealLog", 'Json'>
   readonly notes: Prisma.FieldRef<"DailyMealLog", 'String'>
@@ -1409,6 +1639,25 @@ export type DailyMealLogDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many DailyMealLogs to delete.
    */
   limit?: number
+}
+
+/**
+ * DailyMealLog.programmeDraft
+ */
+export type DailyMealLog$programmeDraftArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProgrammeDraft
+   */
+  select?: Prisma.ProgrammeDraftSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProgrammeDraft
+   */
+  omit?: Prisma.ProgrammeDraftOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgrammeDraftInclude<ExtArgs> | null
+  where?: Prisma.ProgrammeDraftWhereInput
 }
 
 /**

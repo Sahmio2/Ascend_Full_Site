@@ -215,6 +215,8 @@ export type ProgrammeDraftWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ProgrammeDraft"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProgrammeDraft"> | Date | string
   clientUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  workoutSessions?: Prisma.ClientWorkoutSessionListRelationFilter
+  mealLogs?: Prisma.DailyMealLogListRelationFilter
 }
 
 export type ProgrammeDraftOrderByWithRelationInput = {
@@ -229,6 +231,8 @@ export type ProgrammeDraftOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   clientUser?: Prisma.UserOrderByWithRelationInput
+  workoutSessions?: Prisma.ClientWorkoutSessionOrderByRelationAggregateInput
+  mealLogs?: Prisma.DailyMealLogOrderByRelationAggregateInput
   _relevance?: Prisma.ProgrammeDraftOrderByRelevanceInput
 }
 
@@ -247,6 +251,8 @@ export type ProgrammeDraftWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ProgrammeDraft"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProgrammeDraft"> | Date | string
   clientUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  workoutSessions?: Prisma.ClientWorkoutSessionListRelationFilter
+  mealLogs?: Prisma.DailyMealLogListRelationFilter
 }, "id">
 
 export type ProgrammeDraftOrderByWithAggregationInput = {
@@ -292,6 +298,8 @@ export type ProgrammeDraftCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   clientUser: Prisma.UserCreateNestedOneWithoutProgrammesInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutProgrammeDraftInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutProgrammeDraftInput
 }
 
 export type ProgrammeDraftUncheckedCreateInput = {
@@ -305,6 +313,8 @@ export type ProgrammeDraftUncheckedCreateInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutProgrammeDraftInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutProgrammeDraftInput
 }
 
 export type ProgrammeDraftUpdateInput = {
@@ -318,6 +328,8 @@ export type ProgrammeDraftUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientUser?: Prisma.UserUpdateOneRequiredWithoutProgrammesNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutProgrammeDraftNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutProgrammeDraftNestedInput
 }
 
 export type ProgrammeDraftUncheckedUpdateInput = {
@@ -331,6 +343,8 @@ export type ProgrammeDraftUncheckedUpdateInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutProgrammeDraftNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutProgrammeDraftNestedInput
 }
 
 export type ProgrammeDraftCreateManyInput = {
@@ -379,6 +393,11 @@ export type ProgrammeDraftListRelationFilter = {
 
 export type ProgrammeDraftOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ProgrammeDraftNullableScalarRelationFilter = {
+  is?: Prisma.ProgrammeDraftWhereInput | null
+  isNot?: Prisma.ProgrammeDraftWhereInput | null
 }
 
 export type ProgrammeDraftOrderByRelevanceInput = {
@@ -464,6 +483,38 @@ export type ProgrammeDraftUncheckedUpdateManyWithoutClientUserNestedInput = {
   deleteMany?: Prisma.ProgrammeDraftScalarWhereInput | Prisma.ProgrammeDraftScalarWhereInput[]
 }
 
+export type ProgrammeDraftCreateNestedOneWithoutMealLogsInput = {
+  create?: Prisma.XOR<Prisma.ProgrammeDraftCreateWithoutMealLogsInput, Prisma.ProgrammeDraftUncheckedCreateWithoutMealLogsInput>
+  connectOrCreate?: Prisma.ProgrammeDraftCreateOrConnectWithoutMealLogsInput
+  connect?: Prisma.ProgrammeDraftWhereUniqueInput
+}
+
+export type ProgrammeDraftUpdateOneWithoutMealLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProgrammeDraftCreateWithoutMealLogsInput, Prisma.ProgrammeDraftUncheckedCreateWithoutMealLogsInput>
+  connectOrCreate?: Prisma.ProgrammeDraftCreateOrConnectWithoutMealLogsInput
+  upsert?: Prisma.ProgrammeDraftUpsertWithoutMealLogsInput
+  disconnect?: Prisma.ProgrammeDraftWhereInput | boolean
+  delete?: Prisma.ProgrammeDraftWhereInput | boolean
+  connect?: Prisma.ProgrammeDraftWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProgrammeDraftUpdateToOneWithWhereWithoutMealLogsInput, Prisma.ProgrammeDraftUpdateWithoutMealLogsInput>, Prisma.ProgrammeDraftUncheckedUpdateWithoutMealLogsInput>
+}
+
+export type ProgrammeDraftCreateNestedOneWithoutWorkoutSessionsInput = {
+  create?: Prisma.XOR<Prisma.ProgrammeDraftCreateWithoutWorkoutSessionsInput, Prisma.ProgrammeDraftUncheckedCreateWithoutWorkoutSessionsInput>
+  connectOrCreate?: Prisma.ProgrammeDraftCreateOrConnectWithoutWorkoutSessionsInput
+  connect?: Prisma.ProgrammeDraftWhereUniqueInput
+}
+
+export type ProgrammeDraftUpdateOneWithoutWorkoutSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProgrammeDraftCreateWithoutWorkoutSessionsInput, Prisma.ProgrammeDraftUncheckedCreateWithoutWorkoutSessionsInput>
+  connectOrCreate?: Prisma.ProgrammeDraftCreateOrConnectWithoutWorkoutSessionsInput
+  upsert?: Prisma.ProgrammeDraftUpsertWithoutWorkoutSessionsInput
+  disconnect?: Prisma.ProgrammeDraftWhereInput | boolean
+  delete?: Prisma.ProgrammeDraftWhereInput | boolean
+  connect?: Prisma.ProgrammeDraftWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProgrammeDraftUpdateToOneWithWhereWithoutWorkoutSessionsInput, Prisma.ProgrammeDraftUpdateWithoutWorkoutSessionsInput>, Prisma.ProgrammeDraftUncheckedUpdateWithoutWorkoutSessionsInput>
+}
+
 export type ProgrammeDraftCreateWithoutClientUserInput = {
   id?: string
   version: string
@@ -474,6 +525,8 @@ export type ProgrammeDraftCreateWithoutClientUserInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutProgrammeDraftInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutProgrammeDraftInput
 }
 
 export type ProgrammeDraftUncheckedCreateWithoutClientUserInput = {
@@ -486,6 +539,8 @@ export type ProgrammeDraftUncheckedCreateWithoutClientUserInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutProgrammeDraftInput
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutProgrammeDraftInput
 }
 
 export type ProgrammeDraftCreateOrConnectWithoutClientUserInput = {
@@ -530,6 +585,150 @@ export type ProgrammeDraftScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"ProgrammeDraft"> | Date | string
 }
 
+export type ProgrammeDraftCreateWithoutMealLogsInput = {
+  id?: string
+  version: string
+  isPublished?: boolean
+  trainingJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  nutritionJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  coachNotes?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientUser: Prisma.UserCreateNestedOneWithoutProgrammesInput
+  workoutSessions?: Prisma.ClientWorkoutSessionCreateNestedManyWithoutProgrammeDraftInput
+}
+
+export type ProgrammeDraftUncheckedCreateWithoutMealLogsInput = {
+  id?: string
+  clientUserId: string
+  version: string
+  isPublished?: boolean
+  trainingJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  nutritionJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  coachNotes?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedCreateNestedManyWithoutProgrammeDraftInput
+}
+
+export type ProgrammeDraftCreateOrConnectWithoutMealLogsInput = {
+  where: Prisma.ProgrammeDraftWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProgrammeDraftCreateWithoutMealLogsInput, Prisma.ProgrammeDraftUncheckedCreateWithoutMealLogsInput>
+}
+
+export type ProgrammeDraftUpsertWithoutMealLogsInput = {
+  update: Prisma.XOR<Prisma.ProgrammeDraftUpdateWithoutMealLogsInput, Prisma.ProgrammeDraftUncheckedUpdateWithoutMealLogsInput>
+  create: Prisma.XOR<Prisma.ProgrammeDraftCreateWithoutMealLogsInput, Prisma.ProgrammeDraftUncheckedCreateWithoutMealLogsInput>
+  where?: Prisma.ProgrammeDraftWhereInput
+}
+
+export type ProgrammeDraftUpdateToOneWithWhereWithoutMealLogsInput = {
+  where?: Prisma.ProgrammeDraftWhereInput
+  data: Prisma.XOR<Prisma.ProgrammeDraftUpdateWithoutMealLogsInput, Prisma.ProgrammeDraftUncheckedUpdateWithoutMealLogsInput>
+}
+
+export type ProgrammeDraftUpdateWithoutMealLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  trainingJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  nutritionJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  coachNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientUser?: Prisma.UserUpdateOneRequiredWithoutProgrammesNestedInput
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutProgrammeDraftNestedInput
+}
+
+export type ProgrammeDraftUncheckedUpdateWithoutMealLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  trainingJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  nutritionJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  coachNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutProgrammeDraftNestedInput
+}
+
+export type ProgrammeDraftCreateWithoutWorkoutSessionsInput = {
+  id?: string
+  version: string
+  isPublished?: boolean
+  trainingJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  nutritionJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  coachNotes?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientUser: Prisma.UserCreateNestedOneWithoutProgrammesInput
+  mealLogs?: Prisma.DailyMealLogCreateNestedManyWithoutProgrammeDraftInput
+}
+
+export type ProgrammeDraftUncheckedCreateWithoutWorkoutSessionsInput = {
+  id?: string
+  clientUserId: string
+  version: string
+  isPublished?: boolean
+  trainingJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  nutritionJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  coachNotes?: string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  mealLogs?: Prisma.DailyMealLogUncheckedCreateNestedManyWithoutProgrammeDraftInput
+}
+
+export type ProgrammeDraftCreateOrConnectWithoutWorkoutSessionsInput = {
+  where: Prisma.ProgrammeDraftWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProgrammeDraftCreateWithoutWorkoutSessionsInput, Prisma.ProgrammeDraftUncheckedCreateWithoutWorkoutSessionsInput>
+}
+
+export type ProgrammeDraftUpsertWithoutWorkoutSessionsInput = {
+  update: Prisma.XOR<Prisma.ProgrammeDraftUpdateWithoutWorkoutSessionsInput, Prisma.ProgrammeDraftUncheckedUpdateWithoutWorkoutSessionsInput>
+  create: Prisma.XOR<Prisma.ProgrammeDraftCreateWithoutWorkoutSessionsInput, Prisma.ProgrammeDraftUncheckedCreateWithoutWorkoutSessionsInput>
+  where?: Prisma.ProgrammeDraftWhereInput
+}
+
+export type ProgrammeDraftUpdateToOneWithWhereWithoutWorkoutSessionsInput = {
+  where?: Prisma.ProgrammeDraftWhereInput
+  data: Prisma.XOR<Prisma.ProgrammeDraftUpdateWithoutWorkoutSessionsInput, Prisma.ProgrammeDraftUncheckedUpdateWithoutWorkoutSessionsInput>
+}
+
+export type ProgrammeDraftUpdateWithoutWorkoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  trainingJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  nutritionJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  coachNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientUser?: Prisma.UserUpdateOneRequiredWithoutProgrammesNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutProgrammeDraftNestedInput
+}
+
+export type ProgrammeDraftUncheckedUpdateWithoutWorkoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  trainingJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  nutritionJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  coachNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutProgrammeDraftNestedInput
+}
+
 export type ProgrammeDraftCreateManyClientUserInput = {
   id?: string
   version: string
@@ -552,6 +751,8 @@ export type ProgrammeDraftUpdateWithoutClientUserInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workoutSessions?: Prisma.ClientWorkoutSessionUpdateManyWithoutProgrammeDraftNestedInput
+  mealLogs?: Prisma.DailyMealLogUpdateManyWithoutProgrammeDraftNestedInput
 }
 
 export type ProgrammeDraftUncheckedUpdateWithoutClientUserInput = {
@@ -564,6 +765,8 @@ export type ProgrammeDraftUncheckedUpdateWithoutClientUserInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workoutSessions?: Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutProgrammeDraftNestedInput
+  mealLogs?: Prisma.DailyMealLogUncheckedUpdateManyWithoutProgrammeDraftNestedInput
 }
 
 export type ProgrammeDraftUncheckedUpdateManyWithoutClientUserInput = {
@@ -579,6 +782,44 @@ export type ProgrammeDraftUncheckedUpdateManyWithoutClientUserInput = {
 }
 
 
+/**
+ * Count Type ProgrammeDraftCountOutputType
+ */
+
+export type ProgrammeDraftCountOutputType = {
+  workoutSessions: number
+  mealLogs: number
+}
+
+export type ProgrammeDraftCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  workoutSessions?: boolean | ProgrammeDraftCountOutputTypeCountWorkoutSessionsArgs
+  mealLogs?: boolean | ProgrammeDraftCountOutputTypeCountMealLogsArgs
+}
+
+/**
+ * ProgrammeDraftCountOutputType without action
+ */
+export type ProgrammeDraftCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProgrammeDraftCountOutputType
+   */
+  select?: Prisma.ProgrammeDraftCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ProgrammeDraftCountOutputType without action
+ */
+export type ProgrammeDraftCountOutputTypeCountWorkoutSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClientWorkoutSessionWhereInput
+}
+
+/**
+ * ProgrammeDraftCountOutputType without action
+ */
+export type ProgrammeDraftCountOutputTypeCountMealLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DailyMealLogWhereInput
+}
+
 
 export type ProgrammeDraftSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -592,6 +833,9 @@ export type ProgrammeDraftSelect<ExtArgs extends runtime.Types.Extensions.Intern
   createdAt?: boolean
   updatedAt?: boolean
   clientUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  workoutSessions?: boolean | Prisma.ProgrammeDraft$workoutSessionsArgs<ExtArgs>
+  mealLogs?: boolean | Prisma.ProgrammeDraft$mealLogsArgs<ExtArgs>
+  _count?: boolean | Prisma.ProgrammeDraftCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["programmeDraft"]>
 
 
@@ -612,12 +856,17 @@ export type ProgrammeDraftSelectScalar = {
 export type ProgrammeDraftOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clientUserId" | "version" | "isPublished" | "trainingJson" | "nutritionJson" | "coachNotes" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["programmeDraft"]>
 export type ProgrammeDraftInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   clientUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  workoutSessions?: boolean | Prisma.ProgrammeDraft$workoutSessionsArgs<ExtArgs>
+  mealLogs?: boolean | Prisma.ProgrammeDraft$mealLogsArgs<ExtArgs>
+  _count?: boolean | Prisma.ProgrammeDraftCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $ProgrammeDraftPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ProgrammeDraft"
   objects: {
     clientUser: Prisma.$UserPayload<ExtArgs>
+    workoutSessions: Prisma.$ClientWorkoutSessionPayload<ExtArgs>[]
+    mealLogs: Prisma.$DailyMealLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -971,6 +1220,8 @@ readonly fields: ProgrammeDraftFieldRefs;
 export interface Prisma__ProgrammeDraftClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   clientUser<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  workoutSessions<T extends Prisma.ProgrammeDraft$workoutSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProgrammeDraft$workoutSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientWorkoutSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  mealLogs<T extends Prisma.ProgrammeDraft$mealLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProgrammeDraft$mealLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DailyMealLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1355,6 +1606,54 @@ export type ProgrammeDraftDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many ProgrammeDrafts to delete.
    */
   limit?: number
+}
+
+/**
+ * ProgrammeDraft.workoutSessions
+ */
+export type ProgrammeDraft$workoutSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClientWorkoutSession
+   */
+  select?: Prisma.ClientWorkoutSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ClientWorkoutSession
+   */
+  omit?: Prisma.ClientWorkoutSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClientWorkoutSessionInclude<ExtArgs> | null
+  where?: Prisma.ClientWorkoutSessionWhereInput
+  orderBy?: Prisma.ClientWorkoutSessionOrderByWithRelationInput | Prisma.ClientWorkoutSessionOrderByWithRelationInput[]
+  cursor?: Prisma.ClientWorkoutSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClientWorkoutSessionScalarFieldEnum | Prisma.ClientWorkoutSessionScalarFieldEnum[]
+}
+
+/**
+ * ProgrammeDraft.mealLogs
+ */
+export type ProgrammeDraft$mealLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DailyMealLog
+   */
+  select?: Prisma.DailyMealLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DailyMealLog
+   */
+  omit?: Prisma.DailyMealLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DailyMealLogInclude<ExtArgs> | null
+  where?: Prisma.DailyMealLogWhereInput
+  orderBy?: Prisma.DailyMealLogOrderByWithRelationInput | Prisma.DailyMealLogOrderByWithRelationInput[]
+  cursor?: Prisma.DailyMealLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DailyMealLogScalarFieldEnum | Prisma.DailyMealLogScalarFieldEnum[]
 }
 
 /**

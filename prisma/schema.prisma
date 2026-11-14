@@ -350,21 +350,25 @@ model AssessmentStageData {
 }
 
 model DailyMealLog {
-  id          String     @id @default(cuid())
-  userId      String
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date        String     @db.VarChar(10)
-  mealType    MealType
-  mealName    String     @db.VarChar(64)
-  status      MealStatus @default(NOT_RECORDED)
-  customFoods Json?
-  notes       String?    @db.Text
-  recordedAt  DateTime?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id               String          @id @default(cuid())
+  userId           String
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date             String          @db.VarChar(10)
+  mealType         MealType
+  mealName         String          @db.VarChar(64)
+  programmeVersion String?         @db.VarChar(32)
+  programmeDraftId String?
+  programmeDraft   ProgrammeDraft? @relation("ProgrammeMealLogs", fields: [programmeDraftId], references: [id], onDelete: SetNull)
+  status           MealStatus      @default(NOT_RECORDED)
+  customFoods      Json?
+  notes            String?         @db.Text
+  recordedAt       DateTime?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 
   @@unique([userId, date, mealType])
   @@index([userId, date])
+  @@index([programmeDraftId])
 }
 
 model NutritionTarget {
@@ -388,48 +392,56 @@ model ExerciseSwap {
 }
 
 model ClientWorkoutSession {
-  id          String                @id @default(cuid())
-  userId      String
-  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  workoutId   String                @db.VarChar(64)
-  workoutName String                @db.VarChar(128)
-  startedAt   DateTime              @default(now())
-  completedAt DateTime?
-  status      String                @default("IN_PROGRESS") @db.VarChar(32)
-  notes       String?               @db.Text
-  setLogs     ClientWorkoutSetLog[]
+  id               String                @id @default(cuid())
+  userId           String
+  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workoutId        String                @db.VarChar(64)
+  workoutName      String                @db.VarChar(128)
+  programmeVersion String?               @db.VarChar(32)
+  programmeDraftId String?
+  programmeDraft   ProgrammeDraft?       @relation("ProgrammeWorkoutSessions", fields: [programmeDraftId], references: [id], onDelete: SetNull)
+  startedAt        DateTime              @default(now())
+  completedAt      DateTime?
+  status           String                @default("IN_PROGRESS") @db.VarChar(32)
+  notes            String?               @db.Text
+  setLogs          ClientWorkoutSetLog[]
 
   @@index([userId, startedAt])
+  @@index([programmeDraftId])
 }
 
 model ClientWorkoutSetLog {
-  id           String               @id @default(cuid())
-  sessionId    String
-  session      ClientWorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  exerciseId   String               @db.VarChar(64)
-  exerciseName String               @db.VarChar(128)
-  setIndex     Int
-  isWarmup     Boolean              @default(false)
-  weightKg     Decimal              @db.Decimal(6, 2)
-  reps         Int
-  completed    Boolean              @default(true)
-  loggedAt     DateTime             @default(now())
+  id               String               @id @default(cuid())
+  sessionId        String
+  session          ClientWorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exerciseId       String               @db.VarChar(64)
+  exerciseName     String               @db.VarChar(128)
+  targetExerciseId String?              @db.VarChar(64)
+  isSwap           Boolean              @default(false)
+  setIndex         Int
+  isWarmup         Boolean              @default(false)
+  weightKg         Decimal              @db.Decimal(6, 2)
+  reps             Int
+  completed        Boolean              @default(true)
+  loggedAt         DateTime             @default(now())
 
   @@index([sessionId, exerciseId])
 }
 
 model ProgrammeDraft {
-  id            String    @id @default(cuid())
-  clientUserId  String
-  clientUser    User      @relation("ClientProgrammes", fields: [clientUserId], references: [id], onDelete: Cascade)
-  version       String    @db.VarChar(32)
-  isPublished   Boolean   @default(false)
-  trainingJson  Json
-  nutritionJson Json
-  coachNotes    String?   @db.Text
-  publishedAt   DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id              String                 @id @default(cuid())
+  clientUserId    String
+  clientUser      User                   @relation("ClientProgrammes", fields: [clientUserId], references: [id], onDelete: Cascade)
+  version         String                 @db.VarChar(32)
+  isPublished     Boolean                @default(false)
+  trainingJson    Json
+  nutritionJson   Json
+  coachNotes      String?                @db.Text
+  publishedAt     DateTime?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  workoutSessions ClientWorkoutSession[] @relation("ProgrammeWorkoutSessions")
+  mealLogs        DailyMealLog[]         @relation("ProgrammeMealLogs")
 
   @@index([clientUserId, isPublished])
 }

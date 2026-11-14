@@ -225,6 +225,7 @@ export default function CoachStudio({
 
   // Drawers & Modals
   const [clientDrawer, setClientDrawer] = useState<string | null>(null);
+  const [clientActivity, setClientActivity] = useState<any | null>(null);
   const [modal, setModal] = useState<"publish" | "review" | "programme-preview" | "review-summary" | null>(null);
   const [publishChecks, setPublishChecks] = useState<[boolean, boolean, boolean]>([false, false, false]);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -320,6 +321,23 @@ export default function CoachStudio({
     }
     loadProgramme();
   }, [programme]);
+
+  // Fetch real client activity records (workouts, sets, meals, swaps)
+  useEffect(() => {
+    const targetId = clientDrawer || (page === "reviews" ? review : null);
+    if (!targetId) return;
+    async function loadActivity() {
+      try {
+        const res = await fetch(`/api/coach/clients/${targetId}/activity`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.ok) {
+          setClientActivity(data);
+        }
+      } catch {}
+    }
+    loadActivity();
+  }, [clientDrawer, review, page]);
 
   // Theme initialization & sync
   useEffect(() => {
@@ -1649,11 +1667,23 @@ export default function CoachStudio({
                     <div className="section">
                       <div className="summary-line">
                         <strong>Training completed</strong>
-                        <span>{review === "zara" ? "5 of 6 planned sessions" : "6 of 6 planned sessions"}</span>
+                        <span>
+                          {clientActivity?.signals
+                            ? `${clientActivity.signals.totalSessionsCompleted} completed · ${clientActivity.signals.totalSessionsPartial} partial`
+                            : review === "zara"
+                            ? "5 of 6 planned sessions"
+                            : "6 of 6 planned sessions"}
+                        </span>
                       </div>
                       <div className="summary-line">
                         <strong>Nutrition updates</strong>
-                        <span>{review === "zara" ? "10 recorded · 4 not recorded" : "13 recorded · 1 not recorded"}</span>
+                        <span>
+                          {clientActivity?.signals
+                            ? `${clientActivity.signals.totalMealsPlanned} planned · ${clientActivity.signals.totalMealsChanged} changed · ${clientActivity.signals.totalMealsSkipped} skipped`
+                            : review === "zara"
+                            ? "10 recorded · 4 not recorded"
+                            : "13 recorded · 1 not recorded"}
+                        </span>
                       </div>
                       <div className="summary-line">
                         <strong>Bodyweight trend</strong>
@@ -2103,6 +2133,46 @@ export default function CoachStudio({
                     </div>
                   </div>
                 </div>
+
+                {clientActivity?.workoutSessions && clientActivity.workoutSessions.length > 0 && (
+                  <>
+                    <div className="rule" />
+                    <div className="section-title">Logged Workout Sessions ({clientActivity.workoutSessions.length})</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "8px" }}>
+                      {clientActivity.workoutSessions.slice(0, 4).map((s: any) => (
+                        <div key={s.id} style={{ background: "var(--card-sub)", padding: "10px", borderRadius: "8px", fontSize: "13px" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <strong>{s.workoutName}</strong>
+                            <span className={`tag ${s.status === "COMPLETED" ? "green" : "amber"}`}>{s.status}</span>
+                          </div>
+                          <div style={{ color: "var(--subtle)", marginTop: "4px" }}>
+                            Version: {s.programmeVersion || "Active v1"} · {s.setLogs?.length || 0} sets recorded
+                          </div>
+                          {s.setLogs?.some((sl: any) => sl.isSwap) && (
+                            <div style={{ color: "var(--gold)", fontSize: "11px", marginTop: "3px" }}>
+                              ★ Temporary exercise substitution recorded
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {clientActivity?.mealLogs && clientActivity.mealLogs.length > 0 && (
+                  <>
+                    <div className="rule" />
+                    <div className="section-title">Recent Meal Logs ({clientActivity.mealLogs.length})</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginTop: "8px" }}>
+                      {clientActivity.mealLogs.slice(0, 5).map((m: any) => (
+                        <div key={m.id} style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", padding: "6px 0", borderBottom: "1px solid var(--line)" }}>
+                          <span>{m.date} · {m.mealName}</span>
+                          <span className={`tag ${m.status === "PLANNED" ? "green" : m.status === "CHANGED" ? "gold" : "amber"}`}>{m.status}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
 
                 <div className="rule" />
 

@@ -253,13 +253,22 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
     }
   };
 
-  // Check for any urgent safety flags in health stage
+  // Check for any safety flags across health questions
   const bs02 = answers['BS-02'];
+  const bs03 = answers['BS-03'];
+  const bs04 = answers['BS-04'];
+  const bs05 = answers['BS-05'];
+  const bs06 = answers['BS-06'];
+  const bs07 = answers['BS-07'];
+
   const hasSafetyFlag =
     bs02 === 'Yes' ||
-    (bs02 !== 'No' && answers['BS-03'] === 'Yes') ||
-    answers['BS-06'] === 'Pregnant' ||
-    answers['BS-07'] === 'Yes';
+    bs02 === 'Unsure' ||
+    (bs02 !== 'No' && (bs03 === 'Yes' || bs03 === 'Unsure')) ||
+    ['Yes', 'Unsure', 'Prefer private discussion'].includes(bs04) ||
+    ['Yes', 'Unsure'].includes(bs05) ||
+    bs06 === 'Pregnant' ||
+    ['Yes', 'Unsure', 'Prefer private discussion'].includes(bs07);
 
   if (isSubmitted) {
     return (

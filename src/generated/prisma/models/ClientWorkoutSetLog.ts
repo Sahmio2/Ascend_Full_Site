@@ -43,6 +43,8 @@ export type ClientWorkoutSetLogMinAggregateOutputType = {
   sessionId: string | null
   exerciseId: string | null
   exerciseName: string | null
+  targetExerciseId: string | null
+  isSwap: boolean | null
   setIndex: number | null
   isWarmup: boolean | null
   weightKg: runtime.Decimal | null
@@ -56,6 +58,8 @@ export type ClientWorkoutSetLogMaxAggregateOutputType = {
   sessionId: string | null
   exerciseId: string | null
   exerciseName: string | null
+  targetExerciseId: string | null
+  isSwap: boolean | null
   setIndex: number | null
   isWarmup: boolean | null
   weightKg: runtime.Decimal | null
@@ -69,6 +73,8 @@ export type ClientWorkoutSetLogCountAggregateOutputType = {
   sessionId: number
   exerciseId: number
   exerciseName: number
+  targetExerciseId: number
+  isSwap: number
   setIndex: number
   isWarmup: number
   weightKg: number
@@ -96,6 +102,8 @@ export type ClientWorkoutSetLogMinAggregateInputType = {
   sessionId?: true
   exerciseId?: true
   exerciseName?: true
+  targetExerciseId?: true
+  isSwap?: true
   setIndex?: true
   isWarmup?: true
   weightKg?: true
@@ -109,6 +117,8 @@ export type ClientWorkoutSetLogMaxAggregateInputType = {
   sessionId?: true
   exerciseId?: true
   exerciseName?: true
+  targetExerciseId?: true
+  isSwap?: true
   setIndex?: true
   isWarmup?: true
   weightKg?: true
@@ -122,6 +132,8 @@ export type ClientWorkoutSetLogCountAggregateInputType = {
   sessionId?: true
   exerciseId?: true
   exerciseName?: true
+  targetExerciseId?: true
+  isSwap?: true
   setIndex?: true
   isWarmup?: true
   weightKg?: true
@@ -222,6 +234,8 @@ export type ClientWorkoutSetLogGroupByOutputType = {
   sessionId: string
   exerciseId: string
   exerciseName: string
+  targetExerciseId: string | null
+  isSwap: boolean
   setIndex: number
   isWarmup: boolean
   weightKg: runtime.Decimal
@@ -258,6 +272,8 @@ export type ClientWorkoutSetLogWhereInput = {
   sessionId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   exerciseId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   exerciseName?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
+  targetExerciseId?: Prisma.StringNullableFilter<"ClientWorkoutSetLog"> | string | null
+  isSwap?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
   setIndex?: Prisma.IntFilter<"ClientWorkoutSetLog"> | number
   isWarmup?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
   weightKg?: Prisma.DecimalFilter<"ClientWorkoutSetLog"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -272,6 +288,8 @@ export type ClientWorkoutSetLogOrderByWithRelationInput = {
   sessionId?: Prisma.SortOrder
   exerciseId?: Prisma.SortOrder
   exerciseName?: Prisma.SortOrder
+  targetExerciseId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isSwap?: Prisma.SortOrder
   setIndex?: Prisma.SortOrder
   isWarmup?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
@@ -290,6 +308,8 @@ export type ClientWorkoutSetLogWhereUniqueInput = Prisma.AtLeast<{
   sessionId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   exerciseId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   exerciseName?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
+  targetExerciseId?: Prisma.StringNullableFilter<"ClientWorkoutSetLog"> | string | null
+  isSwap?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
   setIndex?: Prisma.IntFilter<"ClientWorkoutSetLog"> | number
   isWarmup?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
   weightKg?: Prisma.DecimalFilter<"ClientWorkoutSetLog"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -304,6 +324,8 @@ export type ClientWorkoutSetLogOrderByWithAggregationInput = {
   sessionId?: Prisma.SortOrder
   exerciseId?: Prisma.SortOrder
   exerciseName?: Prisma.SortOrder
+  targetExerciseId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isSwap?: Prisma.SortOrder
   setIndex?: Prisma.SortOrder
   isWarmup?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
@@ -325,6 +347,8 @@ export type ClientWorkoutSetLogScalarWhereWithAggregatesInput = {
   sessionId?: Prisma.StringWithAggregatesFilter<"ClientWorkoutSetLog"> | string
   exerciseId?: Prisma.StringWithAggregatesFilter<"ClientWorkoutSetLog"> | string
   exerciseName?: Prisma.StringWithAggregatesFilter<"ClientWorkoutSetLog"> | string
+  targetExerciseId?: Prisma.StringNullableWithAggregatesFilter<"ClientWorkoutSetLog"> | string | null
+  isSwap?: Prisma.BoolWithAggregatesFilter<"ClientWorkoutSetLog"> | boolean
   setIndex?: Prisma.IntWithAggregatesFilter<"ClientWorkoutSetLog"> | number
   isWarmup?: Prisma.BoolWithAggregatesFilter<"ClientWorkoutSetLog"> | boolean
   weightKg?: Prisma.DecimalWithAggregatesFilter<"ClientWorkoutSetLog"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -337,6 +361,8 @@ export type ClientWorkoutSetLogCreateInput = {
   id?: string
   exerciseId: string
   exerciseName: string
+  targetExerciseId?: string | null
+  isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
   weightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -351,6 +377,8 @@ export type ClientWorkoutSetLogUncheckedCreateInput = {
   sessionId: string
   exerciseId: string
   exerciseName: string
+  targetExerciseId?: string | null
+  isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
   weightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -363,6 +391,8 @@ export type ClientWorkoutSetLogUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
+  targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -377,6 +407,8 @@ export type ClientWorkoutSetLogUncheckedUpdateInput = {
   sessionId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
+  targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -390,6 +422,8 @@ export type ClientWorkoutSetLogCreateManyInput = {
   sessionId: string
   exerciseId: string
   exerciseName: string
+  targetExerciseId?: string | null
+  isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
   weightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -402,6 +436,8 @@ export type ClientWorkoutSetLogUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
+  targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -415,6 +451,8 @@ export type ClientWorkoutSetLogUncheckedUpdateManyInput = {
   sessionId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
+  targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -444,6 +482,8 @@ export type ClientWorkoutSetLogCountOrderByAggregateInput = {
   sessionId?: Prisma.SortOrder
   exerciseId?: Prisma.SortOrder
   exerciseName?: Prisma.SortOrder
+  targetExerciseId?: Prisma.SortOrder
+  isSwap?: Prisma.SortOrder
   setIndex?: Prisma.SortOrder
   isWarmup?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
@@ -463,6 +503,8 @@ export type ClientWorkoutSetLogMaxOrderByAggregateInput = {
   sessionId?: Prisma.SortOrder
   exerciseId?: Prisma.SortOrder
   exerciseName?: Prisma.SortOrder
+  targetExerciseId?: Prisma.SortOrder
+  isSwap?: Prisma.SortOrder
   setIndex?: Prisma.SortOrder
   isWarmup?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
@@ -476,6 +518,8 @@ export type ClientWorkoutSetLogMinOrderByAggregateInput = {
   sessionId?: Prisma.SortOrder
   exerciseId?: Prisma.SortOrder
   exerciseName?: Prisma.SortOrder
+  targetExerciseId?: Prisma.SortOrder
+  isSwap?: Prisma.SortOrder
   setIndex?: Prisma.SortOrder
   isWarmup?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
@@ -536,6 +580,8 @@ export type ClientWorkoutSetLogCreateWithoutSessionInput = {
   id?: string
   exerciseId: string
   exerciseName: string
+  targetExerciseId?: string | null
+  isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
   weightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -548,6 +594,8 @@ export type ClientWorkoutSetLogUncheckedCreateWithoutSessionInput = {
   id?: string
   exerciseId: string
   exerciseName: string
+  targetExerciseId?: string | null
+  isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
   weightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -590,6 +638,8 @@ export type ClientWorkoutSetLogScalarWhereInput = {
   sessionId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   exerciseId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   exerciseName?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
+  targetExerciseId?: Prisma.StringNullableFilter<"ClientWorkoutSetLog"> | string | null
+  isSwap?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
   setIndex?: Prisma.IntFilter<"ClientWorkoutSetLog"> | number
   isWarmup?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
   weightKg?: Prisma.DecimalFilter<"ClientWorkoutSetLog"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -602,6 +652,8 @@ export type ClientWorkoutSetLogCreateManySessionInput = {
   id?: string
   exerciseId: string
   exerciseName: string
+  targetExerciseId?: string | null
+  isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
   weightKg: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -614,6 +666,8 @@ export type ClientWorkoutSetLogUpdateWithoutSessionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
+  targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -626,6 +680,8 @@ export type ClientWorkoutSetLogUncheckedUpdateWithoutSessionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
+  targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -638,6 +694,8 @@ export type ClientWorkoutSetLogUncheckedUpdateManyWithoutSessionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
+  targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weightKg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -653,6 +711,8 @@ export type ClientWorkoutSetLogSelect<ExtArgs extends runtime.Types.Extensions.I
   sessionId?: boolean
   exerciseId?: boolean
   exerciseName?: boolean
+  targetExerciseId?: boolean
+  isSwap?: boolean
   setIndex?: boolean
   isWarmup?: boolean
   weightKg?: boolean
@@ -669,6 +729,8 @@ export type ClientWorkoutSetLogSelectScalar = {
   sessionId?: boolean
   exerciseId?: boolean
   exerciseName?: boolean
+  targetExerciseId?: boolean
+  isSwap?: boolean
   setIndex?: boolean
   isWarmup?: boolean
   weightKg?: boolean
@@ -677,7 +739,7 @@ export type ClientWorkoutSetLogSelectScalar = {
   loggedAt?: boolean
 }
 
-export type ClientWorkoutSetLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "exerciseId" | "exerciseName" | "setIndex" | "isWarmup" | "weightKg" | "reps" | "completed" | "loggedAt", ExtArgs["result"]["clientWorkoutSetLog"]>
+export type ClientWorkoutSetLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "exerciseId" | "exerciseName" | "targetExerciseId" | "isSwap" | "setIndex" | "isWarmup" | "weightKg" | "reps" | "completed" | "loggedAt", ExtArgs["result"]["clientWorkoutSetLog"]>
 export type ClientWorkoutSetLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   session?: boolean | Prisma.ClientWorkoutSessionDefaultArgs<ExtArgs>
 }
@@ -692,6 +754,8 @@ export type $ClientWorkoutSetLogPayload<ExtArgs extends runtime.Types.Extensions
     sessionId: string
     exerciseId: string
     exerciseName: string
+    targetExerciseId: string | null
+    isSwap: boolean
     setIndex: number
     isWarmup: boolean
     weightKg: runtime.Decimal
@@ -1072,6 +1136,8 @@ export interface ClientWorkoutSetLogFieldRefs {
   readonly sessionId: Prisma.FieldRef<"ClientWorkoutSetLog", 'String'>
   readonly exerciseId: Prisma.FieldRef<"ClientWorkoutSetLog", 'String'>
   readonly exerciseName: Prisma.FieldRef<"ClientWorkoutSetLog", 'String'>
+  readonly targetExerciseId: Prisma.FieldRef<"ClientWorkoutSetLog", 'String'>
+  readonly isSwap: Prisma.FieldRef<"ClientWorkoutSetLog", 'Boolean'>
   readonly setIndex: Prisma.FieldRef<"ClientWorkoutSetLog", 'Int'>
   readonly isWarmup: Prisma.FieldRef<"ClientWorkoutSetLog", 'Boolean'>
   readonly weightKg: Prisma.FieldRef<"ClientWorkoutSetLog", 'Decimal'>

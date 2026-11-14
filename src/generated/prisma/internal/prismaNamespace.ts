@@ -2529,6 +2529,8 @@ export const DailyMealLogScalarFieldEnum = {
   date: 'date',
   mealType: 'mealType',
   mealName: 'mealName',
+  programmeVersion: 'programmeVersion',
+  programmeDraftId: 'programmeDraftId',
   status: 'status',
   customFoods: 'customFoods',
   notes: 'notes',
@@ -2570,6 +2572,8 @@ export const ClientWorkoutSessionScalarFieldEnum = {
   userId: 'userId',
   workoutId: 'workoutId',
   workoutName: 'workoutName',
+  programmeVersion: 'programmeVersion',
+  programmeDraftId: 'programmeDraftId',
   startedAt: 'startedAt',
   completedAt: 'completedAt',
   status: 'status',
@@ -2584,6 +2588,8 @@ export const ClientWorkoutSetLogScalarFieldEnum = {
   sessionId: 'sessionId',
   exerciseId: 'exerciseId',
   exerciseName: 'exerciseName',
+  targetExerciseId: 'targetExerciseId',
+  isSwap: 'isSwap',
   setIndex: 'setIndex',
   isWarmup: 'isWarmup',
   weightKg: 'weightKg',
@@ -2883,6 +2889,8 @@ export const DailyMealLogOrderByRelevanceFieldEnum = {
   userId: 'userId',
   date: 'date',
   mealName: 'mealName',
+  programmeVersion: 'programmeVersion',
+  programmeDraftId: 'programmeDraftId',
   notes: 'notes'
 } as const
 
@@ -2913,6 +2921,8 @@ export const ClientWorkoutSessionOrderByRelevanceFieldEnum = {
   userId: 'userId',
   workoutId: 'workoutId',
   workoutName: 'workoutName',
+  programmeVersion: 'programmeVersion',
+  programmeDraftId: 'programmeDraftId',
   status: 'status',
   notes: 'notes'
 } as const
@@ -2924,7 +2934,8 @@ export const ClientWorkoutSetLogOrderByRelevanceFieldEnum = {
   id: 'id',
   sessionId: 'sessionId',
   exerciseId: 'exerciseId',
-  exerciseName: 'exerciseName'
+  exerciseName: 'exerciseName',
+  targetExerciseId: 'targetExerciseId'
 } as const
 
 export type ClientWorkoutSetLogOrderByRelevanceFieldEnum = (typeof ClientWorkoutSetLogOrderByRelevanceFieldEnum)[keyof typeof ClientWorkoutSetLogOrderByRelevanceFieldEnum]

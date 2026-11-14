@@ -199,11 +199,34 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const [sessionId, setSessionId] = useState<string | null>(null);
+
   const showToast = (msg: string) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     setToastMessage(msg);
     toastTimerRef.current = setTimeout(() => setToastMessage(null), 2500);
   };
+
+  // Rest timer recovery from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("ascend_rest_timer");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.ends && parsed.ends > Date.now()) {
+          const remaining = Math.max(0, Math.ceil((parsed.ends - Date.now()) / 1000));
+          setRest({
+            status: "running",
+            remaining,
+            ends: parsed.ends,
+            exerciseId: parsed.exerciseId || null,
+          });
+        } else {
+          localStorage.removeItem("ascend_rest_timer");
+        }
+      }
+    } catch {}
+  }, []);
 
   // Rest timer ticker
   useEffect(() => {
@@ -212,11 +235,54 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
       const left = Math.max(0, Math.ceil((rest.ends - Date.now()) / 1000));
       if (left <= 0) {
         setRest({ status: "off", remaining: 0, ends: 0, exerciseId: null });
+        try {
+          localStorage.removeItem("ascend_rest_timer");
+        } catch {}
         showToast("Rest interval complete · Begin next set");
       }
     }, 500);
     return () => clearInterval(interval);
   }, [rest.status, rest.ends]);
+
+  // Live session hydration from /api/client/workouts
+  useEffect(() => {
+    if (scope !== "live") return;
+    async function loadLiveWorkouts() {
+      try {
+        const res = await fetch("/api/client/workouts");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.ok && data.activeSession) {
+          const s = data.activeSession;
+          setSessionId(s.id);
+          setWorkoutId(s.workoutId);
+          setStarted((prev) => ({ ...prev, [s.workoutId]: true }));
+          setScreen("logger");
+
+          const newRows: Record<string, Array<{ w: string; r: string; done: boolean }>> = {};
+          const newWarm: Record<string, Array<{ w: string; r: string; done: boolean }>> = {};
+
+          for (const set of s.setLogs || []) {
+            const k = `${s.workoutId}-${set.exerciseId}`;
+            const targetMap = set.isWarmup ? newWarm : newRows;
+            if (!targetMap[k]) targetMap[k] = [];
+            while (targetMap[k].length <= set.setIndex) {
+              targetMap[k].push({ w: "", r: "", done: false });
+            }
+            targetMap[k][set.setIndex] = {
+              w: set.weightKg || "",
+              r: set.reps ? String(set.reps) : "",
+              done: Boolean(set.completed),
+            };
+          }
+
+          if (Object.keys(newRows).length > 0) setRows((prev) => ({ ...prev, ...newRows }));
+          if (Object.keys(newWarm).length > 0) setWarm((prev) => ({ ...prev, ...newWarm }));
+        }
+      } catch {}
+    }
+    loadLiveWorkouts();
+  }, [scope]);
 
   // Touch gesture tracking for horizontal swipe between Focus and Session modes
   const touchStartX = useRef<number | null>(null);
@@ -326,7 +392,7 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
     setScreen("preview");
   };
 
-  const handleStartWorkout = () => {
+  const handleStartWorkout = async () => {
     const isResuming = Boolean(started[workoutId]) && !ended[workoutId];
     if (!isResuming) {
       setActiveExIndex(0);
@@ -334,6 +400,26 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
     }
     setStarted((prev) => ({ ...prev, [workoutId]: true }));
     setScreen("logger");
+
+    if (scope === "live") {
+      try {
+        const res = await fetch("/api/client/workouts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "start_or_resume",
+            workoutId,
+            workoutName: currentWeekObj.name,
+          }),
+        });
+        const data = await res.json();
+        if (data.ok && data.session) {
+          setSessionId(data.session.id);
+        }
+      } catch (err) {
+        console.error("Failed to start/resume session", err);
+      }
+    }
   };
 
   const handleCompleteSet = (x: ExerciseDef, index: number) => {
@@ -346,6 +432,26 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
       currentList[index] = { ...r, done: false };
       setRows((prev) => ({ ...prev, [k]: currentList }));
       showToast("Set reopened for correction.");
+
+      if (scope === "live" && sessionId) {
+        fetch("/api/client/workouts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "log_set",
+            sessionId,
+            exerciseId: x.id,
+            exerciseName: getExName(x),
+            targetExerciseId: swaps[k]?.id ? x.id : undefined,
+            isSwap: Boolean(swaps[k]?.id),
+            setIndex: index,
+            isWarmup: false,
+            weightKg: r.w,
+            reps: parseInt(r.r, 10) || 0,
+            completed: false,
+          }),
+        }).catch(() => {});
+      }
       return;
     }
 
@@ -357,13 +463,41 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
     currentList[index] = { ...r, done: true };
     setRows((prev) => ({ ...prev, [k]: currentList }));
 
-    // Start rest timer
+    // Start rest timer & persist ends to localStorage
+    const ends = Date.now() + x.rest * 1000;
     setRest({
       status: "running",
       remaining: x.rest,
-      ends: Date.now() + x.rest * 1000,
+      ends,
       exerciseId: x.id,
     });
+    try {
+      localStorage.setItem(
+        "ascend_rest_timer",
+        JSON.stringify({ ends, remaining: x.rest, exerciseId: x.id })
+      );
+    } catch {}
+
+    // Persist set log to server if live
+    if (scope === "live" && sessionId) {
+      fetch("/api/client/workouts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "log_set",
+          sessionId,
+          exerciseId: x.id,
+          exerciseName: getExName(x),
+          targetExerciseId: swaps[k]?.id ? x.id : undefined,
+          isSwap: Boolean(swaps[k]?.id),
+          setIndex: index,
+          isWarmup: false,
+          weightKg: r.w,
+          reps: parseInt(r.r, 10) || 0,
+          completed: true,
+        }),
+      }).catch(() => {});
+    }
 
     const doneForExercise = currentList.every((row) => row.done);
     if (doneForExercise && viewMode === "focus" && activeExIndex < currentExercises.length - 1) {
@@ -378,6 +512,23 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
     const partial = stats.done < stats.total;
     setEnded((prev) => ({ ...prev, [workoutId]: { partial, recorded: stats.done } }));
     setRest({ status: "off", remaining: 0, ends: 0, exerciseId: null });
+    try {
+      localStorage.removeItem("ascend_rest_timer");
+    } catch {}
+
+    // Persist complete to backend API if live
+    if (scope === "live" && sessionId) {
+      fetch("/api/client/workouts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "complete_session",
+          sessionId,
+          status: partial ? "PARTIAL" : "COMPLETED",
+          notes: `${currentWeekObj.name} ${partial ? "partially" : "fully"} completed`,
+        }),
+      }).catch(() => {});
+    }
 
     // Auto-save to adapter / database
     try {
@@ -879,9 +1030,28 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
                                 onClick={() => {
                                   const k = exKey(currentEx);
                                   const list = [...(warm[k] || [{ w: "", r: "", done: false }])];
-                                  list[i] = { ...list[i], done: !list[i].done };
+                                  const nextDone = !list[i].done;
+                                  list[i] = { ...list[i], done: nextDone };
                                   setWarm((prev) => ({ ...prev, [k]: list }));
-                                  showToast(list[i].done ? "Warm-up recorded separately." : "Warm-up reopened.");
+                                  showToast(nextDone ? "Warm-up recorded separately." : "Warm-up reopened.");
+
+                                  if (scope === "live" && sessionId) {
+                                    fetch("/api/client/workouts", {
+                                      method: "POST",
+                                      headers: { "Content-Type": "application/json" },
+                                      body: JSON.stringify({
+                                        action: "log_set",
+                                        sessionId,
+                                        exerciseId: currentEx.id,
+                                        exerciseName: getExName(currentEx),
+                                        setIndex: i,
+                                        isWarmup: true,
+                                        weightKg: list[i].w || 0,
+                                        reps: parseInt(list[i].r, 10) || 0,
+                                        completed: nextDone,
+                                      }),
+                                    }).catch(() => {});
+                                  }
                                 }}
                               >
                                 <Glyph name={r.done ? "check" : "plus"} />

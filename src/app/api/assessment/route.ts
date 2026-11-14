@@ -71,11 +71,30 @@ export const POST = handler(async (request: Request) => {
     .parse(raw);
 
   const bs02 = answers['BS-02'];
-  const hasSafetyFlag =
-    bs02 === 'Yes' ||
-    (bs02 !== 'No' && answers['BS-03'] === 'Yes') ||
-    answers['BS-06'] === 'Pregnant' ||
-    answers['BS-07'] === 'Yes';
+  const bs03 = answers['BS-03'];
+  const bs04 = answers['BS-04'];
+  const bs05 = answers['BS-05'];
+  const bs06 = answers['BS-06'];
+  const bs07 = answers['BS-07'];
+
+  const safetyReasons: string[] = [];
+  if (bs02 === 'Yes') safetyReasons.push('Current pain or injury reported (BS-02: Yes)');
+  if (bs02 === 'Unsure') safetyReasons.push('Uncertain movement pain reported (BS-02: Unsure)');
+  if (bs02 !== 'No' && (bs03 === 'Yes' || bs03 === 'Unsure')) {
+    safetyReasons.push(`Joint red-flag symptom reported (BS-03: ${bs03})`);
+  }
+  if (['Yes', 'Unsure', 'Prefer private discussion'].includes(bs04)) {
+    safetyReasons.push(`Health/medication restriction on food/recovery reported (BS-04: ${bs04})`);
+  }
+  if (['Yes', 'Unsure'].includes(bs05)) {
+    safetyReasons.push(`Recent surgery or hospitalisation reported (BS-05: ${bs05})`);
+  }
+  if (bs06 === 'Pregnant') safetyReasons.push('Client is currently pregnant (BS-06: Pregnant)');
+  if (['Yes', 'Unsure', 'Prefer private discussion'].includes(bs07)) {
+    safetyReasons.push(`Food/measurement safety boundary reported (BS-07: ${bs07})`);
+  }
+
+  const hasSafetyFlag = safetyReasons.length > 0;
 
   const existing = await prisma.clientAssessment.findUnique({
     where: { userId },
@@ -111,13 +130,17 @@ export const POST = handler(async (request: Request) => {
     where: { userId },
     update: {
       status,
-      safetyFlags: hasSafetyFlag ? { flagged: true, recordedAt: now.toISOString() } : undefined,
+      safetyFlags: hasSafetyFlag
+        ? { flagged: true, recordedAt: now.toISOString(), reasons: safetyReasons }
+        : undefined,
       ...(isSubmitted ? { submittedAt, deliveryDueAt } : {}),
     },
     create: {
       userId,
       status,
-      safetyFlags: hasSafetyFlag ? { flagged: true, recordedAt: now.toISOString() } : undefined,
+      safetyFlags: hasSafetyFlag
+        ? { flagged: true, recordedAt: now.toISOString(), reasons: safetyReasons }
+        : undefined,
       ...(isSubmitted ? { submittedAt, deliveryDueAt } : {}),
     },
   });

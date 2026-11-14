@@ -29,6 +29,8 @@ export type ClientWorkoutSessionMinAggregateOutputType = {
   userId: string | null
   workoutId: string | null
   workoutName: string | null
+  programmeVersion: string | null
+  programmeDraftId: string | null
   startedAt: Date | null
   completedAt: Date | null
   status: string | null
@@ -40,6 +42,8 @@ export type ClientWorkoutSessionMaxAggregateOutputType = {
   userId: string | null
   workoutId: string | null
   workoutName: string | null
+  programmeVersion: string | null
+  programmeDraftId: string | null
   startedAt: Date | null
   completedAt: Date | null
   status: string | null
@@ -51,6 +55,8 @@ export type ClientWorkoutSessionCountAggregateOutputType = {
   userId: number
   workoutId: number
   workoutName: number
+  programmeVersion: number
+  programmeDraftId: number
   startedAt: number
   completedAt: number
   status: number
@@ -64,6 +70,8 @@ export type ClientWorkoutSessionMinAggregateInputType = {
   userId?: true
   workoutId?: true
   workoutName?: true
+  programmeVersion?: true
+  programmeDraftId?: true
   startedAt?: true
   completedAt?: true
   status?: true
@@ -75,6 +83,8 @@ export type ClientWorkoutSessionMaxAggregateInputType = {
   userId?: true
   workoutId?: true
   workoutName?: true
+  programmeVersion?: true
+  programmeDraftId?: true
   startedAt?: true
   completedAt?: true
   status?: true
@@ -86,6 +96,8 @@ export type ClientWorkoutSessionCountAggregateInputType = {
   userId?: true
   workoutId?: true
   workoutName?: true
+  programmeVersion?: true
+  programmeDraftId?: true
   startedAt?: true
   completedAt?: true
   status?: true
@@ -170,6 +182,8 @@ export type ClientWorkoutSessionGroupByOutputType = {
   userId: string
   workoutId: string
   workoutName: string
+  programmeVersion: string | null
+  programmeDraftId: string | null
   startedAt: Date
   completedAt: Date | null
   status: string
@@ -202,11 +216,14 @@ export type ClientWorkoutSessionWhereInput = {
   userId?: Prisma.StringFilter<"ClientWorkoutSession"> | string
   workoutId?: Prisma.StringFilter<"ClientWorkoutSession"> | string
   workoutName?: Prisma.StringFilter<"ClientWorkoutSession"> | string
+  programmeVersion?: Prisma.StringNullableFilter<"ClientWorkoutSession"> | string | null
+  programmeDraftId?: Prisma.StringNullableFilter<"ClientWorkoutSession"> | string | null
   startedAt?: Prisma.DateTimeFilter<"ClientWorkoutSession"> | Date | string
   completedAt?: Prisma.DateTimeNullableFilter<"ClientWorkoutSession"> | Date | string | null
   status?: Prisma.StringFilter<"ClientWorkoutSession"> | string
   notes?: Prisma.StringNullableFilter<"ClientWorkoutSession"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  programmeDraft?: Prisma.XOR<Prisma.ProgrammeDraftNullableScalarRelationFilter, Prisma.ProgrammeDraftWhereInput> | null
   setLogs?: Prisma.ClientWorkoutSetLogListRelationFilter
 }
 
@@ -215,11 +232,14 @@ export type ClientWorkoutSessionOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   workoutId?: Prisma.SortOrder
   workoutName?: Prisma.SortOrder
+  programmeVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  programmeDraftId?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  programmeDraft?: Prisma.ProgrammeDraftOrderByWithRelationInput
   setLogs?: Prisma.ClientWorkoutSetLogOrderByRelationAggregateInput
   _relevance?: Prisma.ClientWorkoutSessionOrderByRelevanceInput
 }
@@ -232,11 +252,14 @@ export type ClientWorkoutSessionWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"ClientWorkoutSession"> | string
   workoutId?: Prisma.StringFilter<"ClientWorkoutSession"> | string
   workoutName?: Prisma.StringFilter<"ClientWorkoutSession"> | string
+  programmeVersion?: Prisma.StringNullableFilter<"ClientWorkoutSession"> | string | null
+  programmeDraftId?: Prisma.StringNullableFilter<"ClientWorkoutSession"> | string | null
   startedAt?: Prisma.DateTimeFilter<"ClientWorkoutSession"> | Date | string
   completedAt?: Prisma.DateTimeNullableFilter<"ClientWorkoutSession"> | Date | string | null
   status?: Prisma.StringFilter<"ClientWorkoutSession"> | string
   notes?: Prisma.StringNullableFilter<"ClientWorkoutSession"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  programmeDraft?: Prisma.XOR<Prisma.ProgrammeDraftNullableScalarRelationFilter, Prisma.ProgrammeDraftWhereInput> | null
   setLogs?: Prisma.ClientWorkoutSetLogListRelationFilter
 }, "id">
 
@@ -245,6 +268,8 @@ export type ClientWorkoutSessionOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   workoutId?: Prisma.SortOrder
   workoutName?: Prisma.SortOrder
+  programmeVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  programmeDraftId?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -262,6 +287,8 @@ export type ClientWorkoutSessionScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"ClientWorkoutSession"> | string
   workoutId?: Prisma.StringWithAggregatesFilter<"ClientWorkoutSession"> | string
   workoutName?: Prisma.StringWithAggregatesFilter<"ClientWorkoutSession"> | string
+  programmeVersion?: Prisma.StringNullableWithAggregatesFilter<"ClientWorkoutSession"> | string | null
+  programmeDraftId?: Prisma.StringNullableWithAggregatesFilter<"ClientWorkoutSession"> | string | null
   startedAt?: Prisma.DateTimeWithAggregatesFilter<"ClientWorkoutSession"> | Date | string
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ClientWorkoutSession"> | Date | string | null
   status?: Prisma.StringWithAggregatesFilter<"ClientWorkoutSession"> | string
@@ -272,11 +299,13 @@ export type ClientWorkoutSessionCreateInput = {
   id?: string
   workoutId: string
   workoutName: string
+  programmeVersion?: string | null
   startedAt?: Date | string
   completedAt?: Date | string | null
   status?: string
   notes?: string | null
   user: Prisma.UserCreateNestedOneWithoutWorkoutSessionsInput
+  programmeDraft?: Prisma.ProgrammeDraftCreateNestedOneWithoutWorkoutSessionsInput
   setLogs?: Prisma.ClientWorkoutSetLogCreateNestedManyWithoutSessionInput
 }
 
@@ -285,6 +314,8 @@ export type ClientWorkoutSessionUncheckedCreateInput = {
   userId: string
   workoutId: string
   workoutName: string
+  programmeVersion?: string | null
+  programmeDraftId?: string | null
   startedAt?: Date | string
   completedAt?: Date | string | null
   status?: string
@@ -296,11 +327,13 @@ export type ClientWorkoutSessionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workoutId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutWorkoutSessionsNestedInput
+  programmeDraft?: Prisma.ProgrammeDraftUpdateOneWithoutWorkoutSessionsNestedInput
   setLogs?: Prisma.ClientWorkoutSetLogUpdateManyWithoutSessionNestedInput
 }
 
@@ -309,6 +342,8 @@ export type ClientWorkoutSessionUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  programmeDraftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -321,6 +356,8 @@ export type ClientWorkoutSessionCreateManyInput = {
   userId: string
   workoutId: string
   workoutName: string
+  programmeVersion?: string | null
+  programmeDraftId?: string | null
   startedAt?: Date | string
   completedAt?: Date | string | null
   status?: string
@@ -331,6 +368,7 @@ export type ClientWorkoutSessionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workoutId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -342,6 +380,8 @@ export type ClientWorkoutSessionUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  programmeDraftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -369,6 +409,8 @@ export type ClientWorkoutSessionCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   workoutId?: Prisma.SortOrder
   workoutName?: Prisma.SortOrder
+  programmeVersion?: Prisma.SortOrder
+  programmeDraftId?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -380,6 +422,8 @@ export type ClientWorkoutSessionMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   workoutId?: Prisma.SortOrder
   workoutName?: Prisma.SortOrder
+  programmeVersion?: Prisma.SortOrder
+  programmeDraftId?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -391,6 +435,8 @@ export type ClientWorkoutSessionMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   workoutId?: Prisma.SortOrder
   workoutName?: Prisma.SortOrder
+  programmeVersion?: Prisma.SortOrder
+  programmeDraftId?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -458,14 +504,58 @@ export type ClientWorkoutSessionUpdateOneRequiredWithoutSetLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClientWorkoutSessionUpdateToOneWithWhereWithoutSetLogsInput, Prisma.ClientWorkoutSessionUpdateWithoutSetLogsInput>, Prisma.ClientWorkoutSessionUncheckedUpdateWithoutSetLogsInput>
 }
 
+export type ClientWorkoutSessionCreateNestedManyWithoutProgrammeDraftInput = {
+  create?: Prisma.XOR<Prisma.ClientWorkoutSessionCreateWithoutProgrammeDraftInput, Prisma.ClientWorkoutSessionUncheckedCreateWithoutProgrammeDraftInput> | Prisma.ClientWorkoutSessionCreateWithoutProgrammeDraftInput[] | Prisma.ClientWorkoutSessionUncheckedCreateWithoutProgrammeDraftInput[]
+  connectOrCreate?: Prisma.ClientWorkoutSessionCreateOrConnectWithoutProgrammeDraftInput | Prisma.ClientWorkoutSessionCreateOrConnectWithoutProgrammeDraftInput[]
+  createMany?: Prisma.ClientWorkoutSessionCreateManyProgrammeDraftInputEnvelope
+  connect?: Prisma.ClientWorkoutSessionWhereUniqueInput | Prisma.ClientWorkoutSessionWhereUniqueInput[]
+}
+
+export type ClientWorkoutSessionUncheckedCreateNestedManyWithoutProgrammeDraftInput = {
+  create?: Prisma.XOR<Prisma.ClientWorkoutSessionCreateWithoutProgrammeDraftInput, Prisma.ClientWorkoutSessionUncheckedCreateWithoutProgrammeDraftInput> | Prisma.ClientWorkoutSessionCreateWithoutProgrammeDraftInput[] | Prisma.ClientWorkoutSessionUncheckedCreateWithoutProgrammeDraftInput[]
+  connectOrCreate?: Prisma.ClientWorkoutSessionCreateOrConnectWithoutProgrammeDraftInput | Prisma.ClientWorkoutSessionCreateOrConnectWithoutProgrammeDraftInput[]
+  createMany?: Prisma.ClientWorkoutSessionCreateManyProgrammeDraftInputEnvelope
+  connect?: Prisma.ClientWorkoutSessionWhereUniqueInput | Prisma.ClientWorkoutSessionWhereUniqueInput[]
+}
+
+export type ClientWorkoutSessionUpdateManyWithoutProgrammeDraftNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientWorkoutSessionCreateWithoutProgrammeDraftInput, Prisma.ClientWorkoutSessionUncheckedCreateWithoutProgrammeDraftInput> | Prisma.ClientWorkoutSessionCreateWithoutProgrammeDraftInput[] | Prisma.ClientWorkoutSessionUncheckedCreateWithoutProgrammeDraftInput[]
+  connectOrCreate?: Prisma.ClientWorkoutSessionCreateOrConnectWithoutProgrammeDraftInput | Prisma.ClientWorkoutSessionCreateOrConnectWithoutProgrammeDraftInput[]
+  upsert?: Prisma.ClientWorkoutSessionUpsertWithWhereUniqueWithoutProgrammeDraftInput | Prisma.ClientWorkoutSessionUpsertWithWhereUniqueWithoutProgrammeDraftInput[]
+  createMany?: Prisma.ClientWorkoutSessionCreateManyProgrammeDraftInputEnvelope
+  set?: Prisma.ClientWorkoutSessionWhereUniqueInput | Prisma.ClientWorkoutSessionWhereUniqueInput[]
+  disconnect?: Prisma.ClientWorkoutSessionWhereUniqueInput | Prisma.ClientWorkoutSessionWhereUniqueInput[]
+  delete?: Prisma.ClientWorkoutSessionWhereUniqueInput | Prisma.ClientWorkoutSessionWhereUniqueInput[]
+  connect?: Prisma.ClientWorkoutSessionWhereUniqueInput | Prisma.ClientWorkoutSessionWhereUniqueInput[]
+  update?: Prisma.ClientWorkoutSessionUpdateWithWhereUniqueWithoutProgrammeDraftInput | Prisma.ClientWorkoutSessionUpdateWithWhereUniqueWithoutProgrammeDraftInput[]
+  updateMany?: Prisma.ClientWorkoutSessionUpdateManyWithWhereWithoutProgrammeDraftInput | Prisma.ClientWorkoutSessionUpdateManyWithWhereWithoutProgrammeDraftInput[]
+  deleteMany?: Prisma.ClientWorkoutSessionScalarWhereInput | Prisma.ClientWorkoutSessionScalarWhereInput[]
+}
+
+export type ClientWorkoutSessionUncheckedUpdateManyWithoutProgrammeDraftNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientWorkoutSessionCreateWithoutProgrammeDraftInput, Prisma.ClientWorkoutSessionUncheckedCreateWithoutProgrammeDraftInput> | Prisma.ClientWorkoutSessionCreateWithoutProgrammeDraftInput[] | Prisma.ClientWorkoutSessionUncheckedCreateWithoutProgrammeDraftInput[]
+  connectOrCreate?: Prisma.ClientWorkoutSessionCreateOrConnectWithoutProgrammeDraftInput | Prisma.ClientWorkoutSessionCreateOrConnectWithoutProgrammeDraftInput[]
+  upsert?: Prisma.ClientWorkoutSessionUpsertWithWhereUniqueWithoutProgrammeDraftInput | Prisma.ClientWorkoutSessionUpsertWithWhereUniqueWithoutProgrammeDraftInput[]
+  createMany?: Prisma.ClientWorkoutSessionCreateManyProgrammeDraftInputEnvelope
+  set?: Prisma.ClientWorkoutSessionWhereUniqueInput | Prisma.ClientWorkoutSessionWhereUniqueInput[]
+  disconnect?: Prisma.ClientWorkoutSessionWhereUniqueInput | Prisma.ClientWorkoutSessionWhereUniqueInput[]
+  delete?: Prisma.ClientWorkoutSessionWhereUniqueInput | Prisma.ClientWorkoutSessionWhereUniqueInput[]
+  connect?: Prisma.ClientWorkoutSessionWhereUniqueInput | Prisma.ClientWorkoutSessionWhereUniqueInput[]
+  update?: Prisma.ClientWorkoutSessionUpdateWithWhereUniqueWithoutProgrammeDraftInput | Prisma.ClientWorkoutSessionUpdateWithWhereUniqueWithoutProgrammeDraftInput[]
+  updateMany?: Prisma.ClientWorkoutSessionUpdateManyWithWhereWithoutProgrammeDraftInput | Prisma.ClientWorkoutSessionUpdateManyWithWhereWithoutProgrammeDraftInput[]
+  deleteMany?: Prisma.ClientWorkoutSessionScalarWhereInput | Prisma.ClientWorkoutSessionScalarWhereInput[]
+}
+
 export type ClientWorkoutSessionCreateWithoutUserInput = {
   id?: string
   workoutId: string
   workoutName: string
+  programmeVersion?: string | null
   startedAt?: Date | string
   completedAt?: Date | string | null
   status?: string
   notes?: string | null
+  programmeDraft?: Prisma.ProgrammeDraftCreateNestedOneWithoutWorkoutSessionsInput
   setLogs?: Prisma.ClientWorkoutSetLogCreateNestedManyWithoutSessionInput
 }
 
@@ -473,6 +563,8 @@ export type ClientWorkoutSessionUncheckedCreateWithoutUserInput = {
   id?: string
   workoutId: string
   workoutName: string
+  programmeVersion?: string | null
+  programmeDraftId?: string | null
   startedAt?: Date | string
   completedAt?: Date | string | null
   status?: string
@@ -514,6 +606,8 @@ export type ClientWorkoutSessionScalarWhereInput = {
   userId?: Prisma.StringFilter<"ClientWorkoutSession"> | string
   workoutId?: Prisma.StringFilter<"ClientWorkoutSession"> | string
   workoutName?: Prisma.StringFilter<"ClientWorkoutSession"> | string
+  programmeVersion?: Prisma.StringNullableFilter<"ClientWorkoutSession"> | string | null
+  programmeDraftId?: Prisma.StringNullableFilter<"ClientWorkoutSession"> | string | null
   startedAt?: Prisma.DateTimeFilter<"ClientWorkoutSession"> | Date | string
   completedAt?: Prisma.DateTimeNullableFilter<"ClientWorkoutSession"> | Date | string | null
   status?: Prisma.StringFilter<"ClientWorkoutSession"> | string
@@ -524,11 +618,13 @@ export type ClientWorkoutSessionCreateWithoutSetLogsInput = {
   id?: string
   workoutId: string
   workoutName: string
+  programmeVersion?: string | null
   startedAt?: Date | string
   completedAt?: Date | string | null
   status?: string
   notes?: string | null
   user: Prisma.UserCreateNestedOneWithoutWorkoutSessionsInput
+  programmeDraft?: Prisma.ProgrammeDraftCreateNestedOneWithoutWorkoutSessionsInput
 }
 
 export type ClientWorkoutSessionUncheckedCreateWithoutSetLogsInput = {
@@ -536,6 +632,8 @@ export type ClientWorkoutSessionUncheckedCreateWithoutSetLogsInput = {
   userId: string
   workoutId: string
   workoutName: string
+  programmeVersion?: string | null
+  programmeDraftId?: string | null
   startedAt?: Date | string
   completedAt?: Date | string | null
   status?: string
@@ -562,11 +660,13 @@ export type ClientWorkoutSessionUpdateWithoutSetLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workoutId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutWorkoutSessionsNestedInput
+  programmeDraft?: Prisma.ProgrammeDraftUpdateOneWithoutWorkoutSessionsNestedInput
 }
 
 export type ClientWorkoutSessionUncheckedUpdateWithoutSetLogsInput = {
@@ -574,16 +674,72 @@ export type ClientWorkoutSessionUncheckedUpdateWithoutSetLogsInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  programmeDraftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+export type ClientWorkoutSessionCreateWithoutProgrammeDraftInput = {
+  id?: string
+  workoutId: string
+  workoutName: string
+  programmeVersion?: string | null
+  startedAt?: Date | string
+  completedAt?: Date | string | null
+  status?: string
+  notes?: string | null
+  user: Prisma.UserCreateNestedOneWithoutWorkoutSessionsInput
+  setLogs?: Prisma.ClientWorkoutSetLogCreateNestedManyWithoutSessionInput
+}
+
+export type ClientWorkoutSessionUncheckedCreateWithoutProgrammeDraftInput = {
+  id?: string
+  userId: string
+  workoutId: string
+  workoutName: string
+  programmeVersion?: string | null
+  startedAt?: Date | string
+  completedAt?: Date | string | null
+  status?: string
+  notes?: string | null
+  setLogs?: Prisma.ClientWorkoutSetLogUncheckedCreateNestedManyWithoutSessionInput
+}
+
+export type ClientWorkoutSessionCreateOrConnectWithoutProgrammeDraftInput = {
+  where: Prisma.ClientWorkoutSessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientWorkoutSessionCreateWithoutProgrammeDraftInput, Prisma.ClientWorkoutSessionUncheckedCreateWithoutProgrammeDraftInput>
+}
+
+export type ClientWorkoutSessionCreateManyProgrammeDraftInputEnvelope = {
+  data: Prisma.ClientWorkoutSessionCreateManyProgrammeDraftInput | Prisma.ClientWorkoutSessionCreateManyProgrammeDraftInput[]
+  skipDuplicates?: boolean
+}
+
+export type ClientWorkoutSessionUpsertWithWhereUniqueWithoutProgrammeDraftInput = {
+  where: Prisma.ClientWorkoutSessionWhereUniqueInput
+  update: Prisma.XOR<Prisma.ClientWorkoutSessionUpdateWithoutProgrammeDraftInput, Prisma.ClientWorkoutSessionUncheckedUpdateWithoutProgrammeDraftInput>
+  create: Prisma.XOR<Prisma.ClientWorkoutSessionCreateWithoutProgrammeDraftInput, Prisma.ClientWorkoutSessionUncheckedCreateWithoutProgrammeDraftInput>
+}
+
+export type ClientWorkoutSessionUpdateWithWhereUniqueWithoutProgrammeDraftInput = {
+  where: Prisma.ClientWorkoutSessionWhereUniqueInput
+  data: Prisma.XOR<Prisma.ClientWorkoutSessionUpdateWithoutProgrammeDraftInput, Prisma.ClientWorkoutSessionUncheckedUpdateWithoutProgrammeDraftInput>
+}
+
+export type ClientWorkoutSessionUpdateManyWithWhereWithoutProgrammeDraftInput = {
+  where: Prisma.ClientWorkoutSessionScalarWhereInput
+  data: Prisma.XOR<Prisma.ClientWorkoutSessionUpdateManyMutationInput, Prisma.ClientWorkoutSessionUncheckedUpdateManyWithoutProgrammeDraftInput>
+}
+
 export type ClientWorkoutSessionCreateManyUserInput = {
   id?: string
   workoutId: string
   workoutName: string
+  programmeVersion?: string | null
+  programmeDraftId?: string | null
   startedAt?: Date | string
   completedAt?: Date | string | null
   status?: string
@@ -594,10 +750,12 @@ export type ClientWorkoutSessionUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workoutId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  programmeDraft?: Prisma.ProgrammeDraftUpdateOneWithoutWorkoutSessionsNestedInput
   setLogs?: Prisma.ClientWorkoutSetLogUpdateManyWithoutSessionNestedInput
 }
 
@@ -605,6 +763,8 @@ export type ClientWorkoutSessionUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workoutId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  programmeDraftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -616,6 +776,58 @@ export type ClientWorkoutSessionUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workoutId?: Prisma.StringFieldUpdateOperationsInput | string
   workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  programmeDraftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ClientWorkoutSessionCreateManyProgrammeDraftInput = {
+  id?: string
+  userId: string
+  workoutId: string
+  workoutName: string
+  programmeVersion?: string | null
+  startedAt?: Date | string
+  completedAt?: Date | string | null
+  status?: string
+  notes?: string | null
+}
+
+export type ClientWorkoutSessionUpdateWithoutProgrammeDraftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workoutId?: Prisma.StringFieldUpdateOperationsInput | string
+  workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutWorkoutSessionsNestedInput
+  setLogs?: Prisma.ClientWorkoutSetLogUpdateManyWithoutSessionNestedInput
+}
+
+export type ClientWorkoutSessionUncheckedUpdateWithoutProgrammeDraftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  workoutId?: Prisma.StringFieldUpdateOperationsInput | string
+  workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  setLogs?: Prisma.ClientWorkoutSetLogUncheckedUpdateManyWithoutSessionNestedInput
+}
+
+export type ClientWorkoutSessionUncheckedUpdateManyWithoutProgrammeDraftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  workoutId?: Prisma.StringFieldUpdateOperationsInput | string
+  workoutName?: Prisma.StringFieldUpdateOperationsInput | string
+  programmeVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -658,11 +870,14 @@ export type ClientWorkoutSessionSelect<ExtArgs extends runtime.Types.Extensions.
   userId?: boolean
   workoutId?: boolean
   workoutName?: boolean
+  programmeVersion?: boolean
+  programmeDraftId?: boolean
   startedAt?: boolean
   completedAt?: boolean
   status?: boolean
   notes?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  programmeDraft?: boolean | Prisma.ClientWorkoutSession$programmeDraftArgs<ExtArgs>
   setLogs?: boolean | Prisma.ClientWorkoutSession$setLogsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientWorkoutSessionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["clientWorkoutSession"]>
@@ -674,15 +889,18 @@ export type ClientWorkoutSessionSelectScalar = {
   userId?: boolean
   workoutId?: boolean
   workoutName?: boolean
+  programmeVersion?: boolean
+  programmeDraftId?: boolean
   startedAt?: boolean
   completedAt?: boolean
   status?: boolean
   notes?: boolean
 }
 
-export type ClientWorkoutSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "workoutId" | "workoutName" | "startedAt" | "completedAt" | "status" | "notes", ExtArgs["result"]["clientWorkoutSession"]>
+export type ClientWorkoutSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "workoutId" | "workoutName" | "programmeVersion" | "programmeDraftId" | "startedAt" | "completedAt" | "status" | "notes", ExtArgs["result"]["clientWorkoutSession"]>
 export type ClientWorkoutSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  programmeDraft?: boolean | Prisma.ClientWorkoutSession$programmeDraftArgs<ExtArgs>
   setLogs?: boolean | Prisma.ClientWorkoutSession$setLogsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientWorkoutSessionCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -691,6 +909,7 @@ export type $ClientWorkoutSessionPayload<ExtArgs extends runtime.Types.Extension
   name: "ClientWorkoutSession"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    programmeDraft: Prisma.$ProgrammeDraftPayload<ExtArgs> | null
     setLogs: Prisma.$ClientWorkoutSetLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -698,6 +917,8 @@ export type $ClientWorkoutSessionPayload<ExtArgs extends runtime.Types.Extension
     userId: string
     workoutId: string
     workoutName: string
+    programmeVersion: string | null
+    programmeDraftId: string | null
     startedAt: Date
     completedAt: Date | null
     status: string
@@ -1043,6 +1264,7 @@ readonly fields: ClientWorkoutSessionFieldRefs;
 export interface Prisma__ClientWorkoutSessionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  programmeDraft<T extends Prisma.ClientWorkoutSession$programmeDraftArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientWorkoutSession$programmeDraftArgs<ExtArgs>>): Prisma.Prisma__ProgrammeDraftClient<runtime.Types.Result.GetResult<Prisma.$ProgrammeDraftPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   setLogs<T extends Prisma.ClientWorkoutSession$setLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientWorkoutSession$setLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientWorkoutSetLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1077,6 +1299,8 @@ export interface ClientWorkoutSessionFieldRefs {
   readonly userId: Prisma.FieldRef<"ClientWorkoutSession", 'String'>
   readonly workoutId: Prisma.FieldRef<"ClientWorkoutSession", 'String'>
   readonly workoutName: Prisma.FieldRef<"ClientWorkoutSession", 'String'>
+  readonly programmeVersion: Prisma.FieldRef<"ClientWorkoutSession", 'String'>
+  readonly programmeDraftId: Prisma.FieldRef<"ClientWorkoutSession", 'String'>
   readonly startedAt: Prisma.FieldRef<"ClientWorkoutSession", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"ClientWorkoutSession", 'DateTime'>
   readonly status: Prisma.FieldRef<"ClientWorkoutSession", 'String'>
@@ -1426,6 +1650,25 @@ export type ClientWorkoutSessionDeleteManyArgs<ExtArgs extends runtime.Types.Ext
    * Limit how many ClientWorkoutSessions to delete.
    */
   limit?: number
+}
+
+/**
+ * ClientWorkoutSession.programmeDraft
+ */
+export type ClientWorkoutSession$programmeDraftArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProgrammeDraft
+   */
+  select?: Prisma.ProgrammeDraftSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProgrammeDraft
+   */
+  omit?: Prisma.ProgrammeDraftOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProgrammeDraftInclude<ExtArgs> | null
+  where?: Prisma.ProgrammeDraftWhereInput
 }
 
 /**

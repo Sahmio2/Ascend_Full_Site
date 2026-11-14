@@ -224,8 +224,21 @@ export const clientPortalAdapter = {
 
   async addFood(scope: PortalScope, input: FoodEntryInput) {
     if (scope === "live") {
-      if (!liveBridge) throw new Error("Live dataStore bridge is not registered.");
-      await liveBridge.addFood(input);
+      if (liveBridge) {
+        await liveBridge.addFood(input);
+      }
+      if (liveSnapshot) {
+        liveSnapshot.nutrition.meals.push({
+          id: nowId("meal"),
+          time: input.time || new Intl.DateTimeFormat("en", { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date()),
+          name: input.name.trim(),
+          calories: input.calories,
+          protein: input.protein || 0,
+          carbs: input.carbs || 0,
+          fats: input.fats || 0,
+        });
+        liveListeners.forEach((listener) => listener());
+      }
       return;
     }
     mutateDemo((draft) => {
@@ -243,8 +256,27 @@ export const clientPortalAdapter = {
 
   async saveWorkout(scope: PortalScope, input: WorkoutSessionInput) {
     if (scope === "live") {
-      if (!liveBridge) throw new Error("Live dataStore bridge is not registered.");
-      await liveBridge.saveWorkout(input);
+      if (liveBridge) {
+        await liveBridge.saveWorkout(input);
+      }
+      if (liveSnapshot) {
+        liveSnapshot.workouts.unshift({
+          id: nowId("workout"),
+          programmeDayId: input.programmeDayId,
+          workoutName: input.workoutName,
+          workoutDate: input.workoutDate,
+          completionStatus: "completed",
+          durationMinutes: input.durationMinutes,
+          effortRating: input.effortRating,
+          athleteNote: input.athleteNote,
+          painNote: input.painNote,
+          coachFeedback: "",
+          exercises: structuredClone(input.exercises),
+        });
+        liveSnapshot.client.workoutsThisWeek += 1;
+        liveSnapshot.client.streakDays += 1;
+        liveListeners.forEach((listener) => listener());
+      }
       return;
     }
     mutateDemo((draft) => {
