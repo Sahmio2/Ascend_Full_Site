@@ -235,8 +235,13 @@ test('M2-T6: Programme-version links on workout sessions and meal logs', async (
   const user = await prisma.user.upsert({ where: { email: 'client_m2_t6@test.internal' }, update: { role: 'CLIENT' }, create: { email: 'client_m2_t6@test.internal', role: 'CLIENT' } });
   const session = await issueUserSession(user.id);
 
-  // Set active published plan as 'Active v1'
+  // Clean slate for test user
+  await prisma.clientWorkoutSetLog.deleteMany({ where: { session: { userId: user.id } } });
+  await prisma.clientWorkoutSession.deleteMany({ where: { userId: user.id } });
+  await prisma.dailyMealLog.deleteMany({ where: { userId: user.id } });
   await prisma.programmeDraft.deleteMany({ where: { clientUserId: user.id } });
+
+  // Set active published plan as 'Active v1'
   const progV1 = await prisma.programmeDraft.create({
     data: {
       clientUserId: user.id,
@@ -278,6 +283,10 @@ test('M2-T7: Draft vs published plan isolation in client logging', async () => {
   const user = await prisma.user.upsert({ where: { email: 'client_m2_t7@test.internal' }, update: { role: 'CLIENT' }, create: { email: 'client_m2_t7@test.internal', role: 'CLIENT' } });
   const session = await issueUserSession(user.id);
 
+  // Clean slate for test user
+  await prisma.clientWorkoutSetLog.deleteMany({ where: { session: { userId: user.id } } });
+  await prisma.clientWorkoutSession.deleteMany({ where: { userId: user.id } });
+  await prisma.dailyMealLog.deleteMany({ where: { userId: user.id } });
   await prisma.programmeDraft.deleteMany({ where: { clientUserId: user.id } });
 
   // Published plan is v1
@@ -305,6 +314,7 @@ test('M2-T8: Nutrition logging and status changes (Ate as Planned, Changed, Didn
   const prisma = db();
   const user = await prisma.user.upsert({ where: { email: 'client_m2_t8@test.internal' }, update: { role: 'CLIENT' }, create: { email: 'client_m2_t8@test.internal', role: 'CLIENT' } });
   const session = await issueUserSession(user.id);
+  await prisma.dailyMealLog.deleteMany({ where: { userId: user.id } });
 
   // 1. Ate as planned
   const res1 = await clientMealsPost(new Request(`${ORIGIN}/api/client/meals`, {
@@ -355,6 +365,7 @@ test('M2-T9: Accurate Not Recorded versus Didn’t Eat semantics', async () => {
   const prisma = db();
   const user = await prisma.user.upsert({ where: { email: 'client_m2_t9@test.internal' }, update: { role: 'CLIENT' }, create: { email: 'client_m2_t9@test.internal', role: 'CLIENT' } });
   const session = await issueUserSession(user.id);
+  await prisma.dailyMealLog.deleteMany({ where: { userId: user.id } });
 
   // Set to SKIPPED (Didn't Eat) -> explicitly saved row with status = SKIPPED
   await clientMealsPost(new Request(`${ORIGIN}/api/client/meals`, {
@@ -461,6 +472,12 @@ test('M2-T12: Coach inspection of client activity', async () => {
   const prisma = db();
   const coach = await prisma.user.upsert({ where: { email: 'coach_m2_t12@test.internal' }, update: { role: 'COACH' }, create: { email: 'coach_m2_t12@test.internal', role: 'COACH' } });
   const client = await prisma.user.upsert({ where: { email: 'client_m2_t12@test.internal' }, update: { role: 'CLIENT' }, create: { email: 'client_m2_t12@test.internal', role: 'CLIENT' } });
+
+  // Clean slate for client and coach
+  await prisma.clientWorkoutSetLog.deleteMany({ where: { session: { userId: client.id } } });
+  await prisma.clientWorkoutSession.deleteMany({ where: { userId: client.id } });
+  await prisma.dailyMealLog.deleteMany({ where: { userId: client.id } });
+  await prisma.programmeDraft.deleteMany({ where: { clientUserId: client.id } });
 
   const coachSession = await issueUserSession(coach.id);
   const clientSession = await issueUserSession(client.id);
