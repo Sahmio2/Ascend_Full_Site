@@ -42,6 +42,7 @@ export const GET = handler(async (request: Request) => {
   const activeSession = await prisma.clientWorkoutSession.findFirst({
     where: { userId, status: 'IN_PROGRESS' },
     include: {
+      programmeDraft: true,
       setLogs: {
         orderBy: { loggedAt: 'asc' },
       },
@@ -81,14 +82,16 @@ export const GET = handler(async (request: Request) => {
     where: { userId, status: { in: ['COMPLETED', 'PARTIAL'] } },
   });
 
+  const effectiveProgramme = activeSession?.programmeDraft || activeProgramme;
+
   return json({
     ok: true,
-    status: activeProgramme ? 'ACTIVE' : 'NO_PLAN',
-    activeProgramme: activeProgramme
+    status: effectiveProgramme ? 'ACTIVE' : 'NO_PLAN',
+    activeProgramme: effectiveProgramme
       ? {
-          id: activeProgramme.id,
-          version: activeProgramme.version,
-          training: activeProgramme.trainingJson,
+          id: effectiveProgramme.id,
+          version: effectiveProgramme.version,
+          training: effectiveProgramme.trainingJson,
         }
       : null,
     activeSession: activeSession
@@ -97,11 +100,13 @@ export const GET = handler(async (request: Request) => {
           workoutId: activeSession.workoutId,
           workoutName: activeSession.workoutName,
           programmeVersion: activeSession.programmeVersion,
+          programmeDraftId: activeSession.programmeDraftId,
           startedAt: activeSession.startedAt,
           status: activeSession.status,
           notes: activeSession.notes,
           setLogs: activeSession.setLogs.map((s) => ({
             id: s.id,
+            slotId: s.slotId,
             exerciseId: s.exerciseId,
             exerciseName: s.exerciseName,
             targetExerciseId: s.targetExerciseId,
@@ -143,10 +148,16 @@ export const POST = handler(async (request: Request) => {
       exerciseName: z.string().min(1),
       targetExerciseId: z.string().optional(),
       isSwap: z.boolean().default(false),
-      setIndex: z.number().int().min(0),
+      setIndex: z.number().int().min(0).max(50),
       isWarmup: z.boolean().default(false),
-      weightKg: z.union([z.number(), z.string()]).transform((val) => Number(val) || 0),
-      reps: z.number().int().min(0),
+      weightKg: z
+        .union([z.number(), z.string()])
+        .refine((val) => {
+          const num = Number(val);
+          return Number.isFinite(num) && num >= 0 && num <= 1000;
+        }, { message: 'Weight must be a non-negative finite number <= 1000 kg' })
+        .transform((val) => Number(val)),
+      reps: z.number().int().min(0).max(500),
       completed: z.boolean().default(true),
     }),
     z.object({
@@ -193,12 +204,29 @@ export const POST = handler(async (request: Request) => {
       include: { setLogs: true },
     });
 
+    // Defensive deduplication against concurrent start_or_resume calls
+    const allInProgress = await prisma.clientWorkoutSession.findMany({
+      where: { userId, workoutId: parsed.workoutId, status: 'IN_PROGRESS' },
+      include: { setLogs: true },
+      orderBy: { startedAt: 'asc' },
+    });
+
+    if (allInProgress.length > 1) {
+      const canonical = allInProgress[0];
+      const duplicates = allInProgress.slice(1);
+      await prisma.clientWorkoutSession.deleteMany({
+        where: { id: { in: duplicates.map((d) => d.id) } },
+      });
+      return json({ ok: true, session: canonical, resumed: canonical.id !== session.id });
+    }
+
     return json({ ok: true, session, resumed: false });
   }
 
   if (parsed.action === 'log_set') {
     const session = await prisma.clientWorkoutSession.findUnique({
       where: { id: parsed.sessionId },
+      include: { programmeDraft: true },
     });
 
     if (!session || session.userId !== userId) {
@@ -209,44 +237,104 @@ export const POST = handler(async (request: Request) => {
       throw new ApiError(400, 'SESSION_ALREADY_CLOSED');
     }
 
-    // Check for existing set log
-    const existingSet = await prisma.clientWorkoutSetLog.findFirst({
-      where: {
-        sessionId: parsed.sessionId,
-        exerciseId: parsed.exerciseId,
-        setIndex: parsed.setIndex,
-        isWarmup: parsed.isWarmup,
-      },
-    });
+    // Validate exercise swap rules
+    if (parsed.isSwap) {
+      if (!parsed.targetExerciseId) {
+        throw new ApiError(400, 'SWAP_REQUIRES_TARGET_EXERCISE');
+      }
+      // Check if swap is approved in ExerciseSwap table or approved catalogue
+      const approvedSwapInDb = await prisma.exerciseSwap.findFirst({
+        where: {
+          sourceExerciseId: parsed.targetExerciseId,
+          swappedExerciseId: parsed.exerciseId,
+          isCoachApproved: true,
+        },
+      });
 
-    const setLog = existingSet
-      ? await prisma.clientWorkoutSetLog.update({
-          where: { id: existingSet.id },
-          data: {
-            exerciseName: parsed.exerciseName,
-            targetExerciseId: parsed.targetExerciseId || null,
-            isSwap: parsed.isSwap,
-            weightKg: new Decimal(parsed.weightKg),
-            reps: parsed.reps,
-            completed: parsed.completed,
-            loggedAt: new Date(),
-          },
-        })
-      : await prisma.clientWorkoutSetLog.create({
-          data: {
+      const KNOWN_APPROVED_SWAPS: Record<string, string[]> = {
+        leg: ['goblet', 'split'],
+        rdl: ['extension'],
+        bench: ['machinepress'],
+        row: ['chestrow'],
+        lat: ['assisted'],
+      };
+
+      const isKnownSwap = KNOWN_APPROVED_SWAPS[parsed.targetExerciseId]?.includes(parsed.exerciseId);
+
+      if (!approvedSwapInDb && !isKnownSwap) {
+        throw new ApiError(400, 'UNAUTHORIZED_EXERCISE_SWAP');
+      }
+    } else {
+      if (parsed.targetExerciseId && parsed.targetExerciseId !== parsed.exerciseId) {
+        throw new ApiError(400, 'MISMATCHED_TARGET_EXERCISE');
+      }
+    }
+
+    const slotId = parsed.targetExerciseId || parsed.exerciseId;
+
+    // Atomic composite key upsert on (sessionId, slotId, setIndex, isWarmup)
+    let setLog;
+    try {
+      setLog = await prisma.clientWorkoutSetLog.upsert({
+        where: {
+          sessionId_slotId_setIndex_isWarmup: {
             sessionId: parsed.sessionId,
+            slotId,
+            setIndex: parsed.setIndex,
+            isWarmup: parsed.isWarmup,
+          },
+        },
+        update: {
+          exerciseId: parsed.exerciseId,
+          exerciseName: parsed.exerciseName,
+          targetExerciseId: parsed.targetExerciseId || null,
+          isSwap: parsed.isSwap,
+          weightKg: new Decimal(parsed.weightKg),
+          reps: parsed.reps,
+          completed: parsed.completed,
+          loggedAt: new Date(),
+        },
+        create: {
+          sessionId: parsed.sessionId,
+          slotId,
+          exerciseId: parsed.exerciseId,
+          exerciseName: parsed.exerciseName,
+          targetExerciseId: parsed.targetExerciseId || null,
+          isSwap: parsed.isSwap,
+          setIndex: parsed.setIndex,
+          isWarmup: parsed.isWarmup,
+          weightKg: new Decimal(parsed.weightKg),
+          reps: parsed.reps,
+          completed: parsed.completed,
+          loggedAt: new Date(),
+        },
+      });
+    } catch (err: any) {
+      if (err.code === 'P2002' || err.message?.includes('Unique constraint failed')) {
+        setLog = await prisma.clientWorkoutSetLog.update({
+          where: {
+            sessionId_slotId_setIndex_isWarmup: {
+              sessionId: parsed.sessionId,
+              slotId,
+              setIndex: parsed.setIndex,
+              isWarmup: parsed.isWarmup,
+            },
+          },
+          data: {
             exerciseId: parsed.exerciseId,
             exerciseName: parsed.exerciseName,
             targetExerciseId: parsed.targetExerciseId || null,
             isSwap: parsed.isSwap,
-            setIndex: parsed.setIndex,
-            isWarmup: parsed.isWarmup,
             weightKg: new Decimal(parsed.weightKg),
             reps: parsed.reps,
             completed: parsed.completed,
             loggedAt: new Date(),
           },
         });
+      } else {
+        throw err;
+      }
+    }
 
     return json({ ok: true, setLog });
   }
@@ -254,10 +342,16 @@ export const POST = handler(async (request: Request) => {
   if (parsed.action === 'complete_session') {
     const session = await prisma.clientWorkoutSession.findUnique({
       where: { id: parsed.sessionId },
+      include: { setLogs: true },
     });
 
     if (!session || session.userId !== userId) {
       throw new ApiError(404, 'SESSION_NOT_FOUND');
+    }
+
+    // Idempotent: if already completed, return existing session without altering completedAt
+    if (session.status === 'COMPLETED' || session.status === 'PARTIAL') {
+      return json({ ok: true, session, idempotent: true });
     }
 
     const updated = await prisma.clientWorkoutSession.update({

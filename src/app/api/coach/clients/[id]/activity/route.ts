@@ -30,7 +30,7 @@ export const GET = dynamicHandler(async (request: Request, context: { params: Pr
     },
   });
 
-  if (!client) {
+  if (!client || client.role !== 'CLIENT') {
     throw new ApiError(404, 'CLIENT_NOT_FOUND');
   }
 

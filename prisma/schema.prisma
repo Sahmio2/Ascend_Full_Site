@@ -358,7 +358,7 @@ model DailyMealLog {
   mealName         String          @db.VarChar(64)
   programmeVersion String?         @db.VarChar(32)
   programmeDraftId String?
-  programmeDraft   ProgrammeDraft? @relation("ProgrammeMealLogs", fields: [programmeDraftId], references: [id], onDelete: SetNull)
+  programmeDraft   ProgrammeDraft? @relation("ProgrammeMealLogs", fields: [programmeDraftId], references: [id], onDelete: Restrict)
   status           MealStatus      @default(NOT_RECORDED)
   customFoods      Json?
   notes            String?         @db.Text
@@ -369,6 +369,21 @@ model DailyMealLog {
   @@unique([userId, date, mealType])
   @@index([userId, date])
   @@index([programmeDraftId])
+}
+
+model MealAuditLog {
+  id               String      @id @default(cuid())
+  userId           String
+  date             String      @db.VarChar(10)
+  mealType         MealType
+  action           String      @db.VarChar(32)
+  previousStatus   MealStatus?
+  newStatus        MealStatus
+  programmeVersion String?     @db.VarChar(32)
+  payload          Json?
+  recordedAt       DateTime    @default(now())
+
+  @@index([userId, date])
 }
 
 model NutritionTarget {
@@ -399,7 +414,7 @@ model ClientWorkoutSession {
   workoutName      String                @db.VarChar(128)
   programmeVersion String?               @db.VarChar(32)
   programmeDraftId String?
-  programmeDraft   ProgrammeDraft?       @relation("ProgrammeWorkoutSessions", fields: [programmeDraftId], references: [id], onDelete: SetNull)
+  programmeDraft   ProgrammeDraft?       @relation("ProgrammeWorkoutSessions", fields: [programmeDraftId], references: [id], onDelete: Restrict)
   startedAt        DateTime              @default(now())
   completedAt      DateTime?
   status           String                @default("IN_PROGRESS") @db.VarChar(32)
@@ -417,6 +432,7 @@ model ClientWorkoutSetLog {
   exerciseId       String               @db.VarChar(64)
   exerciseName     String               @db.VarChar(128)
   targetExerciseId String?              @db.VarChar(64)
+  slotId           String               @default("") @db.VarChar(64)
   isSwap           Boolean              @default(false)
   setIndex         Int
   isWarmup         Boolean              @default(false)
@@ -425,6 +441,7 @@ model ClientWorkoutSetLog {
   completed        Boolean              @default(true)
   loggedAt         DateTime             @default(now())
 
+  @@unique([sessionId, slotId, setIndex, isWarmup])
   @@index([sessionId, exerciseId])
 }
 

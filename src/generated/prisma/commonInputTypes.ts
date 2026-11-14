@@ -518,6 +518,23 @@ export type EnumMealStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumMealStatusFilter<$PrismaModel>
 }
 
+export type EnumMealStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.MealStatus | Prisma.EnumMealStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.MealStatus[] | null
+  notIn?: $Enums.MealStatus[] | null
+  not?: Prisma.NestedEnumMealStatusNullableFilter<$PrismaModel> | $Enums.MealStatus | null
+}
+
+export type EnumMealStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MealStatus | Prisma.EnumMealStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.MealStatus[] | null
+  notIn?: $Enums.MealStatus[] | null
+  not?: Prisma.NestedEnumMealStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.MealStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMealStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMealStatusNullableFilter<$PrismaModel>
+}
+
 export type EnumCheckInStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.CheckInStatus | Prisma.EnumCheckInStatusFieldRefInput<$PrismaModel>
   in?: $Enums.CheckInStatus[]
@@ -1000,6 +1017,23 @@ export type NestedEnumMealStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumMealStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumMealStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumMealStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.MealStatus | Prisma.EnumMealStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.MealStatus[] | null
+  notIn?: $Enums.MealStatus[] | null
+  not?: Prisma.NestedEnumMealStatusNullableFilter<$PrismaModel> | $Enums.MealStatus | null
+}
+
+export type NestedEnumMealStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MealStatus | Prisma.EnumMealStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.MealStatus[] | null
+  notIn?: $Enums.MealStatus[] | null
+  not?: Prisma.NestedEnumMealStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.MealStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMealStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMealStatusNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumCheckInStatusFilter<$PrismaModel = never> = {

@@ -6,11 +6,31 @@ import { MealType, MealStatus } from '@/generated/prisma/enums';
 
 export const runtime = 'nodejs';
 
+function isValidCalendarDate(dateStr: string): boolean {
+  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return false;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (month < 1 || month > 12 || day < 1 || day > 31) return false;
+  const d = new Date(Date.UTC(year, month - 1, day));
+  return d.getUTCFullYear() === year && d.getUTCMonth() === month - 1 && d.getUTCDate() === day;
+}
+
+const CustomFoodSchema = z.object({
+  name: z.string().min(1),
+  grams: z.number().nonnegative(),
+  state: z.string().optional(),
+  kcal: z.number().nonnegative().optional(),
+  protein: z.number().nonnegative().optional(),
+  carbs: z.number().nonnegative().optional(),
+  fat: z.number().nonnegative().optional(),
+  isEstimated: z.boolean().optional(),
+});
+
 function getLagosDateString(d = new Date()): string {
-  // Lagos is UTC+1
-  const lagosOffsetMs = 60 * 60 * 1000;
-  const lagosTime = new Date(d.getTime() + lagosOffsetMs);
-  return lagosTime.toISOString().slice(0, 10);
+  // Lagos is Africa/Lagos (UTC+1, no DST)
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Lagos' }).format(d);
 }
 
 export const GET = handler(async (request: Request) => {
@@ -88,25 +108,46 @@ export const POST = handler(async (request: Request) => {
   }
 
   const schema = z.object({
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).default(() => getLagosDateString()),
+    date: z.string().refine(isValidCalendarDate, { message: 'INVALID_CALENDAR_DATE' }).default(() => getLagosDateString()),
     mealType: z.enum(['BREAKFAST', 'LUNCH', 'DINNER', 'SNACK']),
     mealName: z.string().min(1),
     status: z.enum(['PLANNED', 'CHANGED', 'SKIPPED', 'NOT_RECORDED']),
-    customFoods: z.any().optional(),
+    customFoods: z.array(CustomFoodSchema).optional(),
     notes: z.string().optional(),
   });
 
   const parsed = schema.parse(raw);
 
-  // If status is NOT_RECORDED, remove record if present
+  // If status is NOT_RECORDED, remove record if present and record audit event
   if (parsed.status === 'NOT_RECORDED') {
-    await prisma.dailyMealLog.deleteMany({
+    const existing = await prisma.dailyMealLog.findUnique({
       where: {
-        userId,
-        date: parsed.date,
-        mealType: parsed.mealType as MealType,
+        userId_date_mealType: {
+          userId,
+          date: parsed.date,
+          mealType: parsed.mealType as MealType,
+        },
       },
     });
+
+    if (existing) {
+      await prisma.mealAuditLog.create({
+        data: {
+          userId,
+          date: parsed.date,
+          mealType: parsed.mealType as MealType,
+          action: 'RESET_NOT_RECORDED',
+          previousStatus: existing.status,
+          newStatus: 'NOT_RECORDED',
+          programmeVersion: existing.programmeVersion,
+          payload: { mealName: existing.mealName, customFoods: existing.customFoods },
+        },
+      });
+
+      await prisma.dailyMealLog.delete({
+        where: { id: existing.id },
+      });
+    }
 
     return json({
       ok: true,
@@ -116,7 +157,7 @@ export const POST = handler(async (request: Request) => {
     });
   }
 
-  // Fetch client's active published programme for version stamping
+  // Fetch client's active published programme for version stamping if creating new
   const activeProgramme = await prisma.programmeDraft.findFirst({
     where: { clientUserId: userId, isPublished: true },
     orderBy: { publishedAt: 'desc' },
@@ -125,7 +166,8 @@ export const POST = handler(async (request: Request) => {
   const mealStatusEnum = parsed.status as MealStatus;
   const now = new Date();
 
-  const mealLog = await prisma.dailyMealLog.upsert({
+  // Find if already exists to preserve historical programmeDraftId on update
+  const existingMeal = await prisma.dailyMealLog.findUnique({
     where: {
       userId_date_mealType: {
         userId,
@@ -133,26 +175,46 @@ export const POST = handler(async (request: Request) => {
         mealType: parsed.mealType as MealType,
       },
     },
-    update: {
-      mealName: parsed.mealName,
-      status: mealStatusEnum,
-      customFoods: parsed.customFoods ?? undefined,
-      notes: parsed.notes ?? undefined,
-      programmeDraftId: activeProgramme?.id || null,
-      programmeVersion: activeProgramme?.version || 'Active v1',
-      recordedAt: now,
-    },
-    create: {
+  });
+
+  const mealLog = existingMeal
+    ? await prisma.dailyMealLog.update({
+        where: { id: existingMeal.id },
+        data: {
+          mealName: parsed.mealName,
+          status: mealStatusEnum,
+          customFoods: parsed.customFoods ?? undefined,
+          notes: parsed.notes ?? undefined,
+          // Retain original programmeDraftId & programmeVersion
+          recordedAt: now,
+        },
+      })
+    : await prisma.dailyMealLog.create({
+        data: {
+          userId,
+          date: parsed.date,
+          mealType: parsed.mealType as MealType,
+          mealName: parsed.mealName,
+          status: mealStatusEnum,
+          customFoods: parsed.customFoods ?? undefined,
+          notes: parsed.notes ?? undefined,
+          programmeDraftId: activeProgramme?.id || null,
+          programmeVersion: activeProgramme?.version || 'Active v1',
+          recordedAt: now,
+        },
+      });
+
+  // Record audit log entry
+  await prisma.mealAuditLog.create({
+    data: {
       userId,
       date: parsed.date,
       mealType: parsed.mealType as MealType,
-      mealName: parsed.mealName,
-      status: mealStatusEnum,
-      customFoods: parsed.customFoods ?? undefined,
-      notes: parsed.notes ?? undefined,
-      programmeDraftId: activeProgramme?.id || null,
-      programmeVersion: activeProgramme?.version || 'Active v1',
-      recordedAt: now,
+      action: existingMeal ? 'UPDATED' : 'CREATED',
+      previousStatus: existingMeal?.status || null,
+      newStatus: mealStatusEnum,
+      programmeVersion: mealLog.programmeVersion,
+      payload: { mealName: mealLog.mealName, customFoods: mealLog.customFoods },
     },
   });
 

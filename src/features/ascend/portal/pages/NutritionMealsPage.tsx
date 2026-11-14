@@ -137,7 +137,7 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
   };
   const [view, setView] = useState<"today" | "add" | "form" | "weekly" | "shopping">("today");
   const [expanded, setExpanded] = useState<string | null>("lunch");
-  const [log, setLog] = useState<Record<string, { kind: "planned" | "skipped" | "changed"; note?: string }>>({
+  const [log, setLog] = useState<Record<string, { kind: "planned" | "skipped" | "changed"; note?: string; customFoods?: any[] }>>({
     breakfast: { kind: "planned" },
   });
   const [extras, setExtras] = useState<Array<{ name: string; amount: string; kcal: number }>>([]);
@@ -168,7 +168,7 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
         if (!res.ok) return;
         const data = await res.json();
         if (data.ok && Array.isArray(data.loggedMeals)) {
-          const newLog: Record<string, { kind: "planned" | "skipped" | "changed"; note?: string }> = {};
+          const newLog: Record<string, { kind: "planned" | "skipped" | "changed"; note?: string; customFoods?: any[] }> = {};
           for (const item of data.loggedMeals) {
             const key = item.mealType.toLowerCase();
             if (item.status === "PLANNED") {
@@ -176,7 +176,7 @@ export default function NutritionMealsPage({ scope = "live", onSwitchToClassic }
             } else if (item.status === "SKIPPED") {
               newLog[key] = { kind: "skipped" };
             } else if (item.status === "CHANGED") {
-              newLog[key] = { kind: "changed", note: item.notes || undefined };
+              newLog[key] = { kind: "changed", note: item.notes || undefined, customFoods: item.customFoods || undefined };
             }
           }
           setLog(newLog);

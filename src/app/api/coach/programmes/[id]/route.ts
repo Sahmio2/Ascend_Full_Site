@@ -49,7 +49,7 @@ export const GET = dynamicHandler(async (request: Request, context: { params: Pr
   }
 
   const publishedPlan = user.programmes.find((p) => p.isPublished);
-  const latestDraft = user.programmes.find((p) => !p.isPublished);
+  const latestDraft = user.programmes.find((p) => !p.isPublished && p.publishedAt === null);
 
   // Determine current active or draft content
   const currentPlan = latestDraft || publishedPlan;
@@ -124,11 +124,12 @@ export const PUT = dynamicHandler(async (request: Request, context: { params: Pr
     throw new ApiError(404, 'CLIENT_NOT_FOUND');
   }
 
-  // Find existing unpublished draft or create a new draft
+  // Find existing unpublished draft (strictly unreleased, publishedAt must be null)
   const existingDraft = await prisma.programmeDraft.findFirst({
     where: {
       clientUserId: clientId,
       isPublished: false,
+      publishedAt: null,
     },
     orderBy: { createdAt: 'desc' },
   });

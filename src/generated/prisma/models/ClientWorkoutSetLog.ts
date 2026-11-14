@@ -44,6 +44,7 @@ export type ClientWorkoutSetLogMinAggregateOutputType = {
   exerciseId: string | null
   exerciseName: string | null
   targetExerciseId: string | null
+  slotId: string | null
   isSwap: boolean | null
   setIndex: number | null
   isWarmup: boolean | null
@@ -59,6 +60,7 @@ export type ClientWorkoutSetLogMaxAggregateOutputType = {
   exerciseId: string | null
   exerciseName: string | null
   targetExerciseId: string | null
+  slotId: string | null
   isSwap: boolean | null
   setIndex: number | null
   isWarmup: boolean | null
@@ -74,6 +76,7 @@ export type ClientWorkoutSetLogCountAggregateOutputType = {
   exerciseId: number
   exerciseName: number
   targetExerciseId: number
+  slotId: number
   isSwap: number
   setIndex: number
   isWarmup: number
@@ -103,6 +106,7 @@ export type ClientWorkoutSetLogMinAggregateInputType = {
   exerciseId?: true
   exerciseName?: true
   targetExerciseId?: true
+  slotId?: true
   isSwap?: true
   setIndex?: true
   isWarmup?: true
@@ -118,6 +122,7 @@ export type ClientWorkoutSetLogMaxAggregateInputType = {
   exerciseId?: true
   exerciseName?: true
   targetExerciseId?: true
+  slotId?: true
   isSwap?: true
   setIndex?: true
   isWarmup?: true
@@ -133,6 +138,7 @@ export type ClientWorkoutSetLogCountAggregateInputType = {
   exerciseId?: true
   exerciseName?: true
   targetExerciseId?: true
+  slotId?: true
   isSwap?: true
   setIndex?: true
   isWarmup?: true
@@ -235,6 +241,7 @@ export type ClientWorkoutSetLogGroupByOutputType = {
   exerciseId: string
   exerciseName: string
   targetExerciseId: string | null
+  slotId: string
   isSwap: boolean
   setIndex: number
   isWarmup: boolean
@@ -273,6 +280,7 @@ export type ClientWorkoutSetLogWhereInput = {
   exerciseId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   exerciseName?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   targetExerciseId?: Prisma.StringNullableFilter<"ClientWorkoutSetLog"> | string | null
+  slotId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   isSwap?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
   setIndex?: Prisma.IntFilter<"ClientWorkoutSetLog"> | number
   isWarmup?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
@@ -289,6 +297,7 @@ export type ClientWorkoutSetLogOrderByWithRelationInput = {
   exerciseId?: Prisma.SortOrder
   exerciseName?: Prisma.SortOrder
   targetExerciseId?: Prisma.SortOrderInput | Prisma.SortOrder
+  slotId?: Prisma.SortOrder
   isSwap?: Prisma.SortOrder
   setIndex?: Prisma.SortOrder
   isWarmup?: Prisma.SortOrder
@@ -302,6 +311,7 @@ export type ClientWorkoutSetLogOrderByWithRelationInput = {
 
 export type ClientWorkoutSetLogWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  sessionId_slotId_setIndex_isWarmup?: Prisma.ClientWorkoutSetLogSessionIdSlotIdSetIndexIsWarmupCompoundUniqueInput
   AND?: Prisma.ClientWorkoutSetLogWhereInput | Prisma.ClientWorkoutSetLogWhereInput[]
   OR?: Prisma.ClientWorkoutSetLogWhereInput[]
   NOT?: Prisma.ClientWorkoutSetLogWhereInput | Prisma.ClientWorkoutSetLogWhereInput[]
@@ -309,6 +319,7 @@ export type ClientWorkoutSetLogWhereUniqueInput = Prisma.AtLeast<{
   exerciseId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   exerciseName?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   targetExerciseId?: Prisma.StringNullableFilter<"ClientWorkoutSetLog"> | string | null
+  slotId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   isSwap?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
   setIndex?: Prisma.IntFilter<"ClientWorkoutSetLog"> | number
   isWarmup?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
@@ -317,7 +328,7 @@ export type ClientWorkoutSetLogWhereUniqueInput = Prisma.AtLeast<{
   completed?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
   loggedAt?: Prisma.DateTimeFilter<"ClientWorkoutSetLog"> | Date | string
   session?: Prisma.XOR<Prisma.ClientWorkoutSessionScalarRelationFilter, Prisma.ClientWorkoutSessionWhereInput>
-}, "id">
+}, "id" | "sessionId_slotId_setIndex_isWarmup">
 
 export type ClientWorkoutSetLogOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -325,6 +336,7 @@ export type ClientWorkoutSetLogOrderByWithAggregationInput = {
   exerciseId?: Prisma.SortOrder
   exerciseName?: Prisma.SortOrder
   targetExerciseId?: Prisma.SortOrderInput | Prisma.SortOrder
+  slotId?: Prisma.SortOrder
   isSwap?: Prisma.SortOrder
   setIndex?: Prisma.SortOrder
   isWarmup?: Prisma.SortOrder
@@ -348,6 +360,7 @@ export type ClientWorkoutSetLogScalarWhereWithAggregatesInput = {
   exerciseId?: Prisma.StringWithAggregatesFilter<"ClientWorkoutSetLog"> | string
   exerciseName?: Prisma.StringWithAggregatesFilter<"ClientWorkoutSetLog"> | string
   targetExerciseId?: Prisma.StringNullableWithAggregatesFilter<"ClientWorkoutSetLog"> | string | null
+  slotId?: Prisma.StringWithAggregatesFilter<"ClientWorkoutSetLog"> | string
   isSwap?: Prisma.BoolWithAggregatesFilter<"ClientWorkoutSetLog"> | boolean
   setIndex?: Prisma.IntWithAggregatesFilter<"ClientWorkoutSetLog"> | number
   isWarmup?: Prisma.BoolWithAggregatesFilter<"ClientWorkoutSetLog"> | boolean
@@ -362,6 +375,7 @@ export type ClientWorkoutSetLogCreateInput = {
   exerciseId: string
   exerciseName: string
   targetExerciseId?: string | null
+  slotId?: string
   isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
@@ -378,6 +392,7 @@ export type ClientWorkoutSetLogUncheckedCreateInput = {
   exerciseId: string
   exerciseName: string
   targetExerciseId?: string | null
+  slotId?: string
   isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
@@ -392,6 +407,7 @@ export type ClientWorkoutSetLogUpdateInput = {
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
   targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotId?: Prisma.StringFieldUpdateOperationsInput | string
   isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -408,6 +424,7 @@ export type ClientWorkoutSetLogUncheckedUpdateInput = {
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
   targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotId?: Prisma.StringFieldUpdateOperationsInput | string
   isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -423,6 +440,7 @@ export type ClientWorkoutSetLogCreateManyInput = {
   exerciseId: string
   exerciseName: string
   targetExerciseId?: string | null
+  slotId?: string
   isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
@@ -437,6 +455,7 @@ export type ClientWorkoutSetLogUpdateManyMutationInput = {
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
   targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotId?: Prisma.StringFieldUpdateOperationsInput | string
   isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -452,6 +471,7 @@ export type ClientWorkoutSetLogUncheckedUpdateManyInput = {
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
   targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotId?: Prisma.StringFieldUpdateOperationsInput | string
   isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -477,12 +497,20 @@ export type ClientWorkoutSetLogOrderByRelevanceInput = {
   search: string
 }
 
+export type ClientWorkoutSetLogSessionIdSlotIdSetIndexIsWarmupCompoundUniqueInput = {
+  sessionId: string
+  slotId: string
+  setIndex: number
+  isWarmup: boolean
+}
+
 export type ClientWorkoutSetLogCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   sessionId?: Prisma.SortOrder
   exerciseId?: Prisma.SortOrder
   exerciseName?: Prisma.SortOrder
   targetExerciseId?: Prisma.SortOrder
+  slotId?: Prisma.SortOrder
   isSwap?: Prisma.SortOrder
   setIndex?: Prisma.SortOrder
   isWarmup?: Prisma.SortOrder
@@ -504,6 +532,7 @@ export type ClientWorkoutSetLogMaxOrderByAggregateInput = {
   exerciseId?: Prisma.SortOrder
   exerciseName?: Prisma.SortOrder
   targetExerciseId?: Prisma.SortOrder
+  slotId?: Prisma.SortOrder
   isSwap?: Prisma.SortOrder
   setIndex?: Prisma.SortOrder
   isWarmup?: Prisma.SortOrder
@@ -519,6 +548,7 @@ export type ClientWorkoutSetLogMinOrderByAggregateInput = {
   exerciseId?: Prisma.SortOrder
   exerciseName?: Prisma.SortOrder
   targetExerciseId?: Prisma.SortOrder
+  slotId?: Prisma.SortOrder
   isSwap?: Prisma.SortOrder
   setIndex?: Prisma.SortOrder
   isWarmup?: Prisma.SortOrder
@@ -581,6 +611,7 @@ export type ClientWorkoutSetLogCreateWithoutSessionInput = {
   exerciseId: string
   exerciseName: string
   targetExerciseId?: string | null
+  slotId?: string
   isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
@@ -595,6 +626,7 @@ export type ClientWorkoutSetLogUncheckedCreateWithoutSessionInput = {
   exerciseId: string
   exerciseName: string
   targetExerciseId?: string | null
+  slotId?: string
   isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
@@ -639,6 +671,7 @@ export type ClientWorkoutSetLogScalarWhereInput = {
   exerciseId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   exerciseName?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   targetExerciseId?: Prisma.StringNullableFilter<"ClientWorkoutSetLog"> | string | null
+  slotId?: Prisma.StringFilter<"ClientWorkoutSetLog"> | string
   isSwap?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
   setIndex?: Prisma.IntFilter<"ClientWorkoutSetLog"> | number
   isWarmup?: Prisma.BoolFilter<"ClientWorkoutSetLog"> | boolean
@@ -653,6 +686,7 @@ export type ClientWorkoutSetLogCreateManySessionInput = {
   exerciseId: string
   exerciseName: string
   targetExerciseId?: string | null
+  slotId?: string
   isSwap?: boolean
   setIndex: number
   isWarmup?: boolean
@@ -667,6 +701,7 @@ export type ClientWorkoutSetLogUpdateWithoutSessionInput = {
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
   targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotId?: Prisma.StringFieldUpdateOperationsInput | string
   isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -681,6 +716,7 @@ export type ClientWorkoutSetLogUncheckedUpdateWithoutSessionInput = {
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
   targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotId?: Prisma.StringFieldUpdateOperationsInput | string
   isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -695,6 +731,7 @@ export type ClientWorkoutSetLogUncheckedUpdateManyWithoutSessionInput = {
   exerciseId?: Prisma.StringFieldUpdateOperationsInput | string
   exerciseName?: Prisma.StringFieldUpdateOperationsInput | string
   targetExerciseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slotId?: Prisma.StringFieldUpdateOperationsInput | string
   isSwap?: Prisma.BoolFieldUpdateOperationsInput | boolean
   setIndex?: Prisma.IntFieldUpdateOperationsInput | number
   isWarmup?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -712,6 +749,7 @@ export type ClientWorkoutSetLogSelect<ExtArgs extends runtime.Types.Extensions.I
   exerciseId?: boolean
   exerciseName?: boolean
   targetExerciseId?: boolean
+  slotId?: boolean
   isSwap?: boolean
   setIndex?: boolean
   isWarmup?: boolean
@@ -730,6 +768,7 @@ export type ClientWorkoutSetLogSelectScalar = {
   exerciseId?: boolean
   exerciseName?: boolean
   targetExerciseId?: boolean
+  slotId?: boolean
   isSwap?: boolean
   setIndex?: boolean
   isWarmup?: boolean
@@ -739,7 +778,7 @@ export type ClientWorkoutSetLogSelectScalar = {
   loggedAt?: boolean
 }
 
-export type ClientWorkoutSetLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "exerciseId" | "exerciseName" | "targetExerciseId" | "isSwap" | "setIndex" | "isWarmup" | "weightKg" | "reps" | "completed" | "loggedAt", ExtArgs["result"]["clientWorkoutSetLog"]>
+export type ClientWorkoutSetLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "exerciseId" | "exerciseName" | "targetExerciseId" | "slotId" | "isSwap" | "setIndex" | "isWarmup" | "weightKg" | "reps" | "completed" | "loggedAt", ExtArgs["result"]["clientWorkoutSetLog"]>
 export type ClientWorkoutSetLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   session?: boolean | Prisma.ClientWorkoutSessionDefaultArgs<ExtArgs>
 }
@@ -755,6 +794,7 @@ export type $ClientWorkoutSetLogPayload<ExtArgs extends runtime.Types.Extensions
     exerciseId: string
     exerciseName: string
     targetExerciseId: string | null
+    slotId: string
     isSwap: boolean
     setIndex: number
     isWarmup: boolean
@@ -1137,6 +1177,7 @@ export interface ClientWorkoutSetLogFieldRefs {
   readonly exerciseId: Prisma.FieldRef<"ClientWorkoutSetLog", 'String'>
   readonly exerciseName: Prisma.FieldRef<"ClientWorkoutSetLog", 'String'>
   readonly targetExerciseId: Prisma.FieldRef<"ClientWorkoutSetLog", 'String'>
+  readonly slotId: Prisma.FieldRef<"ClientWorkoutSetLog", 'String'>
   readonly isSwap: Prisma.FieldRef<"ClientWorkoutSetLog", 'Boolean'>
   readonly setIndex: Prisma.FieldRef<"ClientWorkoutSetLog", 'Int'>
   readonly isWarmup: Prisma.FieldRef<"ClientWorkoutSetLog", 'Boolean'>

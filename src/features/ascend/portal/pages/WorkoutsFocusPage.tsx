@@ -207,13 +207,14 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
     toastTimerRef.current = setTimeout(() => setToastMessage(null), 2500);
   };
 
-  // Rest timer recovery from localStorage
+  // Rest timer recovery from localStorage (scoped to active workout session)
   useEffect(() => {
     try {
       const saved = localStorage.getItem("ascend_rest_timer");
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed.ends && parsed.ends > Date.now()) {
+        // Ensure timer is not expired and matches active session if session is established
+        if (parsed.ends && parsed.ends > Date.now() && (!sessionId || !parsed.sessionId || parsed.sessionId === sessionId)) {
           const remaining = Math.max(0, Math.ceil((parsed.ends - Date.now()) / 1000));
           setRest({
             status: "running",
@@ -226,7 +227,7 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
         }
       }
     } catch {}
-  }, []);
+  }, [sessionId]);
 
   // Rest timer ticker
   useEffect(() => {
@@ -474,7 +475,7 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
     try {
       localStorage.setItem(
         "ascend_rest_timer",
-        JSON.stringify({ ends, remaining: x.rest, exerciseId: x.id })
+        JSON.stringify({ ends, remaining: x.rest, exerciseId: x.id, sessionId })
       );
     } catch {}
 

@@ -417,6 +417,7 @@ export const ModelName = {
   ClientAssessment: 'ClientAssessment',
   AssessmentStageData: 'AssessmentStageData',
   DailyMealLog: 'DailyMealLog',
+  MealAuditLog: 'MealAuditLog',
   NutritionTarget: 'NutritionTarget',
   ExerciseSwap: 'ExerciseSwap',
   ClientWorkoutSession: 'ClientWorkoutSession',
@@ -439,7 +440,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "authChallenge" | "observation" | "exercise" | "workout" | "workoutSet" | "achievementGroup" | "achievementDefinition" | "achievementAward" | "capacityPolicy" | "capacityReservation" | "membership" | "payment" | "providerEventInbox" | "waitlistEntry" | "registrantScreening" | "clientAssessment" | "assessmentStageData" | "dailyMealLog" | "nutritionTarget" | "exerciseSwap" | "clientWorkoutSession" | "clientWorkoutSetLog" | "programmeDraft" | "coachingCheckIn" | "priorityMessage"
+    modelProps: "user" | "session" | "authChallenge" | "observation" | "exercise" | "workout" | "workoutSet" | "achievementGroup" | "achievementDefinition" | "achievementAward" | "capacityPolicy" | "capacityReservation" | "membership" | "payment" | "providerEventInbox" | "waitlistEntry" | "registrantScreening" | "clientAssessment" | "assessmentStageData" | "dailyMealLog" | "mealAuditLog" | "nutritionTarget" | "exerciseSwap" | "clientWorkoutSession" | "clientWorkoutSetLog" | "programmeDraft" | "coachingCheckIn" | "priorityMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1763,6 +1764,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MealAuditLog: {
+      payload: Prisma.$MealAuditLogPayload<ExtArgs>
+      fields: Prisma.MealAuditLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MealAuditLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MealAuditLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MealAuditLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MealAuditLogPayload>
+        }
+        findFirst: {
+          args: Prisma.MealAuditLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MealAuditLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MealAuditLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MealAuditLogPayload>
+        }
+        findMany: {
+          args: Prisma.MealAuditLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MealAuditLogPayload>[]
+        }
+        create: {
+          args: Prisma.MealAuditLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MealAuditLogPayload>
+        }
+        createMany: {
+          args: Prisma.MealAuditLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.MealAuditLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MealAuditLogPayload>
+        }
+        update: {
+          args: Prisma.MealAuditLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MealAuditLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.MealAuditLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MealAuditLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.MealAuditLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MealAuditLogPayload>
+        }
+        aggregate: {
+          args: Prisma.MealAuditLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMealAuditLog>
+        }
+        groupBy: {
+          args: Prisma.MealAuditLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MealAuditLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MealAuditLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MealAuditLogCountAggregateOutputType> | number
+        }
+      }
+    }
     NutritionTarget: {
       payload: Prisma.$NutritionTargetPayload<ExtArgs>
       fields: Prisma.NutritionTargetFieldRefs
@@ -2542,6 +2609,22 @@ export const DailyMealLogScalarFieldEnum = {
 export type DailyMealLogScalarFieldEnum = (typeof DailyMealLogScalarFieldEnum)[keyof typeof DailyMealLogScalarFieldEnum]
 
 
+export const MealAuditLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  mealType: 'mealType',
+  action: 'action',
+  previousStatus: 'previousStatus',
+  newStatus: 'newStatus',
+  programmeVersion: 'programmeVersion',
+  payload: 'payload',
+  recordedAt: 'recordedAt'
+} as const
+
+export type MealAuditLogScalarFieldEnum = (typeof MealAuditLogScalarFieldEnum)[keyof typeof MealAuditLogScalarFieldEnum]
+
+
 export const NutritionTargetScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -2589,6 +2672,7 @@ export const ClientWorkoutSetLogScalarFieldEnum = {
   exerciseId: 'exerciseId',
   exerciseName: 'exerciseName',
   targetExerciseId: 'targetExerciseId',
+  slotId: 'slotId',
   isSwap: 'isSwap',
   setIndex: 'setIndex',
   isWarmup: 'isWarmup',
@@ -2897,6 +2981,17 @@ export const DailyMealLogOrderByRelevanceFieldEnum = {
 export type DailyMealLogOrderByRelevanceFieldEnum = (typeof DailyMealLogOrderByRelevanceFieldEnum)[keyof typeof DailyMealLogOrderByRelevanceFieldEnum]
 
 
+export const MealAuditLogOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  action: 'action',
+  programmeVersion: 'programmeVersion'
+} as const
+
+export type MealAuditLogOrderByRelevanceFieldEnum = (typeof MealAuditLogOrderByRelevanceFieldEnum)[keyof typeof MealAuditLogOrderByRelevanceFieldEnum]
+
+
 export const NutritionTargetOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId'
@@ -2935,7 +3030,8 @@ export const ClientWorkoutSetLogOrderByRelevanceFieldEnum = {
   sessionId: 'sessionId',
   exerciseId: 'exerciseId',
   exerciseName: 'exerciseName',
-  targetExerciseId: 'targetExerciseId'
+  targetExerciseId: 'targetExerciseId',
+  slotId: 'slotId'
 } as const
 
 export type ClientWorkoutSetLogOrderByRelevanceFieldEnum = (typeof ClientWorkoutSetLogOrderByRelevanceFieldEnum)[keyof typeof ClientWorkoutSetLogOrderByRelevanceFieldEnum]
@@ -3290,6 +3386,7 @@ export type GlobalOmitConfig = {
   clientAssessment?: Prisma.ClientAssessmentOmit
   assessmentStageData?: Prisma.AssessmentStageDataOmit
   dailyMealLog?: Prisma.DailyMealLogOmit
+  mealAuditLog?: Prisma.MealAuditLogOmit
   nutritionTarget?: Prisma.NutritionTargetOmit
   exerciseSwap?: Prisma.ExerciseSwapOmit
   clientWorkoutSession?: Prisma.ClientWorkoutSessionOmit

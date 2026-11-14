@@ -71,9 +71,9 @@ export const POST = dynamicHandler(async (request: Request, context: { params: P
       publishedProgramme = await prisma.$transaction(async (tx) => {
         const now = new Date();
 
-        // 1. Locate current unpublished draft BEFORE superseding active records
+        // 1. Locate current unpublished draft BEFORE superseding active records (publishedAt must be null)
         const draft = await tx.programmeDraft.findFirst({
-          where: { clientUserId: clientId, isPublished: false },
+          where: { clientUserId: clientId, isPublished: false, publishedAt: null },
           orderBy: { createdAt: 'desc' },
         });
 

@@ -142,6 +142,11 @@ export type AssessmentStageData = Prisma.AssessmentStageDataModel
  */
 export type DailyMealLog = Prisma.DailyMealLogModel
 /**
+ * Model MealAuditLog
+ * 
+ */
+export type MealAuditLog = Prisma.MealAuditLogModel
+/**
  * Model NutritionTarget
  * 
  */

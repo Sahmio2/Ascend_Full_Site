@@ -71,6 +71,7 @@ export const ModelName = {
   ClientAssessment: 'ClientAssessment',
   AssessmentStageData: 'AssessmentStageData',
   DailyMealLog: 'DailyMealLog',
+  MealAuditLog: 'MealAuditLog',
   NutritionTarget: 'NutritionTarget',
   ExerciseSwap: 'ExerciseSwap',
   ClientWorkoutSession: 'ClientWorkoutSession',
@@ -374,6 +375,22 @@ export const DailyMealLogScalarFieldEnum = {
 export type DailyMealLogScalarFieldEnum = (typeof DailyMealLogScalarFieldEnum)[keyof typeof DailyMealLogScalarFieldEnum]
 
 
+export const MealAuditLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  mealType: 'mealType',
+  action: 'action',
+  previousStatus: 'previousStatus',
+  newStatus: 'newStatus',
+  programmeVersion: 'programmeVersion',
+  payload: 'payload',
+  recordedAt: 'recordedAt'
+} as const
+
+export type MealAuditLogScalarFieldEnum = (typeof MealAuditLogScalarFieldEnum)[keyof typeof MealAuditLogScalarFieldEnum]
+
+
 export const NutritionTargetScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -421,6 +438,7 @@ export const ClientWorkoutSetLogScalarFieldEnum = {
   exerciseId: 'exerciseId',
   exerciseName: 'exerciseName',
   targetExerciseId: 'targetExerciseId',
+  slotId: 'slotId',
   isSwap: 'isSwap',
   setIndex: 'setIndex',
   isWarmup: 'isWarmup',
@@ -729,6 +747,17 @@ export const DailyMealLogOrderByRelevanceFieldEnum = {
 export type DailyMealLogOrderByRelevanceFieldEnum = (typeof DailyMealLogOrderByRelevanceFieldEnum)[keyof typeof DailyMealLogOrderByRelevanceFieldEnum]
 
 
+export const MealAuditLogOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  action: 'action',
+  programmeVersion: 'programmeVersion'
+} as const
+
+export type MealAuditLogOrderByRelevanceFieldEnum = (typeof MealAuditLogOrderByRelevanceFieldEnum)[keyof typeof MealAuditLogOrderByRelevanceFieldEnum]
+
+
 export const NutritionTargetOrderByRelevanceFieldEnum = {
   id: 'id',
   userId: 'userId'
@@ -767,7 +796,8 @@ export const ClientWorkoutSetLogOrderByRelevanceFieldEnum = {
   sessionId: 'sessionId',
   exerciseId: 'exerciseId',
   exerciseName: 'exerciseName',
-  targetExerciseId: 'targetExerciseId'
+  targetExerciseId: 'targetExerciseId',
+  slotId: 'slotId'
 } as const
 
 export type ClientWorkoutSetLogOrderByRelevanceFieldEnum = (typeof ClientWorkoutSetLogOrderByRelevanceFieldEnum)[keyof typeof ClientWorkoutSetLogOrderByRelevanceFieldEnum]

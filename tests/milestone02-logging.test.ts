@@ -397,9 +397,10 @@ test('M2-T10: Preservation of historical records after Sahmi publishes a new pro
   const coachSession = await issueUserSession(coach.id);
   const clientSession = await issueUserSession(client.id);
 
-  await prisma.programmeDraft.deleteMany({ where: { clientUserId: client.id } });
+  await prisma.clientWorkoutSetLog.deleteMany({ where: { session: { userId: client.id } } });
   await prisma.clientWorkoutSession.deleteMany({ where: { userId: client.id } });
   await prisma.dailyMealLog.deleteMany({ where: { userId: client.id } });
+  await prisma.programmeDraft.deleteMany({ where: { clientUserId: client.id } });
 
   // 1. Publish v1
   await coachPublishPost(new Request(`${ORIGIN}/api/coach/programmes/${client.id}/publish`, {
