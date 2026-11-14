@@ -28,7 +28,33 @@ export const GET = handler(async (request: Request) => {
     include: { stages: true },
   });
 
-  return json({ ok: true, assessment });
+  const answers: Record<string, any> = {};
+  if (assessment?.stages) {
+    for (const stage of assessment.stages) {
+      if (stage.data && typeof stage.data === 'object') {
+        Object.assign(answers, stage.data);
+      }
+    }
+  }
+
+  const isSubmitted =
+    assessment?.status === 'SUBMITTED' ||
+    assessment?.status === 'APPROVED' ||
+    assessment?.status === 'SAFETY_HELD';
+
+  return json({
+    ok: true,
+    assessment: assessment
+      ? {
+          id: assessment.id,
+          status: assessment.status,
+          isSubmitted,
+          submittedAt: assessment.submittedAt,
+          deliveryDueAt: assessment.deliveryDueAt,
+        }
+      : null,
+    answers,
+  });
 });
 
 export const POST = handler(async (request: Request) => {
@@ -44,9 +70,10 @@ export const POST = handler(async (request: Request) => {
     })
     .parse(raw);
 
+  const bs02 = answers['BS-02'];
   const hasSafetyFlag =
-    answers['BS-02'] === 'Yes' ||
-    answers['BS-03'] === 'Yes' ||
+    bs02 === 'Yes' ||
+    (bs02 !== 'No' && answers['BS-03'] === 'Yes') ||
     answers['BS-06'] === 'Pregnant' ||
     answers['BS-07'] === 'Yes';
 

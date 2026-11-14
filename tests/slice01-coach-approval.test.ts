@@ -440,3 +440,170 @@ test('Slice 01 - T10: All 3 publish checkpoint confirmation checks are strictly 
   const data = await res.json();
   assert.equal(data.error, 'ALL_PUBLICATION_CHECKS_REQUIRED');
 });
+
+test('Slice 01 - T11: Saved draft changes do not modify an already published programme until Sahmi explicitly republishes', async () => {
+  const prisma = db();
+  const coachEmail = 'coach_slice01@test.internal';
+  const clientEmail = 'client_t11_draft_isolation@test.internal';
+
+  const coach = await prisma.user.upsert({ where: { email: coachEmail }, update: { role: 'COACH' }, create: { email: coachEmail, role: 'COACH' } });
+  const client = await prisma.user.upsert({ where: { email: clientEmail }, update: { role: 'CLIENT' }, create: { email: clientEmail, role: 'CLIENT' } });
+
+  await prisma.programmeDraft.deleteMany({ where: { clientUserId: client.id } });
+  await prisma.clientAssessment.upsert({
+    where: { userId: client.id },
+    update: { status: 'SUBMITTED', submittedAt: new Date(), deliveryDueAt: new Date(Date.now() + 5 * 86400000) },
+    create: { userId: client.id, status: 'SUBMITTED', submittedAt: new Date(), deliveryDueAt: new Date(Date.now() + 5 * 86400000) },
+  });
+
+  const coachSession = await issueUserSession(coach.id);
+  const clientSession = await issueUserSession(client.id);
+
+  // 1. Publish Active v1
+  const pub1Req = new Request(`${ORIGIN}/api/coach/programmes/${client.id}/publish`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Origin: ORIGIN, Cookie: coachSession.cookieHeader },
+    body: JSON.stringify({
+      checksConfirmed: [true, true, true],
+      version: 'Active v1',
+      training: [{ name: 'Workout v1 Original' }],
+      nutrition: [{ food: 'Nutrition v1 Original' }],
+    }),
+  });
+  const pub1Res = await coachProgrammePublishPost(pub1Req, { params: Promise.resolve({ id: client.id }) });
+  assert.equal(pub1Res.status, 200);
+
+  // Client verifies they see Active v1
+  const clientReq1 = new Request(`${ORIGIN}/api/client/programme`, {
+    method: 'GET',
+    headers: { Origin: ORIGIN, Cookie: clientSession.cookieHeader },
+  });
+  const clientRes1 = await clientProgrammeGet(clientReq1);
+  const clientData1 = await clientRes1.json();
+  assert.equal(clientData1.status, 'ACTIVE');
+  assert.equal(clientData1.programme.version, 'Active v1');
+  assert.equal(clientData1.programme.training[0].name, 'Workout v1 Original');
+
+  // 2. Coach modifies and saves a new draft (Draft v2) via PUT
+  const draftPutReq = new Request(`${ORIGIN}/api/coach/programmes/${client.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Origin: ORIGIN, Cookie: coachSession.cookieHeader },
+    body: JSON.stringify({
+      version: 'Draft v2',
+      training: [{ name: 'Workout v2 Work In Progress' }],
+      nutrition: [{ food: 'Nutrition v2 Work In Progress' }],
+      coachNotes: 'In-progress modifications',
+    }),
+  });
+  const draftPutRes = await coachProgrammePut(draftPutReq, { params: Promise.resolve({ id: client.id }) });
+  assert.equal(draftPutRes.status, 200);
+
+  // In DB: v1 must still be isPublished: true, and Draft v2 is isPublished: false
+  const activePlanInDb = await prisma.programmeDraft.findFirst({
+    where: { clientUserId: client.id, isPublished: true },
+  });
+  assert.ok(activePlanInDb);
+  assert.equal(activePlanInDb.version, 'Active v1');
+  assert.equal((activePlanInDb.trainingJson as any)[0].name, 'Workout v1 Original');
+
+  // Client STILL sees Active v1!
+  const clientRes2 = await clientProgrammeGet(clientReq1);
+  const clientData2 = await clientRes2.json();
+  assert.equal(clientData2.status, 'ACTIVE');
+  assert.equal(clientData2.programme.version, 'Active v1');
+  assert.equal(clientData2.programme.training[0].name, 'Workout v1 Original');
+
+  // 3. Coach explicitly publishes v2
+  const pub2Req = new Request(`${ORIGIN}/api/coach/programmes/${client.id}/publish`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Origin: ORIGIN, Cookie: coachSession.cookieHeader },
+    body: JSON.stringify({
+      checksConfirmed: [true, true, true],
+      version: 'Active v2',
+      training: [{ name: 'Workout v2 Final Approved' }],
+      nutrition: [{ food: 'Nutrition v2 Final Approved' }],
+    }),
+  });
+  const pub2Res = await coachProgrammePublishPost(pub2Req, { params: Promise.resolve({ id: client.id }) });
+  assert.equal(pub2Res.status, 200);
+
+  // Now client receives Active v2
+  const clientRes3 = await clientProgrammeGet(clientReq1);
+  const clientData3 = await clientRes3.json();
+  assert.equal(clientData3.status, 'ACTIVE');
+  assert.equal(clientData3.programme.version, 'Active v2');
+  assert.equal(clientData3.programme.training[0].name, 'Workout v2 Final Approved');
+});
+
+test('Slice 01 - T12: Assessment resumption and Coach queue visibility', async () => {
+  const prisma = db();
+  const coachEmail = 'coach_slice01@test.internal';
+  const clientEmail = 'client_t12_resumption@test.internal';
+
+  const coach = await prisma.user.upsert({ where: { email: coachEmail }, update: { role: 'COACH' }, create: { email: coachEmail, role: 'COACH' } });
+  const client = await prisma.user.upsert({ where: { email: clientEmail }, update: { role: 'CLIENT' }, create: { email: clientEmail, role: 'CLIENT' } });
+
+  await prisma.assessmentStageData.deleteMany({ where: { assessment: { userId: client.id } } });
+  await prisma.clientAssessment.deleteMany({ where: { userId: client.id } });
+
+  const clientSession = await issueUserSession(client.id);
+  const coachSession = await issueUserSession(coach.id);
+
+  // 1. Client autosaves partial answers (isSubmitted: false)
+  const partialAnswers = {
+    'FT-02': '29',
+    'BS-02': 'No',
+  };
+  const saveReq = new Request(`${ORIGIN}/api/assessment`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Origin: ORIGIN, Cookie: clientSession.cookieHeader },
+    body: JSON.stringify({ answers: partialAnswers, isSubmitted: false }),
+  });
+  const saveRes = await assessmentPost(saveReq);
+  assert.equal(saveRes.status, 200);
+
+  // 2. Client reloads assessment page -> GET /api/assessment returns partial answers and IN_PROGRESS
+  const getReq = new Request(`${ORIGIN}/api/assessment`, {
+    method: 'GET',
+    headers: { Origin: ORIGIN, Cookie: clientSession.cookieHeader },
+  });
+  const getRes = await assessmentGet(getReq);
+  assert.equal(getRes.status, 200);
+  const getData = await getRes.json();
+  assert.equal(getData.ok, true);
+  assert.equal(getData.assessment.status, 'IN_PROGRESS');
+  assert.equal(getData.assessment.isSubmitted, false);
+  assert.equal(getData.answers['FT-02'], '29');
+
+  // 3. Client finishes and submits (isSubmitted: true)
+  const fullAnswers = {
+    ...partialAnswers,
+    'BS-04': 'No',
+    'FS-02': ['Arms', 'Chest & shoulders'],
+    'TC-01': '6 to 24 months',
+    'GB-01': ['Monday', 'Wednesday', 'Friday'],
+  };
+  const submitReq = new Request(`${ORIGIN}/api/assessment`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Origin: ORIGIN, Cookie: clientSession.cookieHeader },
+    body: JSON.stringify({ answers: fullAnswers, isSubmitted: true }),
+  });
+  const submitRes = await assessmentPost(submitReq);
+  assert.equal(submitRes.status, 200);
+
+  // 4. Coach queries GET /api/coach/clients -> sees client in queue with SUBMITTED status and deliveryDueAt
+  const coachQueueReq = new Request(`${ORIGIN}/api/coach/clients`, {
+    method: 'GET',
+    headers: { Origin: ORIGIN, Cookie: coachSession.cookieHeader },
+  });
+  const coachQueueRes = await coachClientsGet(coachQueueReq);
+  assert.equal(coachQueueRes.status, 200);
+  const queueData = await coachQueueRes.json();
+  assert.equal(queueData.ok, true);
+  const queueItem = queueData.clients.find((c: any) => c.id === client.id);
+  assert.ok(queueItem, 'Client must appear in coach queue');
+  assert.equal(queueItem.assessmentStatus, 'SUBMITTED');
+  assert.ok(queueItem.deliveryDueAt);
+  assert.ok(queueData.capacity);
+  assert.ok(typeof queueData.capacity.activeClients === 'number');
+});

@@ -50,7 +50,8 @@ All work strictly adheres to the approved Notion designs, existing code structur
 
 ### Part A: Safety Directives & Assessment Corrections
 - **PAR-Q Eradication**: Removed question `BS-01` ("Have you completed the Physical Activity Readiness Questionnaire?") completely. In `NineStageAssessment.tsx`, removed all `parq` textarea rendering and default values.
-- **Dynamic Conditional Logic**: In `assessmentData.ts`, `BS-03` ("Please list any medical conditions...") is only shown when `BS-02` ("Has a doctor ever said that you have a medical condition...") is `'Yes'` or `'Unsure'`.
+- **Dynamic Conditional Logic**: In `assessmentData.ts`, `BS-03` ("With the pain or injury you reported, have you noticed giving way, locking, major swelling, loss of feeling, unexplained weakness or other concerning changes?") is strictly conditioned on `when: { id: 'BS-02', in: ['Yes', 'Unsure'] }` where `BS-02` asks: "Do you currently have pain, an injury or a movement that becomes painful during or after training?". In `NineStageAssessment.tsx`, when `BS-02` is answered or reset to `'No'`, `BS-03` and dependent sub-questions (`BS-02A` through `BS-02F`) are hidden and cleaned from submission state.
+- **Unverified Macro Calculation Guard**: In `clientPortalAdapter.ts`, sample Nigerian meal items preserve exact gram amounts and preparation states (e.g. *Rice · white cooked 180 g*, *Fish · mackerel grilled 130 g*) but do not fabricate hardcoded calorie and macronutrient sums, ensuring unverified meals are never presented as validated calculations.
 - **Idempotent Submission & SLA Invariant**:
   When a client submits the assessment:
   - If a record already exists with `submittedAt`, subsequent submissions update the answers without modifying the initial `submittedAt` timestamp or extending the 5-business-day `deliveryDueAt` target.

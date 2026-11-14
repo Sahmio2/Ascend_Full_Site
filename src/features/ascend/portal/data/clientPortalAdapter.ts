@@ -97,17 +97,24 @@ async function fetchLiveProgramme() {
         ];
       }
 
-      // Map nutrition JSON to meals
+      // Map nutrition JSON to meals without fabricating unvalidated macro sums
       if (Array.isArray(progData.programme.nutrition) && progData.programme.nutrition.length > 0) {
-        updated.nutrition.meals = progData.programme.nutrition.map((item: any, i: number) => ({
-          id: `meal-${i}`,
-          time: i === 0 ? "08:00" : i === 1 ? "13:00" : "19:00",
-          name: `${item.food} (${item.amount}) ${item.other ? '· ' + item.other : ''}`.trim(),
-          calories: i === 0 ? 420 : i === 1 ? 650 : 580,
-          protein: i === 0 ? 30 : i === 1 ? 45 : 40,
-          carbs: i === 0 ? 50 : i === 1 ? 75 : 65,
-          fats: i === 0 ? 10 : i === 1 ? 16 : 14,
-        }));
+        updated.nutrition.meals = progData.programme.nutrition.map((item: any, i: number) => {
+          const hasVerifiedKcal = typeof item.calories === 'number';
+          const hasVerifiedP = typeof item.protein === 'number';
+          const hasVerifiedC = typeof item.carbs === 'number';
+          const hasVerifiedF = typeof item.fats === 'number';
+
+          return {
+            id: `meal-${i}`,
+            time: item.time || (i === 0 ? "08:00" : i === 1 ? "13:00" : "19:00"),
+            name: `${item.meal ? item.meal + ' · ' : ''}${item.food || ''} (${item.amount || ''}) ${item.other ? '· ' + item.other : ''}`.trim(),
+            calories: hasVerifiedKcal ? item.calories : 0,
+            protein: hasVerifiedP ? item.protein : 0,
+            carbs: hasVerifiedC ? item.carbs : 0,
+            fats: hasVerifiedF ? item.fats : 0,
+          };
+        });
       }
     } else if (progData.status === "AWAITING_REVIEW") {
       updated.programme.subtitle = "Under Review by Sahmi";

@@ -986,7 +986,11 @@ export default function CoachStudio({
           {/* 3. ASSESSMENTS VIEW */}
           {page === "assessments" && (() => {
             const currentClient = getClient(assess);
-            const isSafetyFlagged = assess === "amara";
+            const isSafetyFlagged =
+              currentClient?.hasSafetyFlag ||
+              currentClient?.assessmentStatus === "SAFETY_HELD" ||
+              Boolean(realAssessmentData?.hasSafetyFlag) ||
+              assess === "amara";
 
             return (
               <>

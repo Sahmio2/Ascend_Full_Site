@@ -32,7 +32,6 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
       'FT-02': '26',
       'FT-05': ['I have read the ASCEND privacy notice.', 'I understand that ASCEND coaching does not provide medical care or emergency support.'],
       'BS-02': 'No',
-      'BS-03': 'No',
       'BS-04': 'No',
       'BS-05': 'No',
       'BS-07': 'No',
@@ -118,7 +117,19 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
   }, [currentStageIndex, answers]);
 
   const updateAnswer = (questionId: string, value: any) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: value }));
+    setAnswers((prev) => {
+      const next = { ...prev, [questionId]: value };
+      if (questionId === 'BS-02' && value === 'No') {
+        delete next['BS-02A'];
+        delete next['BS-02B'];
+        delete next['BS-02C'];
+        delete next['BS-02D'];
+        delete next['BS-02E'];
+        delete next['BS-02F'];
+        delete next['BS-03'];
+      }
+      return next;
+    });
     setError(null);
   };
 
@@ -157,7 +168,6 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
         'I understand that ASCEND coaching does not provide medical care or emergency support.',
       ],
       'BS-02': 'No',
-      'BS-03': 'No',
       'BS-04': 'No',
       'BS-05': 'No',
       'BS-07': 'No',
@@ -244,9 +254,10 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
   };
 
   // Check for any urgent safety flags in health stage
+  const bs02 = answers['BS-02'];
   const hasSafetyFlag =
-    answers['BS-02'] === 'Yes' ||
-    answers['BS-03'] === 'Yes' ||
+    bs02 === 'Yes' ||
+    (bs02 !== 'No' && answers['BS-03'] === 'Yes') ||
     answers['BS-06'] === 'Pregnant' ||
     answers['BS-07'] === 'Yes';
 
