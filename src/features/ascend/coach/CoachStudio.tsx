@@ -84,6 +84,10 @@ export interface ClientRecord {
   review: string;
   kind: string;
   days: string;
+  hasSafetyFlag?: boolean;
+  assessmentStatus?: string;
+  deliveryDueAt?: string | null;
+  submittedAt?: string | null;
 }
 
 export interface TaskRecord {
@@ -180,6 +184,13 @@ export default function CoachStudio({
   const [queueFilter, setQueueFilter] = useState<"All" | "Due soon" | "Safety" | "Reviews">("All");
 
   // Clients
+  const [clients, setClients] = useState<ClientRecord[]>(INITIAL_CLIENTS);
+  const [capacityStats, setCapacityStats] = useState<{
+    activeClients: number;
+    maxActiveClients: number;
+    weeklyOnboardings: number;
+    maxWeeklyOnboardings: number;
+  } | null>(null);
   const [clientSearch, setClientSearch] = useState("");
   const [clientFilter, setClientFilter] = useState<"All clients" | "Active" | "Needs setup">("All clients");
 
@@ -188,6 +199,7 @@ export default function CoachStudio({
   const [assessTab, setAssessTab] = useState<"facts" | "safety" | "interpretation">("facts");
   const [coachNotes, setCoachNotes] = useState<Record<string, string>>({ amara: "", tunde: "" });
   const [documentRequested, setDocumentRequested] = useState(false);
+  const [realAssessmentData, setRealAssessmentData] = useState<any | null>(null);
 
   // Programmes
   const [programme, setProgramme] = useState("tunde");
@@ -198,6 +210,8 @@ export default function CoachStudio({
   const [planVersion, setPlanVersion] = useState("Draft v1");
   const [training, setTraining] = useState<TrainingItem[]>(INITIAL_TRAINING);
   const [nutrition, setNutrition] = useState<NutritionItem[]>(INITIAL_NUTRITION);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
 
   // Reviews
   const [review, setReview] = useState("zara");
@@ -225,6 +239,87 @@ export default function CoachStudio({
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     toastTimerRef.current = setTimeout(() => setToastMessage(null), 3300);
   };
+
+  // Fetch real clients from server API
+  const fetchClients = async () => {
+    try {
+      const res = await fetch("/api/coach/clients");
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.ok && Array.isArray(data.clients) && data.clients.length > 0) {
+        setClients(data.clients);
+        if (data.capacity) {
+          setCapacityStats(data.capacity);
+        }
+        if (!data.clients.some((c: ClientRecord) => c.id === assess)) {
+          setAssess(data.clients[0].id);
+        }
+        if (!data.clients.some((c: ClientRecord) => c.id === programme)) {
+          setProgramme(data.clients[0].id);
+        }
+      }
+    } catch {}
+  };
+
+  useEffect(() => {
+    fetchClients();
+  }, []);
+
+  // Fetch real assessment data when assess selection changes
+  useEffect(() => {
+    if (!assess) return;
+    async function loadAssessment() {
+      try {
+        const res = await fetch(`/api/coach/assessments/${assess}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.ok) {
+          setRealAssessmentData(data);
+          if (data.answers?.['TC-05'] && typeof data.answers['TC-05'] === 'object') {
+            // Context loaded
+          }
+        }
+      } catch {}
+    }
+    loadAssessment();
+  }, [assess]);
+
+  // Fetch real programme draft when programme selection changes
+  useEffect(() => {
+    if (!programme) return;
+    async function loadProgramme() {
+      try {
+        const res = await fetch(`/api/coach/programmes/${programme}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.ok) {
+          if (data.publishedPlan) {
+            setPlanApproved(true);
+            setPlanVersion(data.publishedPlan.version);
+            if (Array.isArray(data.publishedPlan.trainingJson) && data.publishedPlan.trainingJson.length > 0) {
+              setTraining(data.publishedPlan.trainingJson);
+            }
+            if (Array.isArray(data.publishedPlan.nutritionJson) && data.publishedPlan.nutritionJson.length > 0) {
+              setNutrition(data.publishedPlan.nutritionJson);
+            }
+          } else {
+            setPlanApproved(false);
+            setPlanVersion(data.draft?.version || "Draft v1");
+            if (Array.isArray(data.draft?.training) && data.draft.training.length > 0) {
+              setTraining(data.draft.training);
+            }
+            if (Array.isArray(data.draft?.nutrition) && data.draft.nutrition.length > 0) {
+              setNutrition(data.draft.nutrition);
+            }
+          }
+          if (data.draft?.coachNotes) {
+            setCoachNotes((prev) => ({ ...prev, [programme]: data.draft.coachNotes }));
+          }
+        }
+      } catch {}
+    }
+    loadProgramme();
+  }, [programme]);
 
   // Theme initialization & sync
   useEffect(() => {
@@ -265,7 +360,7 @@ export default function CoachStudio({
   }, []);
 
   // Helper getters
-  const getClient = (id: string): ClientRecord => INITIAL_CLIENTS.find((c) => c.id === id) || INITIAL_CLIENTS[0];
+  const getClient = (id: string): ClientRecord => clients.find((c) => c.id === id) || INITIAL_CLIENTS.find((c) => c.id === id) || clients[0] || INITIAL_CLIENTS[0];
 
   // Quick jump actions
   const handleOpenTask = (taskId: string) => {
@@ -303,6 +398,75 @@ export default function CoachStudio({
     setMessages(INITIAL_MESSAGES);
     setPublishChecks([false, false, false]);
     showToast("Example studio data reset");
+  };
+
+  const handleSaveDraft = async () => {
+    setIsSavingDraft(true);
+    try {
+      const res = await fetch(`/api/coach/programmes/${programme}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          version: planVersion.startsWith("Draft") ? planVersion.replace(" (demo)", "") : "Draft v1",
+          training,
+          nutrition,
+          coachNotes: coachNotes[programme] || "",
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        setPlanDraftDirty(false);
+        setPlanEdit(false);
+        showToast("Draft saved successfully · not visible to client");
+        fetchClients();
+      } else {
+        showToast(data.error || "Failed to save draft");
+      }
+    } catch {
+      setPlanDraftDirty(false);
+      setPlanEdit(false);
+      showToast("Draft saved locally in demo");
+    } finally {
+      setIsSavingDraft(false);
+    }
+  };
+
+  const handlePublishPlan = async () => {
+    setIsPublishing(true);
+    try {
+      const res = await fetch(`/api/coach/programmes/${programme}/publish`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: typeof window !== "undefined" ? window.location.origin : "",
+        },
+        body: JSON.stringify({
+          checksConfirmed: publishChecks,
+          training,
+          nutrition,
+          coachNotes: coachNotes[programme] || "",
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        setPlanVersion(data.programme.version);
+        setPlanApproved(true);
+        setPlanEdit(false);
+        setModal(null);
+        showToast(`Programme published: ${data.programme.version} is now active for client`);
+        fetchClients();
+      } else {
+        showToast(data.error || "Failed to publish programme");
+      }
+    } catch {
+      setPlanVersion("Active v1 (demo)");
+      setPlanApproved(true);
+      setPlanEdit(false);
+      setModal(null);
+      showToast("Publication simulated only · no real plan changed");
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   return (
@@ -483,16 +647,16 @@ export default function CoachStudio({
               <div className="kpi-grid">
                 <div className="card kpi">
                   <div className="kpi-head">Active membership <SvgIcon name="clients" /></div>
-                  <div className="kpi-val mono">6 / 10</div>
-                  <div className="kpi-foot">4 remaining places</div>
-                  <div className="progress-track"><span style={{ width: "60%" }} /></div>
+                  <div className="kpi-val mono">{capacityStats ? `${capacityStats.activeClients} / ${capacityStats.maxActiveClients}` : "6 / 10"}</div>
+                  <div className="kpi-foot">{capacityStats ? `${Math.max(0, capacityStats.maxActiveClients - capacityStats.activeClients)} remaining places` : "4 remaining places"}</div>
+                  <div className="progress-track"><span style={{ width: `${capacityStats ? Math.min(100, (capacityStats.activeClients / capacityStats.maxActiveClients) * 100) : 60}%` }} /></div>
                 </div>
 
                 <div className="card kpi">
                   <div className="kpi-head">Weekly onboardings <SvgIcon name="people" /></div>
-                  <div className="kpi-val mono">2 / 3</div>
-                  <div className="kpi-foot">1 remaining this week</div>
-                  <div className="progress-track"><span style={{ width: "66.7%" }} /></div>
+                  <div className="kpi-val mono">{capacityStats ? `${capacityStats.weeklyOnboardings} / ${capacityStats.maxWeeklyOnboardings}` : "2 / 3"}</div>
+                  <div className="kpi-foot">{capacityStats ? `${Math.max(0, capacityStats.maxWeeklyOnboardings - capacityStats.weeklyOnboardings)} remaining this week` : "1 remaining this week"}</div>
+                  <div className="progress-track"><span style={{ width: `${capacityStats ? Math.min(100, (capacityStats.weeklyOnboardings / capacityStats.maxWeeklyOnboardings) * 100) : 66.7}%` }} /></div>
                 </div>
 
                 <div className="card kpi">
@@ -851,24 +1015,27 @@ export default function CoachStudio({
                     </div>
 
                     <div className="mini-list">
-                      {["amara", "tunde"].map((id) => {
-                        const a = getClient(id);
+                      {clients.slice(0, 8).map((clientItem) => {
                         return (
                           <button
-                            key={id}
-                            className={`mini-row ${assess === id ? "selected" : ""}`}
+                            key={clientItem.id}
+                            className={`mini-row ${assess === clientItem.id ? "selected" : ""}`}
                             onClick={() => {
-                              setAssess(id);
+                              setAssess(clientItem.id);
                               setAssessTab("facts");
                             }}
                           >
-                            <span className={`avatar ${a.variant}`}>{a.short}</span>
+                            <span className={`avatar ${clientItem.variant}`}>{clientItem.short}</span>
                             <span>
-                              <strong>{a.name}</strong>
+                              <strong>{clientItem.name}</strong>
                               <small>
-                                {id === "amara"
+                                {clientItem.hasSafetyFlag || clientItem.statusTone === "red"
                                   ? "Safety review required"
-                                  : "Complete · awaiting coach interpretation"}
+                                  : clientItem.assessmentStatus === "SUBMITTED"
+                                  ? "Complete · awaiting coach review"
+                                  : clientItem.assessmentStatus === "APPROVED"
+                                  ? "Assessment approved"
+                                  : "Intake registered"}
                               </small>
                             </span>
                             <SvgIcon name="chevron" />
@@ -971,17 +1138,17 @@ export default function CoachStudio({
                         <div className={`info-banner ${isSafetyFlagged ? "danger" : ""}`}>
                           <SvgIcon name="shield" />
                           <div>
-                            <strong>{isSafetyFlagged ? "Further professional advice required" : "No open flag shown in this demo"}.</strong>{" "}
+                            <strong>{isSafetyFlagged ? "Further professional advice required" : "No open flag recorded"}.</strong>{" "}
                             {isSafetyFlagged
-                              ? "A submitted PAR-Q+ record indicates further guidance is needed before training or nutrition activation. Sahmi must not provide medical clearance."
-                              : "Programme activation still requires a completed, versioned pre-participation assessment and applicable safeguards."}
+                              ? "A submitted intake response indicates further guidance is needed before training or nutrition activation. Sahmi must not provide medical clearance."
+                              : "Programme activation requires a completed pre-participation assessment and applicable safeguards."}
                           </div>
                         </div>
                         <div className="rule" />
                         <div className="definition-grid">
                           <div>
-                            <div className="field-label">PAR-Q+ status</div>
-                            <div className="field-val">{isSafetyFlagged ? "Further advice required" : "No flagged response in example"}</div>
+                            <div className="field-label">Pre-participation intake</div>
+                            <div className="field-val">{isSafetyFlagged ? "Further advice required" : "Clear · no flagged response"}</div>
                           </div>
                           <div>
                             <div className="field-label">Programme activation</div>
@@ -1094,28 +1261,32 @@ export default function CoachStudio({
                         </div>
                       </div>
                       <div className="mini-list">
-                        {[
-                          { id: "tunde", label: planVersion, tone: planApproved ? "green" : "amber" },
-                          { id: "zara", label: "Active v2", tone: "green" },
-                          { id: "amara", label: "Safety hold", tone: "red" },
-                        ].map((item) => {
-                          const a = getClient(item.id);
+                        {clients.slice(0, 8).map((clientItem) => {
+                          const isCurrent = programme === clientItem.id;
+                          const label = isCurrent
+                            ? planVersion
+                            : clientItem.plan || "Draft v1";
+                          const tone = isCurrent
+                            ? planApproved
+                              ? "green"
+                              : "amber"
+                            : clientItem.statusTone;
                           return (
                             <button
-                              key={item.id}
-                              className={`mini-row ${programme === item.id ? "selected" : ""}`}
+                              key={clientItem.id}
+                              className={`mini-row ${programme === clientItem.id ? "selected" : ""}`}
                               onClick={() => {
-                                setProgramme(item.id);
+                                setProgramme(clientItem.id);
                                 setProgramTab("training");
                                 setPlanEdit(false);
                               }}
                             >
-                              <span className={`avatar ${a.variant}`}>{a.short}</span>
+                              <span className={`avatar ${clientItem.variant}`}>{clientItem.short}</span>
                               <span>
-                                <strong>{a.name}</strong>
-                                <small>{item.label}</small>
+                                <strong>{clientItem.name}</strong>
+                                <small>{label}</small>
                               </span>
-                              <span className={`tag ${item.tone}`}>{item.label}</span>
+                              <span className={`tag ${tone}`}>{label}</span>
                             </button>
                           );
                         })}
@@ -1228,7 +1399,7 @@ export default function CoachStudio({
                           <div className="editor-head">REST</div>
                         </div>
                         {training.map((item, idx) => {
-                          const isEditable = planEdit && programme === "tunde" && !planApproved;
+                          const isEditable = planEdit && !planApproved && !isBlocked;
                           return (
                             <div key={idx} className="editor-row">
                               <div className="editor-label">
@@ -1293,7 +1464,7 @@ export default function CoachStudio({
                           <div className="editor-head">SECOND ITEM</div>
                         </div>
                         {nutrition.map((item, idx) => {
-                          const isEditable = planEdit && programme === "tunde" && !planApproved;
+                          const isEditable = planEdit && !planApproved && !isBlocked;
                           return (
                             <div key={idx} className="editor-row" style={{ gridTemplateColumns: "90px minmax(120px,1fr) 85px minmax(110px,1fr)" }}>
                               <div className="editor-label">{item.meal}</div>
@@ -1343,14 +1514,16 @@ export default function CoachStudio({
 
                     <div className="save-row">
                       <span className="audit-note">
-                        {programme === "tunde"
-                          ? planDraftDirty
-                            ? "Unsaved demo edits"
-                            : "Coach review required before publish"
-                          : "Read-only approved programme preview"}
+                        {isBlocked
+                          ? "Programme activation held · safety review required"
+                          : planDraftDirty
+                          ? "Unsaved draft edits"
+                          : planApproved
+                          ? "Active programme published · client can view"
+                          : "Coach review required before publish"}
                       </span>
 
-                      {programme === "tunde" && !planApproved && programTab !== "versions" && (
+                      {!planApproved && !isBlocked && programTab !== "versions" && (
                         <>
                           <button
                             className="btn"
@@ -1360,26 +1533,24 @@ export default function CoachStudio({
                           </button>
                           <button
                             className="btn"
-                            onClick={() => {
-                              setPlanDraftDirty(false);
-                              setPlanEdit(false);
-                              showToast("Draft saved in this prototype · not shared with client");
-                            }}
+                            disabled={isSavingDraft}
+                            onClick={handleSaveDraft}
                           >
-                            Save draft
+                            {isSavingDraft ? "Saving..." : "Save draft"}
                           </button>
                         </>
                       )}
 
-                      {programme === "tunde" && planApproved && (
+                      {planApproved && !isBlocked && (
                         <button
                           className="btn"
                           onClick={() => {
                             setPlanApproved(false);
-                            setPlanVersion("Draft v2 (demo)");
-                            setPlanEdit(false);
-                            setPlanDraftDirty(false);
-                            showToast("New revision created in demo; previous Active version is preserved");
+                            const nextV = `Draft v${parseInt(planVersion.replace(/\D/g, "") || "1", 10) + 1}`;
+                            setPlanVersion(nextV);
+                            setPlanEdit(true);
+                            setPlanDraftDirty(true);
+                            showToast(`New revision created: ${nextV}; previous Active version is preserved`);
                           }}
                         >
                           New revision draft
@@ -2036,19 +2207,13 @@ export default function CoachStudio({
             </div>
 
             <div className="modal-footer">
-              <button className="btn" onClick={() => setModal(null)}>Cancel</button>
+              <button className="btn" onClick={() => setModal(null)} disabled={isPublishing}>Cancel</button>
               <button
                 className="btn primary"
-                disabled={!publishChecks.every(Boolean)}
-                onClick={() => {
-                  setPlanVersion("Active v1 (demo)");
-                  setPlanApproved(true);
-                  setPlanEdit(false);
-                  setModal(null);
-                  showToast("Publication simulated only · no real plan changed");
-                }}
+                disabled={!publishChecks.every(Boolean) || isPublishing}
+                onClick={handlePublishPlan}
               >
-                Simulate publish
+                {isPublishing ? "Publishing..." : "Approve & Publish Programme"}
               </button>
             </div>
           </div>

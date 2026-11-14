@@ -26,6 +26,104 @@ let demoAuthStarter: (() => void | Promise<void>) | null = null;
 let demoSnapshot: ClientPortalData | null = null;
 const demoListeners = new Set<Listener>();
 
+let liveSnapshot: ClientPortalData | null = null;
+const liveListeners = new Set<Listener>();
+let isFetchingLive = false;
+
+async function fetchLiveProgramme() {
+  if (typeof window === "undefined" || isFetchingLive) return;
+  isFetchingLive = true;
+  try {
+    const [progRes, snapRes] = await Promise.all([
+      fetch("/api/client/programme"),
+      fetch("/api/account/snapshot"),
+    ]);
+
+    if (!progRes.ok) return;
+    const progData = await progRes.json();
+    const snapData = snapRes.ok ? await snapRes.json() : null;
+
+    const base = liveSnapshot || createGetDivineDemoSeed();
+    const updated = structuredClone(base);
+
+    if (snapData?.snapshot) {
+      updated.client.fullName = snapData.snapshot.firstName || updated.client.fullName;
+      updated.client.email = snapData.snapshot.email || updated.client.email;
+    }
+
+    if (progData.status === "ACTIVE" && progData.programme) {
+      updated.programme.title = "Ascension Block 01";
+      updated.programme.subtitle = progData.programme.version || "Active v1";
+      if (progData.programme.coachNotes) {
+        updated.programme.athleteDirection = progData.programme.coachNotes;
+      }
+
+      // Map training JSON to days
+      if (Array.isArray(progData.programme.training) && progData.programme.training.length > 0) {
+        const rawItems = progData.programme.training;
+        const exercises = rawItems.map((item: any, i: number) => ({
+          id: `ex-${i}`,
+          name: item.name || "Exercise",
+          type: "Main lift",
+          prescribedSets: parseInt(item.sets || "3", 10) || 3,
+          reps: item.reps || "8–12",
+          rest: item.rest || "120 sec",
+          tempo: "2-1-1",
+          notes: item.swap ? `Approved swap: ${item.swap}` : "Clean controlled reps.",
+        }));
+
+        updated.programme.days = [
+          {
+            id: "fullbody-a",
+            name: "Full Body A",
+            focus: "Compound lower & upper pressing and pulling.",
+            estimatedMinutes: "60",
+            exercises: exercises.slice(0, 4),
+          },
+          {
+            id: "fullbody-b",
+            name: "Full Body B",
+            focus: "Hinge and upper body balance.",
+            estimatedMinutes: "60",
+            exercises: exercises.slice(1, 5),
+          },
+          {
+            id: "fullbody-c",
+            name: "Full Body C",
+            focus: "Squat and overhead stability.",
+            estimatedMinutes: "60",
+            exercises: exercises.slice(2, 6),
+          },
+        ];
+      }
+
+      // Map nutrition JSON to meals
+      if (Array.isArray(progData.programme.nutrition) && progData.programme.nutrition.length > 0) {
+        updated.nutrition.meals = progData.programme.nutrition.map((item: any, i: number) => ({
+          id: `meal-${i}`,
+          time: i === 0 ? "08:00" : i === 1 ? "13:00" : "19:00",
+          name: `${item.food} (${item.amount}) ${item.other ? '· ' + item.other : ''}`.trim(),
+          calories: i === 0 ? 420 : i === 1 ? 650 : 580,
+          protein: i === 0 ? 30 : i === 1 ? 45 : 40,
+          carbs: i === 0 ? 50 : i === 1 ? 75 : 65,
+          fats: i === 0 ? 10 : i === 1 ? 16 : 14,
+        }));
+      }
+    } else if (progData.status === "AWAITING_REVIEW") {
+      updated.programme.subtitle = "Under Review by Sahmi";
+      updated.programme.athleteDirection = "Your 9-stage assessment has been received. Coach Sahmi is preparing your personalised programme (delivery within 5 business days).";
+    } else if (progData.status === "SAFETY_HELD") {
+      updated.programme.subtitle = "Safety Review";
+      updated.programme.athleteDirection = "A pre-participation safety question requires coaching clarification before training activation.";
+    }
+
+    liveSnapshot = updated;
+    liveListeners.forEach((l) => l());
+  } catch {} finally {
+    isFetchingLive = false;
+  }
+}
+
 function browserSessionStorage() {
   return typeof window === "undefined" ? null : window.sessionStorage;
 }
@@ -86,17 +184,20 @@ export function registerGetDivineDemoAuthStarter(
 export const clientPortalAdapter = {
   getSnapshot(scope: PortalScope): ClientPortalData {
     if (scope === "demo") return hydrateDemo();
-    if (!liveBridge) {
-      // Safe fallback for server-side rendering and build prerendering
-      return hydrateDemo();
+    if (!liveSnapshot) {
+      liveSnapshot = hydrateDemo();
+      fetchLiveProgramme();
     }
-    return liveBridge.getSnapshot();
+    return liveSnapshot;
   },
 
   subscribe(scope: PortalScope, listener: Listener) {
     if (scope === "live") {
-      if (!liveBridge) return () => undefined;
-      return liveBridge.subscribe(listener);
+      liveListeners.add(listener);
+      fetchLiveProgramme();
+      return () => {
+        liveListeners.delete(listener);
+      };
     }
     demoListeners.add(listener);
     return () => demoListeners.delete(listener);

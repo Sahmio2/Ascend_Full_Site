@@ -31,7 +31,6 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
       },
       'FT-02': '26',
       'FT-05': ['I have read the ASCEND privacy notice.', 'I understand that ASCEND coaching does not provide medical care or emergency support.'],
-      'BS-01': 'No flagged medical conditions',
       'BS-02': 'No',
       'BS-03': 'No',
       'BS-04': 'No',
@@ -70,6 +69,37 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Load existing assessment from server if available
+  useEffect(() => {
+    let ignore = false;
+    async function loadSavedAssessment() {
+      try {
+        const res = await fetch('/api/assessment');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (ignore || !data.assessment) return;
+
+        if (data.assessment.status === 'SUBMITTED' || data.assessment.status === 'APPROVED' || data.assessment.status === 'SAFETY_HELD') {
+          setIsSubmitted(true);
+        }
+
+        if (Array.isArray(data.assessment.stages) && data.assessment.stages.length > 0) {
+          const merged: Record<string, any> = {};
+          for (const s of data.assessment.stages) {
+            if (s.data && typeof s.data === 'object') {
+              Object.assign(merged, s.data);
+            }
+          }
+          if (Object.keys(merged).length > 0) {
+            setAnswers((prev) => ({ ...prev, ...merged }));
+          }
+        }
+      } catch {}
+    }
+    loadSavedAssessment();
+    return () => { ignore = true; };
+  }, []);
 
   // Persist answers locally
   useEffect(() => {
@@ -126,7 +156,6 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
         'I have read the ASCEND privacy notice.',
         'I understand that ASCEND coaching does not provide medical care or emergency support.',
       ],
-      'BS-01': 'No flagged medical conditions',
       'BS-02': 'No',
       'BS-03': 'No',
       'BS-04': 'No',
@@ -176,16 +205,27 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
     if (currentStageIndex < stages.length - 1) {
       setCurrentStageIndex((prev) => prev + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      setIsSubmitted(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      // Persist to server if user is logged in
+      // Non-blocking intermediate autosave
       try {
         fetch('/api/assessment', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Origin: window.location.origin,
+            Origin: typeof window !== 'undefined' ? window.location.origin : '',
+          },
+          body: JSON.stringify({ answers, isSubmitted: false }),
+        }).catch(() => {});
+      } catch {}
+    } else {
+      setIsSubmitted(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Final submission
+      try {
+        fetch('/api/assessment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Origin: typeof window !== 'undefined' ? window.location.origin : '',
           },
           body: JSON.stringify({ answers, isSubmitted: true }),
         }).catch(() => {});
@@ -491,7 +531,7 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
                   </div>
                 )}
 
-                {['parq', 'equipment', 'exercise', 'meals', 'budget', 'sleep', 'workload', 'recovery', 'emergency'].includes(q.type) && (
+                {['equipment', 'exercise', 'meals', 'budget', 'sleep', 'workload', 'recovery', 'emergency'].includes(q.type) && (
                   <textarea
                     className="assessment-textarea"
                     rows={3}

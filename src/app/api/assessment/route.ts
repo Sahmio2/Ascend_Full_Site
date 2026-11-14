@@ -50,26 +50,48 @@ export const POST = handler(async (request: Request) => {
     answers['BS-06'] === 'Pregnant' ||
     answers['BS-07'] === 'Yes';
 
+  const existing = await prisma.clientAssessment.findUnique({
+    where: { userId },
+  });
+
   const now = new Date();
-  const deliveryDueAt = isSubmitted ? calculateFiveBusinessDays(now) : undefined;
-  const status = isSubmitted
+  const previouslySubmitted = Boolean(existing?.submittedAt);
+  const alreadyApproved = existing?.status === 'APPROVED';
+
+  const deliveryDueAt = isSubmitted
+    ? previouslySubmitted && existing?.deliveryDueAt
+      ? existing.deliveryDueAt
+      : calculateFiveBusinessDays(now)
+    : undefined;
+
+  const status = alreadyApproved
+    ? 'APPROVED'
+    : isSubmitted
     ? hasSafetyFlag
       ? 'SAFETY_HELD'
       : 'SUBMITTED'
+    : existing?.status === 'SUBMITTED' || existing?.status === 'SAFETY_HELD'
+    ? existing.status
     : 'IN_PROGRESS';
+
+  const submittedAt = isSubmitted
+    ? previouslySubmitted && existing?.submittedAt
+      ? existing.submittedAt
+      : now
+    : existing?.submittedAt;
 
   const assessment = await prisma.clientAssessment.upsert({
     where: { userId },
     update: {
       status,
       safetyFlags: hasSafetyFlag ? { flagged: true, recordedAt: now.toISOString() } : undefined,
-      ...(isSubmitted ? { submittedAt: now, deliveryDueAt } : {}),
+      ...(isSubmitted ? { submittedAt, deliveryDueAt } : {}),
     },
     create: {
       userId,
       status,
       safetyFlags: hasSafetyFlag ? { flagged: true, recordedAt: now.toISOString() } : undefined,
-      ...(isSubmitted ? { submittedAt: now, deliveryDueAt } : {}),
+      ...(isSubmitted ? { submittedAt, deliveryDueAt } : {}),
     },
   });
 

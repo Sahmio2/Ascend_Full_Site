@@ -1,7 +1,31 @@
 import { ZodError } from 'zod';
 export class ApiError extends Error { constructor(public status:number,public code:string){super(code)} }
 export const json = (data:unknown,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'private, no-store'}});
-export function handler(fn:(request:Request)=>Promise<Response>){return async (request:Request)=>{try{return await fn(request)}catch(e){if(e instanceof ApiError)return json({error:e.code},e.status);if(e instanceof ZodError)return json({error:'INVALID_INPUT',issues:e.issues.map(i=>({path:i.path,message:i.message}))},400);return json({error:'INTERNAL_ERROR'},500)}}}
+export function handler(fn: (request: Request) => Promise<Response>) {
+  return async (request: Request) => {
+    try {
+      return await fn(request);
+    } catch (e) {
+      if (e instanceof ApiError) return json({ error: e.code }, e.status);
+      if (e instanceof ZodError) return json({ error: 'INVALID_INPUT', issues: e.issues.map(i => ({ path: i.path, message: i.message })) }, 400);
+      return json({ error: 'INTERNAL_ERROR' }, 500);
+    }
+  };
+}
+
+export function dynamicHandler<P = { id: string }>(
+  fn: (request: Request, context: { params: Promise<P> }) => Promise<Response>
+) {
+  return async (request: Request, context: { params: Promise<P> }) => {
+    try {
+      return await fn(request, context);
+    } catch (e) {
+      if (e instanceof ApiError) return json({ error: e.code }, e.status);
+      if (e instanceof ZodError) return json({ error: 'INVALID_INPUT', issues: e.issues.map(i => ({ path: i.path, message: i.message })) }, 400);
+      return json({ error: 'INTERNAL_ERROR' }, 500);
+    }
+  };
+}
 export async function body(request:Request):Promise<unknown>{
   if(!request.headers.get('content-type')?.startsWith('application/json'))throw new ApiError(415,'JSON_REQUIRED');
   // Enforce the limit while reading, including requests without Content-Length.
