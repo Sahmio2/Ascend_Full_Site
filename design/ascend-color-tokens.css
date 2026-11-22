@@ -1,0 +1,70 @@
+/* ASCEND semantic colors. Set data-theme to light or dark on the root.
+   For System, omit data-theme and let the media query resolve the theme. */
+
+:root, [data-theme="light"] {
+  color-scheme: light;
+  --ascend-canvas: #F4EFE3;
+  --ascend-surface: #FAF7EF;
+  --ascend-text: #0B0B0A;
+  --ascend-text-muted: #625B50;
+  --ascend-divider: #D8CDB8;
+  --ascend-control-border: #8B7E66;
+  --ascend-link: #7A5F1E;
+  --ascend-focus: #7A5F1E;
+  --ascend-action: #C7A45B;
+  --ascend-action-text: #0B0B0A;
+  --ascend-action-border: #7A5F1E;
+  --ascend-action-hover: #D3B370;
+  --ascend-action-pressed: #B48F43;
+  --ascend-success: #2E624D;
+  --ascend-warning: #76571C;
+  --ascend-danger: #9D343B;
+  --ascend-info: #315C72;
+  --ascend-glow-opacity: 0.12;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --ascend-canvas: #0B0B0A;
+  --ascend-surface: #111817;
+  --ascend-text: #F4EFE3;
+  --ascend-text-muted: #B9B2A4;
+  --ascend-divider: #35403A;
+  --ascend-control-border: #797F75;
+  --ascend-link: #C7A45B;
+  --ascend-focus: #C7A45B;
+  --ascend-action: #C7A45B;
+  --ascend-action-text: #0B0B0A;
+  --ascend-action-border: #C7A45B;
+  --ascend-action-hover: #D3B370;
+  --ascend-action-pressed: #B48F43;
+  --ascend-success: #A0CDB4;
+  --ascend-warning: #E3BC76;
+  --ascend-danger: #FFA5AA;
+  --ascend-info: #9EC7DE;
+  --ascend-glow-opacity: 0.27;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --ascend-canvas: #0B0B0A;
+    --ascend-surface: #111817;
+    --ascend-text: #F4EFE3;
+    --ascend-text-muted: #B9B2A4;
+    --ascend-divider: #35403A;
+    --ascend-control-border: #797F75;
+    --ascend-link: #C7A45B;
+    --ascend-focus: #C7A45B;
+    --ascend-action: #C7A45B;
+    --ascend-action-text: #0B0B0A;
+    --ascend-action-border: #C7A45B;
+    --ascend-action-hover: #D3B370;
+    --ascend-action-pressed: #B48F43;
+    --ascend-success: #A0CDB4;
+    --ascend-warning: #E3BC76;
+    --ascend-danger: #FFA5AA;
+    --ascend-info: #9EC7DE;
+    --ascend-glow-opacity: 0.27;
+  }
+}
