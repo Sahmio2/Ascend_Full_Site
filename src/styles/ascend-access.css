@@ -25,7 +25,8 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.ascend-access-scope[data-theme='dark'] {
+.ascend-access-scope[data-theme='dark'],
+.ascend-access-scope .access-circle-form {
   --access-paper: #111516;
   --access-surface: #191f20;
   --access-cream: #1f2424;
@@ -764,4 +765,33 @@
   .access-cardset {
     grid-template-columns: 1fr;
   }
+}
+
+.access-layout.access-layout-centered {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 780px;
+  align-content: center;
+}
+
+.access-side-art.access-circle-form {
+  min-height: auto;
+  padding: clamp(22px, 6vw, 56px);
+  color: var(--access-ink);
+}
+
+.access-circle-form .access-form-side {
+  position: relative;
+  max-width: none;
+  overflow-wrap: anywhere;
+}
+
+.access-circle-form .access-crumb {
+  margin-bottom: 16px;
+}
+
+.access-circle-form .access-panel {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }

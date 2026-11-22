@@ -11,6 +11,7 @@ interface AccessShellProps {
   crumb?: string;
   artVariant?: "client" | "coach";
   hideSideArt?: boolean;
+  formOnCircleCard?: boolean;
 }
 
 export default function AccessShell({
@@ -20,6 +21,7 @@ export default function AccessShell({
   crumb = "ACCOUNT ACCESS",
   artVariant = "client",
   hideSideArt = false,
+  formOnCircleCard = false,
 }: AccessShellProps) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
@@ -41,6 +43,14 @@ export default function AccessShell({
   };
 
   const isCoach = artVariant === "coach";
+  const formSection = (
+    <section className="access-form-side">
+      <div className="access-crumb">{crumb}</div>
+      <h1 className="access-headline">{title}</h1>
+      <p className="access-desc">{description}</p>
+      {children}
+    </section>
+  );
 
   return (
     <div className="ascend-access-scope" data-theme={theme}>
@@ -72,14 +82,15 @@ export default function AccessShell({
 
       {hideSideArt ? (
         children
+      ) : formOnCircleCard ? (
+        <main className="access-layout access-layout-centered">
+          <div className="access-side-art access-circle-form">
+            {formSection}
+          </div>
+        </main>
       ) : (
         <main className="access-layout">
-          <section className="access-form-side">
-            <div className="access-crumb">{crumb}</div>
-            <h1 className="access-headline">{title}</h1>
-            <p className="access-desc">{description}</p>
-            {children}
-          </section>
+          {formSection}
 
           <aside
             className={`access-side-art ${isCoach ? "intro-coach" : ""}`}

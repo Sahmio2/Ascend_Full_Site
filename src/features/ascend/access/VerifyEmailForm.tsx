@@ -129,6 +129,7 @@ export default function VerifyEmailForm() {
 
   return (
     <AccessShell
+      formOnCircleCard
       title={isCoach ? "Verify it’s you." : "Check your inbox."}
       description={
         isCoach
