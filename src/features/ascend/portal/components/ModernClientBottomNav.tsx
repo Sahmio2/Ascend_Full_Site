@@ -38,7 +38,7 @@ export default function ModernClientBottomNav({
           height="20"
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.8"
+          strokeWidth="1.9"
           strokeLinecap="round"
           strokeLinejoin="round"
         >
@@ -57,7 +57,7 @@ export default function ModernClientBottomNav({
           height="20"
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.8"
+          strokeWidth="1.9"
           strokeLinecap="round"
           strokeLinejoin="round"
         >
@@ -76,7 +76,7 @@ export default function ModernClientBottomNav({
           height="20"
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.8"
+          strokeWidth="1.9"
           strokeLinecap="round"
           strokeLinejoin="round"
         >
@@ -95,7 +95,7 @@ export default function ModernClientBottomNav({
           height="20"
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.8"
+          strokeWidth="1.9"
           strokeLinecap="round"
           strokeLinejoin="round"
         >
@@ -118,10 +118,13 @@ export default function ModernClientBottomNav({
         @media (max-width: 768px) {
           .modern-client-bottom-nav {
             position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
+            bottom: max(12px, env(safe-area-inset-bottom)) !important;
+            left: 12px !important;
+            right: 12px !important;
+            width: calc(100% - 24px) !important;
+            max-width: 440px !important;
+            margin: 0 auto !important;
+            border-radius: 20px !important;
           }
         }
       `,
@@ -136,12 +139,13 @@ export default function ModernClientBottomNav({
           zIndex: 50,
           display: "grid",
           gridTemplateColumns: "repeat(4, 1fr)",
-          background: "rgba(20, 19, 18, 0.96)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-          boxShadow: "0 -15px 28px rgba(12, 12, 12, 0.94)",
-          borderTop: "1px solid #34322f",
-          padding: "9px 10px max(10px, env(safe-area-inset-bottom))",
+          background: "rgba(16, 20, 19, 0.88)",
+          backdropFilter: "blur(24px) saturate(190%)",
+          WebkitBackdropFilter: "blur(24px) saturate(190%)",
+          boxShadow:
+            "0 12px 36px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
+          border: "1px solid rgba(255, 255, 255, 0.09)",
+          padding: "6px",
           marginTop: "auto",
           width: "100%",
         }}
@@ -155,24 +159,41 @@ export default function ModernClientBottomNav({
               aria-current={isCurrent ? "page" : undefined}
               style={{
                 border: 0,
-                background: isCurrent ? "rgba(41, 36, 28, 0.9)" : "transparent",
-                color: isCurrent ? "#e5c891" : "#aaa499",
+                background: isCurrent
+                  ? "rgba(199, 164, 91, 0.12)"
+                  : "transparent",
+                color: isCurrent ? "#dfbf77" : "#8f8a80",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: "4px",
+                gap: "3px",
                 padding: "8px 2px",
-                borderRadius: "10px",
+                borderRadius: "14px",
                 fontSize: "11px",
                 fontWeight: isCurrent ? 700 : 500,
-                minHeight: "54px",
+                letterSpacing: "-0.01em",
+                minHeight: "52px",
                 textDecoration: "none",
-                transition: "all 0.15s ease",
+                transition:
+                  "all 0.15s cubic-bezier(0.16, 1, 0.3, 1)",
+                position: "relative",
               }}
             >
               {item.icon}
               <span>{item.label}</span>
+              {isCurrent && (
+                <span
+                  style={{
+                    position: "absolute",
+                    bottom: "3px",
+                    width: "12px",
+                    height: "2.5px",
+                    borderRadius: "2px",
+                    background: "#c7a45b",
+                  }}
+                />
+              )}
             </Link>
           );
         })}

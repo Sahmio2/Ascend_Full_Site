@@ -8,7 +8,7 @@ import { useClientPortalData } from "../data/useClientPortalData";
 import { nutritionTotals, type PortalScope } from "../data/types";
 import "@/styles/ascend-today-dashboard.css";
 
-// SVG icons matching the approved prototype
+// Precision SVG icons
 const SVGS: Record<string, string> = {
   msg: '<path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.8-5.4a9 9 0 0 1-.8-4.1 8.5 8.5 0 0 1 17 0Z"/>',
   user: '<circle cx="12" cy="8" r="3.5"/><circle cx="12" cy="12" r="9"/><path d="M5.5 18.5c.8-2.5 3-4 6.5-4s5.7 1.5 6.5 4"/>',
@@ -20,6 +20,7 @@ const SVGS: Record<string, string> = {
   chart: '<path d="M4 20V9m6 11V4m5 16v-7m5 7V7"/>',
   check: '<path d="m4 12 5 5L20 6"/>',
   shield: '<path d="m12 2 8 4v6c0 5-3 8-8 10-5-2-8-5-8-10V6Z"/><path d="M12 7v6m0 3h.01"/>',
+  flame: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
 };
 
 function TodayIcon({ name, className = "svg" }: { name: string; className?: string }) {
@@ -31,7 +32,7 @@ function TodayIcon({ name, className = "svg" }: { name: string; className?: stri
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.7"
+      strokeWidth="1.8"
       strokeLinecap="round"
       strokeLinejoin="round"
       dangerouslySetInnerHTML={{ __html: path }}
@@ -55,8 +56,8 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
 
   // Current formatted date
   const now = new Date();
-  const dayName = now.toLocaleDateString("en-NG", { weekday: "long" }).toUpperCase();
-  const dateFormatted = now.toLocaleDateString("en-NG", { day: "numeric", month: "short" }).toUpperCase();
+  const dayName = now.toLocaleDateString("en-GB", { weekday: "long" }).toUpperCase();
+  const dateFormatted = now.toLocaleDateString("en-GB", { day: "numeric", month: "short" }).toUpperCase();
   const todayIso = now.toISOString().split("T")[0];
 
   // Detect if a workout session was completed today
@@ -130,6 +131,20 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
     statusPillClass = "pill-training";
   }
 
+  // Nutrition percentages
+  const caloriePercent = Math.min(100, Math.round((totals.calories / (targets.calories || 2400)) * 100));
+  const proteinPercent = Math.min(100, Math.round((totals.protein / (targets.protein || 180)) * 100));
+  const carbsPercent = Math.min(100, Math.round((totals.carbs / (targets.carbs || 250)) * 100));
+  const fatPercent = Math.min(100, Math.round((totals.fats / (targets.fats || 70)) * 100));
+
+  // Workout weekly percent
+  const workoutWeekPercent = Math.min(100, Math.round((currentWeekWorkoutsCompleted / prescribedDaysPerWeek) * 100));
+
+  // Programme week progression
+  const currentWeekNum = data.programme.week || 3;
+  const totalWeeksNum = data.programme.totalWeeks || 8;
+  const blockPercent = Math.min(100, Math.round((currentWeekNum / totalWeeksNum) * 100));
+
   // Modal State
   const [modalData, setModalData] = useState<{
     title: string;
@@ -152,30 +167,38 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
   return (
     <div className="today-dashboard-root">
       <main className="today-container">
-        {/* Responsive 2-Column Dashboard Grid */}
+        {/* Responsive 2-Column Bento Grid */}
         <div className="today-grid">
-          {/* Left Column: Next Action, Direction & Updates */}
+          {/* Left Column: Hero Action, Direction & Updates */}
           <div className="today-col">
             <div className="dayheader-row">
-              <div className="daylabel">{dayName}, {dateFormatted}</div>
-              <span className={`daystatus-pill ${statusPillClass}`}>{statusPillText}</span>
+              <div className="daylabel">
+                <span className="day-name">{dayName}</span>
+                <span className="day-dot">·</span>
+                <span className="day-date">{dateFormatted}</span>
+              </div>
+              <span className={`daystatus-pill ${statusPillClass}`}>
+                <span className="status-live-indicator" />
+                {statusPillText}
+              </span>
             </div>
 
             {/* Primary Action / Session Completed Hero Card */}
             {completedTodayWorkout ? (
               <section className="primary primary--completed">
+                <div className="hero-sheen" />
                 <div className="kicker kicker--completed">
                   <span className="kicker-dot" /> SESSION COMPLETED TODAY
                 </div>
                 <h1>{completedTodayWorkout.workoutName}</h1>
                 <div className="meta">
-                  <span>{completedTodayWorkout.durationMinutes || 60} min duration</span>
+                  <span className="meta-tag">{completedTodayWorkout.durationMinutes || 60}m duration</span>
                   <span className="dot-sep">·</span>
-                  <span>{completedSetsCount} working sets recorded</span>
+                  <span className="meta-tag">{completedSetsCount} working sets</span>
                   {totalTonnageKg > 0 && (
                     <>
                       <span className="dot-sep">·</span>
-                      <span>{totalTonnageKg.toLocaleString()} kg total volume</span>
+                      <span className="meta-tag">{totalTonnageKg.toLocaleString()} kg volume</span>
                     </>
                   )}
                 </div>
@@ -183,7 +206,7 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
                 <div className="completed-recovery-box">
                   <div className="recovery-lead">Focus until tomorrow: Active recovery & refuel</div>
                   <p className="recovery-sub">
-                    Prioritise your prescribed protein ({targets.protein}g) and hydration. Give your neuromuscular system adequate rest before your next session.
+                    Prioritise your prescribed protein ({targets.protein}g) and optimal hydration. Rest neuromuscular pathways before your next training exposure.
                   </p>
                 </div>
 
@@ -200,12 +223,21 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
               </section>
             ) : (
               <section className="primary">
+                <div className="hero-sheen" />
                 <div className="kicker">YOUR NEXT ACTION</div>
                 <h1>{nextWorkout ? nextWorkout.name : "Active Recovery & Mobility"}</h1>
                 <div className="meta">
-                  {nextWorkout
-                    ? `${nextWorkout.estimatedMinutes} · Gym · ${nextWorkout.exercises.length} prescribed exercises`
-                    : "Prescribed hydration, mobility & nutrition recovery"}
+                  {nextWorkout ? (
+                    <>
+                      <span className="meta-tag">{nextWorkout.estimatedMinutes}</span>
+                      <span className="dot-sep">·</span>
+                      <span className="meta-tag">Gym Floor</span>
+                      <span className="dot-sep">·</span>
+                      <span className="meta-tag">{nextWorkout.exercises.length} prescribed exercises</span>
+                    </>
+                  ) : (
+                    <span className="meta-tag">Prescribed hydration, mobility & active recovery</span>
+                  )}
                 </div>
                 <Link
                   href={`${basePath}/workout-logger`}
@@ -219,7 +251,10 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
 
             {/* Today's Direction */}
             <section className="direction">
-              <h2>Today&apos;s direction</h2>
+              <div className="card-top-header">
+                <h2>Today&apos;s direction</h2>
+                <span className="coach-tag">Coach Prescribed</span>
+              </div>
               <p>
                 {data.programme.athleteDirection ||
                   "Execute each repetition with controlled tempo. Focus on progressive overload, log each working set, and observe your prescribed rest intervals."}
@@ -230,7 +265,11 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
             {latestCoachFeedback && (
               <section className="update">
                 <div className="update-header">
-                  <strong>Latest coach update · {latestCoachFeedback.date}</strong>
+                  <div className="update-title-group">
+                    <span className="update-dot" />
+                    <strong>Latest Coach Feedback</strong>
+                    <span className="update-date">{latestCoachFeedback.date}</span>
+                  </div>
                   <Link href={`${basePath}/progress`} className="coach-reply-link">
                     Message Sahmi →
                   </Link>
@@ -240,77 +279,119 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
             )}
           </div>
 
-          {/* Right Column: Day at a Glance Stats & Schedule */}
+          {/* Right Column: Bento Grid At-a-Glance Stats & Cadence */}
           <div className="today-col">
             <section>
               <h2 className="sectionHeader">Your day at a glance</h2>
               <div className="statgrid">
+                {/* Training Bento Card */}
                 <Link
                   href={`${basePath}/workout-logger`}
-                  className="stat"
+                  className="stat bento-tile"
                   aria-label="View training details"
                 >
-                  <span className="statTitle">
-                    <TodayIcon name="dumb" /> Training
-                  </span>
-                  <strong>{`${currentWeekWorkoutsCompleted} / ${prescribedDaysPerWeek}`}</strong>
-                  <div className="small">Workouts completed this week</div>
+                  <div className="stat-top">
+                    <span className="statTitle">
+                      <TodayIcon name="dumb" /> Training
+                    </span>
+                    <span className="bento-badge">{currentWeekWorkoutsCompleted}/{prescribedDaysPerWeek} Done</span>
+                  </div>
+                  <strong className="stat-value tabular-nums">
+                    {currentWeekWorkoutsCompleted} <span className="stat-unit">/ {prescribedDaysPerWeek} sessions</span>
+                  </strong>
+                  <div className="bento-progress-track">
+                    <div
+                      className="bento-progress-fill"
+                      style={{ width: `${workoutWeekPercent}%` }}
+                    />
+                  </div>
                   {completedTodayWorkout ? (
-                    <div className="next next--done">✓ Done today · {nextWorkout.name} next →</div>
+                    <div className="next next--done">✓ Session completed · Next: {nextWorkout.name} →</div>
                   ) : (
                     <div className="next">{nextWorkout.name} up next →</div>
                   )}
                 </Link>
 
+                {/* Nutrition Bento Card */}
                 <Link
                   href={`${basePath}/nutrition`}
-                  className="stat"
+                  className="stat bento-tile"
                   aria-label="View nutrition meals and targets"
                 >
-                  <span className="statTitle">
-                    <TodayIcon name="food" /> Nutrition
-                  </span>
-                  <strong>{`${totals.calories.toLocaleString()} / ${targets.calories.toLocaleString()} kcal`}</strong>
-                  <div className="small">{data.nutrition.meals.length} meal entries recorded today</div>
-                  <div className="next">Open Meal Plan →</div>
+                  <div className="stat-top">
+                    <span className="statTitle">
+                      <TodayIcon name="food" /> Energy & Macros
+                    </span>
+                    <span className="bento-badge">{caloriePercent}% Budget</span>
+                  </div>
+                  <strong className="stat-value tabular-nums">
+                    {totals.calories.toLocaleString()} <span className="stat-unit">/ {targets.calories.toLocaleString()} kcal</span>
+                  </strong>
+                  
+                  {/* Macro Split Micro Bar */}
+                  <div className="macro-micro-row">
+                    <div className="macro-chip macro-p">
+                      <span className="macro-name">P</span>
+                      <span className="macro-num">{totals.protein}g</span>
+                    </div>
+                    <div className="macro-chip macro-c">
+                      <span className="macro-name">C</span>
+                      <span className="macro-num">{totals.carbs}g</span>
+                    </div>
+                    <div className="macro-chip macro-f">
+                      <span className="macro-name">F</span>
+                      <span className="macro-num">{totals.fats}g</span>
+                    </div>
+                  </div>
+
+                  <div className="next">Open Meal Plan & Log →</div>
                 </Link>
               </div>
             </section>
 
-            {/* Coaching Review Schedule */}
+            {/* Coaching Review Schedule Tile */}
             <Link
               href={`${basePath}/progress`}
               className="under"
               aria-label="View next coaching review schedule"
             >
-              <div>
-                <strong>Next coaching review</strong>
-                <small>Scheduled for {data.client.nextCheckIn} · with {data.client.coachName}</small>
+              <div className="review-left">
+                <div className="review-icon-wrap">
+                  <TodayIcon name="calendar" />
+                </div>
+                <div>
+                  <strong>Next Coaching Review</strong>
+                  <small>Scheduled for {data.client.nextCheckIn} · with {data.client.coachName}</small>
+                </div>
               </div>
-              <span className="right">
-                <TodayIcon name="calendar" />
-              </span>
+              <span className="review-arrow">→</span>
             </Link>
 
-            {/* Programme Phase Progression Card (Luxury Coaching Tone) */}
+            {/* Programme Phase Progression Card (Apple/Vercel Luxury Coaching Tone) */}
             <section className="programme-phase-card">
               <div className="phase-card-top">
                 <div>
-                  <div className="phase-kicker">ACTIVE ATHLETE</div>
+                  <div className="phase-kicker">ATHLETE PROTOCOL</div>
                   <strong className="phase-athlete-name">{data.client.fullName}</strong>
                   <p className="phase-details">
                     {data.client.phaseName} · {data.client.primaryGoal || "Physique progression"}
                   </p>
                 </div>
                 <div className="phase-block-stat">
-                  <div className="phase-week-val">
-                    Week {data.programme.week || 3}
-                    <span className="phase-week-total">/{data.programme.totalWeeks || 8}</span>
+                  <div className="phase-week-val tabular-nums">
+                    Week {currentWeekNum}
+                    <span className="phase-week-total">/{totalWeeksNum}</span>
                   </div>
-                  <div className="phase-block-label">
-                    Block Cadence
-                  </div>
+                  <div className="phase-block-label">Block Cadence</div>
                 </div>
+              </div>
+
+              {/* Progress Bar for Block Cadence */}
+              <div className="phase-cadence-bar">
+                <div
+                  className="phase-cadence-fill"
+                  style={{ width: `${blockPercent}%` }}
+                />
               </div>
 
               <div className="phase-card-footer">
@@ -318,13 +399,13 @@ export default function TodayDashboard({ scope = "live" }: TodayDashboardProps) 
                   <span className="adherence-dot" />
                   <span>{data.client.adherencePercent || 94}% Target Adherence</span>
                 </div>
-                <span className="phase-status-text">Coach Monitored</span>
+                <span className="phase-status-text">Coach Verified</span>
               </div>
             </section>
           </div>
         </div>
 
-        {/* Mobile Sticky Bottom Navigation */}
+        {/* Mobile Sticky Bottom Navigation Dock */}
         <ModernClientBottomNav scope={scope} active="today" />
       </main>
 
