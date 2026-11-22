@@ -765,3 +765,113 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Centered Layout for Access Forms on Circle Card */
+.access-layout.access-layout-centered {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 680px;
+  margin: 0 auto;
+  align-content: center;
+  padding: clamp(28px, 4.5vw, 60px) 20px 65px;
+}
+
+.access-side-art.access-circle-form {
+  min-height: auto;
+  gap: 24px;
+  padding: clamp(28px, 5vw, 44px);
+  color: #f7f5ed;
+  box-shadow: 0 24px 75px rgba(0, 0, 0, 0.45);
+}
+
+.access-circle-form .access-crumb {
+  margin-bottom: 12px;
+  color: #dfbf77;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.access-circle-form .access-headline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(32px, 4vw, 44px);
+  font-weight: 500;
+  line-height: 1.15;
+  color: #f7f5ed;
+  margin: 0 0 10px;
+}
+
+.access-circle-form .access-desc {
+  color: #adb6a9;
+  font-size: 14.5px;
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+.access-circle-form .access-panel {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.access-circle-form .access-field label {
+  color: #c8d0c4;
+}
+
+.access-circle-form .access-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #f7f5ed;
+}
+
+.access-circle-form .access-input:focus {
+  border-color: #dfbf77;
+  box-shadow: 0 0 0 3px rgba(223, 191, 119, 0.25);
+}
+
+.access-circle-form .access-btn-main {
+  background: #dfbf77;
+  color: #0c100e;
+  font-weight: 700;
+}
+
+.access-circle-form .access-btn-main:hover {
+  background: #ebd292;
+}
+
+.access-circle-form .access-btn-secondary {
+  color: #dfbf77;
+  border-color: rgba(199, 164, 91, 0.4);
+}
+
+.access-circle-form .access-btn-secondary:hover {
+  background: rgba(199, 164, 91, 0.12);
+  border-color: #dfbf77;
+}
+
+.access-circle-form .access-rule {
+  color: #8c9489;
+}
+
+.access-circle-form .access-rule:before,
+.access-circle-form .access-rule:after {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.access-circle-form .access-mini-foot {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #8c9489;
+}
+
+.access-circle-form .access-mini-foot a {
+  color: #dfbf77;
+}
+
+.access-circle-form .access-top-mini strong {
+  color: #dfbf77;
+}
+
+.access-circle-form .access-top-mini span {
+  color: #8c9489;
+}
+

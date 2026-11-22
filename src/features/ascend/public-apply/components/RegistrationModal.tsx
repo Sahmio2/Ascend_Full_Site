@@ -223,6 +223,11 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
     } else {
       const finalOutcome = routeRegistration(answers);
       setOutcome(finalOutcome);
+      if (answers.email_address) {
+        try {
+          sessionStorage.setItem("ascend_login_email", answers.email_address.trim().toLowerCase());
+        } catch {}
+      }
     }
   };
 

@@ -11,6 +11,7 @@ interface AccessShellProps {
   crumb?: string;
   artVariant?: "client" | "coach";
   hideSideArt?: boolean;
+  formOnCircleCard?: boolean;
 }
 
 export default function AccessShell({
@@ -20,6 +21,7 @@ export default function AccessShell({
   crumb = "ACCOUNT ACCESS",
   artVariant = "client",
   hideSideArt = false,
+  formOnCircleCard = true,
 }: AccessShellProps) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
@@ -72,6 +74,60 @@ export default function AccessShell({
 
       {hideSideArt ? (
         children
+      ) : formOnCircleCard ? (
+        <main className="access-layout access-layout-centered">
+          <div
+            className={`access-side-art${isCoach ? " intro-coach" : ""} access-circle-form`}
+            aria-label="ASCEND account access"
+          >
+            <div className="access-circle-form-header">
+              <div className="access-crumb">{crumb}</div>
+              <h1 className="access-headline">{title}</h1>
+              <p className="access-desc">{description}</p>
+            </div>
+
+            <div className="access-circle-form-body">
+              {children}
+            </div>
+
+            <div className="access-art-bottom">
+              <strong>{isCoach ? "Built around Sahmi’s decisions" : "How ASCEND works"}</strong>
+              <div className="access-art-steps">
+                {isCoach ? (
+                  <>
+                    <div className="access-art-step">
+                      <b>01</b>
+                      <span>Intake triage</span>
+                    </div>
+                    <div className="access-art-step">
+                      <b>02</b>
+                      <span>Draft review</span>
+                    </div>
+                    <div className="access-art-step">
+                      <b>03</b>
+                      <span>Approve plan</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="access-art-step">
+                      <b>01</b>
+                      <span>Register</span>
+                    </div>
+                    <div className="access-art-step">
+                      <b>02</b>
+                      <span>Get your plan</span>
+                    </div>
+                    <div className="access-art-step">
+                      <b>03</b>
+                      <span>Progress</span>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </main>
       ) : (
         <main className="access-layout">
           <section className="access-form-side">
