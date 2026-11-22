@@ -77,10 +77,9 @@ export default function VerifyEmailForm() {
       }
 
       setSuccess("Verification successful. Redirecting...");
-      const destination =
-        context === "signup"
-          ? "/apply"
-          : data.nextPath || (isCoach ? "/coach-portal" : "/account");
+      const destination = isCoach
+        ? "/coach-portal"
+        : (context === "signup" ? "/account" : (data.nextPath || "/account"));
       setTimeout(() => router.push(destination), 400);
     } catch (err: any) {
       setError(err.message || "Invalid or expired verification code.");

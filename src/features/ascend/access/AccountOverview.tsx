@@ -21,8 +21,8 @@ const STATE_PREVIEWS: Record<
     badge: "Not paid",
     badgeVariant: "",
     statusTitle: "Your membership is not yet active",
-    statusDescription: "Your account is ready. Once eligibility and capacity requirements are met, you can review the membership offer and pay securely.",
-    statusActionLabel: "View membership",
+    statusDescription: "Your registration is saved. Complete your founding membership payment (₦40,000/month) to lock your seat and unlock your private 9-stage assessment.",
+    statusActionLabel: "Pay membership (₦40,000 / month)",
     statusActionPath: "/account/membership",
   },
   active: {
@@ -37,9 +37,9 @@ const STATE_PREVIEWS: Record<
     badge: "Awaiting assessment",
     badgeVariant: "green",
     statusTitle: "Assessment to complete",
-    statusDescription: "Your membership is confirmed. Finish the private nine-stage assessment to help Sahmi prepare your programme.",
-    statusActionLabel: "Continue 9-stage assessment",
-    statusActionPath: "/apply",
+    statusDescription: "Your membership is confirmed. Complete your private nine-stage assessment to help Sahmi prepare your personalised programme.",
+    statusActionLabel: "Start 9-stage assessment",
+    statusActionPath: "/assessment",
   },
   review: {
     badge: "In review",
@@ -123,6 +123,32 @@ export default function AccountOverview() {
       active = false;
     };
   }, [router]);
+
+  const [paying, setPaying] = useState(false);
+
+  const handleCheckout = async () => {
+    setPaying(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/billing/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: window.location.origin,
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || data.error || "Failed to initialize checkout.");
+      }
+      if (data.authorizationUrl) {
+        window.location.href = data.authorizationUrl;
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to initialize payment.");
+      setPaying(false);
+    }
+  };
 
   const handleSignOut = async () => {
     try {
@@ -269,18 +295,27 @@ export default function AccountOverview() {
           <h2>{activeView.statusTitle}</h2>
           <p>{activeView.statusDescription}</p>
           <div className="access-button-row" style={{ maxWidth: "480px" }}>
-            <Link href={activeView.statusActionPath} className="access-btn-main">
-              {activeView.statusActionLabel} →
-            </Link>
-            {activeView.statusActionPath !== "/client/nutrition" && (
-              <Link
-                href="/client/nutrition"
-                className="access-btn-secondary"
-                style={{ textDecoration: "none", whiteSpace: "nowrap" }}
+            {activeView.status === "payment" ? (
+              <button
+                type="button"
+                className="access-btn-main"
+                onClick={handleCheckout}
+                disabled={paying}
               >
-                Inspect Meal Plan →
+                {paying ? "Connecting to Paystack..." : "Pay Membership (₦40,000 / month) →"}
+              </button>
+            ) : (
+              <Link href={activeView.statusActionPath} className="access-btn-main">
+                {activeView.statusActionLabel} →
               </Link>
             )}
+            <Link
+              href="/account/membership"
+              className="access-btn-secondary"
+              style={{ textDecoration: "none", whiteSpace: "nowrap" }}
+            >
+              Billing Details →
+            </Link>
           </div>
         </div>
 
@@ -299,6 +334,43 @@ export default function AccountOverview() {
                 </div>
                 <div className="micro">Server-determined next action</div>
               </div>
+            </div>
+
+            {/* 9-Stage Intake Card */}
+            <div className="access-action-card">
+              <div className="access-art-kicker" style={{ color: "var(--access-gold)" }}>
+                COACHING INTAKE
+              </div>
+              <h3>Nine-Stage Private Assessment</h3>
+              <p>
+                {activeView.status === "payment"
+                  ? "Your private nine-stage physical intake unlocks automatically once your membership is confirmed. Sahmi personally prepares your plan within five business days of submission."
+                  : activeView.status === "assessment"
+                  ? "Your membership is active! Complete your 9 stages now so Coach Sahmi can prepare your training and nutrition plan."
+                  : activeView.status === "review"
+                  ? "Your 9 stages are submitted and currently under review by Coach Sahmi (delivery within 5 business days)."
+                  : "Your 9-stage foundations are recorded and approved."}
+              </p>
+              {activeView.status === "payment" ? (
+                <button
+                  type="button"
+                  className="access-btn-secondary"
+                  disabled
+                  style={{ opacity: 0.6, cursor: "not-allowed" }}
+                >
+                  🔒 Locked · Complete payment to unlock
+                </button>
+              ) : (
+                <Link
+                  href="/assessment"
+                  className="access-btn-main"
+                  style={{ textDecoration: "none", display: "inline-flex" }}
+                >
+                  {activeView.status === "assessment"
+                    ? "Begin 9-Stage Assessment →"
+                    : "View Assessment Answers →"}
+                </Link>
+              )}
             </div>
 
             <div className="access-action-card">

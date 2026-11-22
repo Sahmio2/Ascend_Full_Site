@@ -13,7 +13,32 @@ export default function MembershipBilling() {
   const [cancelling, setCancelling] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelAck, setCancelAck] = useState(false);
+  const [paying, setPaying] = useState(false);
   const [msg, setMsg] = useState<{ text: string; good?: boolean } | null>(null);
+
+  const handleCheckout = async () => {
+    setPaying(true);
+    setMsg(null);
+    try {
+      const res = await fetch("/api/billing/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: window.location.origin,
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || data.error || "Failed to initialize checkout.");
+      }
+      if (data.authorizationUrl) {
+        window.location.href = data.authorizationUrl;
+      }
+    } catch (err: any) {
+      setMsg({ text: err.message || "Failed to initialize payment." });
+      setPaying(false);
+    }
+  };
 
   const loadData = async () => {
     try {
@@ -156,6 +181,16 @@ export default function MembershipBilling() {
               </p>
 
               <div className="access-button-row">
+                {!isPaidPeriod && (
+                  <button
+                    type="button"
+                    className="access-btn-primary"
+                    onClick={handleCheckout}
+                    disabled={paying}
+                  >
+                    {paying ? "Redirecting to checkout..." : "Pay Membership (₦40,000 / month) →"}
+                  </button>
+                )}
                 {isPaidPeriod && !isCancelled && (
                   <button
                     type="button"

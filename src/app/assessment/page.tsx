@@ -12,12 +12,19 @@ export const metadata = {
 export default async function AssessmentPage() {
   const cookieJar = await cookies();
   const token = cookieJar.get("ascend_session")?.value;
-  let user = null;
+  let user: any = null;
 
   if (token && /^[a-f0-9]{64}$/.test(token)) {
     const session = await db().session.findUnique({
       where: { tokenHash: tokenHash(token) },
-      include: { user: true },
+      include: {
+        user: {
+          include: {
+            screening: true,
+            membership: true,
+          },
+        },
+      },
     });
     if (sessionIsActive(session)) {
       user = session!.user;
@@ -32,7 +39,10 @@ export default async function AssessmentPage() {
     <NineStageAssessment
       prefillProfile={{
         email: user.email,
-        fullName: user.email.split("@")[0],
+        fullName: user.screening?.firstName || user.email.split("@")[0],
+        whatsapp: user.screening?.whatsappNumber || "",
+        goal: user.screening?.mainGoal || "",
+        experience: user.screening?.gymExperience || "",
       }}
     />
   );

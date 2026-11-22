@@ -676,6 +676,15 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
                   {currentQuestion.type === 'imported' && (
                     <div className="imported-display-card">
                       <div className="imported-row">
+                        <span className="imported-label">Athlete Name</span>
+                        <div className="imported-value-wrap">
+                          <strong className="imported-value">
+                            {prefillProfile?.fullName || 'Athlete'}
+                          </strong>
+                          <span className="verified-pill">✓ Confirmed</span>
+                        </div>
+                      </div>
+                      <div className="imported-row">
                         <span className="imported-label">Account Email</span>
                         <div className="imported-value-wrap">
                           <strong className="imported-value">
@@ -688,12 +697,30 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
                           <span className="verified-pill">✓ Verified</span>
                         </div>
                       </div>
-                      <div className="imported-row">
-                        <span className="imported-label">Registration Record</span>
-                        <div className="imported-value-wrap">
-                          <strong className="imported-value">Confirmed Cohort Profile</strong>
+                      {prefillProfile?.whatsapp && (
+                        <div className="imported-row">
+                          <span className="imported-label">WhatsApp Contact</span>
+                          <div className="imported-value-wrap">
+                            <strong className="imported-value">{prefillProfile.whatsapp}</strong>
+                          </div>
                         </div>
-                      </div>
+                      )}
+                      {prefillProfile?.goal && (
+                        <div className="imported-row">
+                          <span className="imported-label">Primary Goal</span>
+                          <div className="imported-value-wrap">
+                            <strong className="imported-value">{prefillProfile.goal}</strong>
+                          </div>
+                        </div>
+                      )}
+                      {prefillProfile?.experience && (
+                        <div className="imported-row">
+                          <span className="imported-label">Gym Experience</span>
+                          <div className="imported-value-wrap">
+                            <strong className="imported-value">{prefillProfile.experience}</strong>
+                          </div>
+                        </div>
+                      )}
                       <div className="imported-row">
                         <span className="imported-label">Coaching Track</span>
                         <div className="imported-value-wrap">
