@@ -1028,6 +1028,11 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
                               />
                               <button
                                 type="button"
+                                aria-label={
+                                  r.done
+                                    ? `Warm-up set ${i + 1} completed. Tap to edit.`
+                                    : `Record warm-up set ${i + 1}`
+                                }
                                 onClick={() => {
                                   const k = exKey(currentEx);
                                   const list = [...(warm[k] || [{ w: "", r: "", done: false }])];
@@ -1155,7 +1160,7 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
                       </button>
                     ) : (
                       <button className="secondary block" onClick={handleFinishWorkout}>
-                        End Workout Early
+                        Save & Finish Early
                       </button>
                     )}
                   </div>
@@ -1282,7 +1287,11 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
                                       className={`set-check ${r.done ? "done" : ""}`}
                                       type="button"
                                       onClick={() => handleCompleteSet(x, i)}
-                                      aria-label="Complete set"
+                                      aria-label={
+                                        r.done
+                                          ? `Set ${i + 1} completed. Tap to edit.`
+                                          : `Complete set ${i + 1}`
+                                      }
                                     >
                                       <Glyph name="check" />
                                     </button>
@@ -1308,7 +1317,7 @@ export default function WorkoutsFocusPage({ scope = "live" }: WorkoutsFocusPageP
                       </button>
                     ) : (
                       <button className="secondary block" onClick={handleFinishWorkout}>
-                        End Workout Early
+                        Save & Finish Early
                       </button>
                     )}
                   </div>
