@@ -48,6 +48,7 @@ export default function CoachLoginForm() {
 
   return (
     <AccessShell
+      formOnCircleCard
       title="Coach access."
       description="This is the restricted sign-in for Sahmi’s private coaching workspace."
       crumb="RESTRICTED ACCESS"

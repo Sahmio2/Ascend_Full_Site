@@ -11,6 +11,7 @@ interface AccessShellProps {
   crumb?: string;
   artVariant?: "client" | "coach";
   hideSideArt?: boolean;
+  formOnCircleCard?: boolean;
 }
 
 export default function AccessShell({
@@ -20,6 +21,7 @@ export default function AccessShell({
   crumb = "ACCOUNT ACCESS",
   artVariant = "client",
   hideSideArt = false,
+  formOnCircleCard = false,
 }: AccessShellProps) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
@@ -41,6 +43,14 @@ export default function AccessShell({
   };
 
   const isCoach = artVariant === "coach";
+  const formSection = (
+    <section className="access-form-side">
+      <div className="access-crumb">{crumb}</div>
+      <h1 className="access-headline">{title}</h1>
+      <p className="access-desc">{description}</p>
+      {children}
+    </section>
+  );
 
   return (
     <div className="ascend-access-scope" data-theme={theme}>
@@ -73,18 +83,10 @@ export default function AccessShell({
       {hideSideArt ? (
         children
       ) : (
-        <main className="access-layout">
-          <section className="access-form-side">
-            <div className="access-crumb">{crumb}</div>
-            <h1 className="access-headline">{title}</h1>
-            <p className="access-desc">{description}</p>
-            {children}
-          </section>
+        <main className={formOnCircleCard ? "access-layout access-layout-centered" : "access-layout"}>
+          {!formOnCircleCard && formSection}
 
-          <aside
-            className={`access-side-art ${isCoach ? "intro-coach" : ""}`}
-            aria-label="ASCEND coaching experience"
-          >
+          <div className={`access-side-art${isCoach ? " intro-coach" : ""}${formOnCircleCard ? " access-circle-form" : ""}`}>
             <div>
               <div className="access-art-kicker">
                 {isCoach ? "PRIVATE WORKSPACE · COACH" : "ASCEND · PERSONALISED COACHING"}
@@ -111,43 +113,47 @@ export default function AccessShell({
               </p>
             </div>
 
-            <div className="access-art-bottom">
-              <strong>{isCoach ? "Built around Sahmi’s decisions" : "How ASCEND works"}</strong>
-              <div className="access-art-steps">
-                {isCoach ? (
-                  <>
-                    <div className="access-art-step">
-                      <b>01</b>
-                      <span>Review</span>
-                    </div>
-                    <div className="access-art-step">
-                      <b>02</b>
-                      <span>Decide</span>
-                    </div>
-                    <div className="access-art-step">
-                      <b>03</b>
-                      <span>Publish</span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="access-art-step">
-                      <b>01</b>
-                      <span>Register</span>
-                    </div>
-                    <div className="access-art-step">
-                      <b>02</b>
-                      <span>Get your plan</span>
-                    </div>
-                    <div className="access-art-step">
-                      <b>03</b>
-                      <span>Progress</span>
-                    </div>
-                  </>
-                )}
+            {formOnCircleCard && formSection}
+
+            {!formOnCircleCard && (
+              <div className="access-art-bottom">
+                <strong>{isCoach ? "Built around Sahmi’s decisions" : "How ASCEND works"}</strong>
+                <div className="access-art-steps">
+                  {isCoach ? (
+                    <>
+                      <div className="access-art-step">
+                        <b>01</b>
+                        <span>Review</span>
+                      </div>
+                      <div className="access-art-step">
+                        <b>02</b>
+                        <span>Decide</span>
+                      </div>
+                      <div className="access-art-step">
+                        <b>03</b>
+                        <span>Publish</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="access-art-step">
+                        <b>01</b>
+                        <span>Register</span>
+                      </div>
+                      <div className="access-art-step">
+                        <b>02</b>
+                        <span>Get your plan</span>
+                      </div>
+                      <div className="access-art-step">
+                        <b>03</b>
+                        <span>Progress</span>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          </aside>
+            )}
+          </div>
         </main>
       )}
 

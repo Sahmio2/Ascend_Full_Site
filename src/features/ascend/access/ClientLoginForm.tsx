@@ -51,6 +51,7 @@ export default function ClientLoginForm() {
 
   return (
     <AccessShell
+      formOnCircleCard
       title="Welcome back."
       description="Sign in to continue exactly where you left off in your ASCEND account."
       crumb="ACCOUNT ACCESS"

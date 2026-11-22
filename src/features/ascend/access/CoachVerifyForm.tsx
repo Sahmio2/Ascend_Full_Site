@@ -102,6 +102,7 @@ export default function CoachVerifyForm() {
 
   return (
     <AccessShell
+      formOnCircleCard
       title="Verify it’s you."
       description="Enter your coach verification code to finish signing in."
       crumb="COACH VERIFICATION"
