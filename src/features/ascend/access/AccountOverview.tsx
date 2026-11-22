@@ -21,7 +21,7 @@ const STATE_PREVIEWS: Record<
     badge: "Not paid",
     badgeVariant: "",
     statusTitle: "Your membership is not yet active",
-    statusDescription: "Your registration is saved. Complete your founding membership payment (₦40,000/month) to lock your seat and unlock your private 9-stage assessment.",
+    statusDescription: "Your registration is saved. You can complete your membership payment (₦40,000/month) and also begin your private 9-stage intake right away.",
     statusActionLabel: "Pay membership (₦40,000 / month)",
     statusActionPath: "/account/membership",
   },
@@ -294,28 +294,46 @@ export default function AccountOverview() {
           <div className={`access-tag ${activeView.badgeVariant}`}>{activeView.badge}</div>
           <h2>{activeView.statusTitle}</h2>
           <p>{activeView.statusDescription}</p>
-          <div className="access-button-row" style={{ maxWidth: "480px" }}>
+          <div className="access-button-row" style={{ maxWidth: "620px", flexWrap: "wrap", gap: "10px" }}>
             {activeView.status === "payment" ? (
-              <button
-                type="button"
-                className="access-btn-main"
-                onClick={handleCheckout}
-                disabled={paying}
-              >
-                {paying ? "Connecting to Paystack..." : "Pay Membership (₦40,000 / month) →"}
-              </button>
+              <>
+                <button
+                  type="button"
+                  className="access-btn-main"
+                  onClick={handleCheckout}
+                  disabled={paying}
+                >
+                  {paying ? "Connecting to Paystack..." : "Pay Membership (₦40,000 / month) →"}
+                </button>
+                <Link
+                  href="/assessment"
+                  className="access-btn-main"
+                  style={{ textDecoration: "none", whiteSpace: "nowrap" }}
+                >
+                  Begin 9-Stage Assessment →
+                </Link>
+                <Link
+                  href="/account/membership"
+                  className="access-btn-secondary"
+                  style={{ textDecoration: "none", whiteSpace: "nowrap" }}
+                >
+                  Billing Details →
+                </Link>
+              </>
             ) : (
-              <Link href={activeView.statusActionPath} className="access-btn-main">
-                {activeView.statusActionLabel} →
-              </Link>
+              <>
+                <Link href={activeView.statusActionPath} className="access-btn-main">
+                  {activeView.statusActionLabel} →
+                </Link>
+                <Link
+                  href="/account/membership"
+                  className="access-btn-secondary"
+                  style={{ textDecoration: "none", whiteSpace: "nowrap" }}
+                >
+                  Billing Details →
+                </Link>
+              </>
             )}
-            <Link
-              href="/account/membership"
-              className="access-btn-secondary"
-              style={{ textDecoration: "none", whiteSpace: "nowrap" }}
-            >
-              Billing Details →
-            </Link>
           </div>
         </div>
 
@@ -344,33 +362,22 @@ export default function AccountOverview() {
               <h3>Nine-Stage Private Assessment</h3>
               <p>
                 {activeView.status === "payment"
-                  ? "Your private nine-stage physical intake unlocks automatically once your membership is confirmed. Sahmi personally prepares your plan within five business days of submission."
+                  ? "Complete your private nine-stage physical intake so Coach Sahmi can prepare your personalized training and nutrition plan. You can complete this before or after confirming your membership payment."
                   : activeView.status === "assessment"
                   ? "Your membership is active! Complete your 9 stages now so Coach Sahmi can prepare your training and nutrition plan."
                   : activeView.status === "review"
                   ? "Your 9 stages are submitted and currently under review by Coach Sahmi (delivery within 5 business days)."
                   : "Your 9-stage foundations are recorded and approved."}
               </p>
-              {activeView.status === "payment" ? (
-                <button
-                  type="button"
-                  className="access-btn-secondary"
-                  disabled
-                  style={{ opacity: 0.6, cursor: "not-allowed" }}
-                >
-                  🔒 Locked · Complete payment to unlock
-                </button>
-              ) : (
-                <Link
-                  href="/assessment"
-                  className="access-btn-main"
-                  style={{ textDecoration: "none", display: "inline-flex" }}
-                >
-                  {activeView.status === "assessment"
-                    ? "Begin 9-Stage Assessment →"
-                    : "View Assessment Answers →"}
-                </Link>
-              )}
+              <Link
+                href="/assessment"
+                className="access-btn-main"
+                style={{ textDecoration: "none", display: "inline-flex" }}
+              >
+                {activeView.status === "review"
+                  ? "View Assessment Answers →"
+                  : "Begin 9-Stage Assessment →"}
+              </Link>
             </div>
 
             <div className="access-action-card">
