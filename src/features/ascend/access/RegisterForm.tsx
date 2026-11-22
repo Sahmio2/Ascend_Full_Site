@@ -274,7 +274,7 @@ export default function RegisterForm() {
       <form className="access-panel" onSubmit={handleAdvance}>
         {/* Progress Bar */}
         <div style={{ height: "4px", background: "rgba(255, 255, 255, 0.12)", borderRadius: "999px", marginBottom: "22px", overflow: "hidden" }}>
-          <div style={{ width: `${progressPercent}%`, height: "100%", background: "linear-gradient(90deg, #c5a359, #dfbf77)", transition: "width 0.3s ease" }} />
+          <div style={{ width: `${progressPercent}%`, height: "100%", background: "linear-gradient(90deg, #c5a359, #dfbf77)", transition: "width var(--duration-fast, 250ms) var(--ease-smooth-out)" }} />
         </div>
 
         {error && (
@@ -308,7 +308,7 @@ export default function RegisterForm() {
                     fontSize: "14.5px",
                     fontWeight: isSelected ? 600 : 500,
                     cursor: "pointer",
-                    transition: "all 0.15s ease",
+                    transition: "border-color var(--duration-quick, 150ms) var(--ease-smooth-out), background var(--duration-quick, 150ms) var(--ease-smooth-out), color var(--duration-quick, 150ms) var(--ease-smooth-out)",
                   }}
                 >
                   <span

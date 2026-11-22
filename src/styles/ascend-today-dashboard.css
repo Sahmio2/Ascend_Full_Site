@@ -169,7 +169,7 @@
   justify-content: space-between;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all var(--duration-quick, 150ms) var(--ease-smooth-out);
 }
 
 .secondaryAction:hover {
@@ -211,7 +211,7 @@
   justify-content: space-between;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: background var(--duration-quick, 150ms) var(--ease-smooth-out), transform var(--duration-micro, 80ms) var(--ease-smooth-out);
 }
 
 .primaryAction:hover {
@@ -304,7 +304,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color var(--duration-quick, 150ms) var(--ease-smooth-out), background var(--duration-quick, 150ms) var(--ease-smooth-out);
 }
 
 .stat:hover {
@@ -358,7 +358,7 @@
   gap: 14px;
   text-decoration: none;
   color: inherit;
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color var(--duration-quick, 150ms) var(--ease-smooth-out), background var(--duration-quick, 150ms) var(--ease-smooth-out);
 }
 
 .under:hover {

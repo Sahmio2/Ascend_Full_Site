@@ -22,7 +22,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color var(--duration-fast, 250ms) var(--ease-smooth-out), color var(--duration-fast, 250ms) var(--ease-smooth-out);
 }
 
 .ascend-access-scope[data-theme='dark'] {
@@ -197,7 +197,7 @@
   color: var(--access-ink);
   outline: none;
   font-size: 14px;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color var(--duration-quick, 150ms) var(--ease-smooth-out), box-shadow var(--duration-quick, 150ms) var(--ease-smooth-out);
 }
 
 .access-input:focus {
@@ -228,7 +228,7 @@
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  transition: opacity var(--duration-quick, 150ms) var(--ease-smooth-out), transform var(--duration-micro, 80ms) var(--ease-smooth-out);
   text-decoration: none;
 }
 
@@ -256,7 +256,7 @@
   font-size: 13px;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background var(--duration-quick, 150ms) var(--ease-smooth-out), border-color var(--duration-quick, 150ms) var(--ease-smooth-out);
 }
 
 .access-btn-secondary:hover {
@@ -669,6 +669,7 @@
   z-index: 100;
   padding: 16px;
   backdrop-filter: blur(4px);
+  animation: modalOverlayIn var(--duration-fast, 250ms) var(--ease-smooth-out) forwards;
 }
 
 .access-modal-panel {
@@ -678,6 +679,17 @@
   width: min(460px, 100%);
   padding: 30px;
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+  animation: modalPanelIn var(--duration-fast, 250ms) var(--ease-smooth-out) forwards;
+}
+
+@keyframes modalOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPanelIn {
+  from { opacity: 0; transform: scale(var(--scale-large, 0.96)); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .access-footer {
