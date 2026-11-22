@@ -82,20 +82,11 @@ export default function AccessShell({
 
       {hideSideArt ? (
         children
-      ) : formOnCircleCard ? (
-        <main className="access-layout access-layout-centered">
-          <div className="access-side-art access-circle-form">
-            {formSection}
-          </div>
-        </main>
       ) : (
-        <main className="access-layout">
-          {formSection}
+        <main className={formOnCircleCard ? "access-layout access-layout-centered" : "access-layout"}>
+          {!formOnCircleCard && formSection}
 
-          <aside
-            className={`access-side-art ${isCoach ? "intro-coach" : ""}`}
-            aria-label="ASCEND coaching experience"
-          >
+          <div className={`access-side-art${isCoach ? " intro-coach" : ""}${formOnCircleCard ? " access-circle-form" : ""}`}>
             <div>
               <div className="access-art-kicker">
                 {isCoach ? "PRIVATE WORKSPACE · COACH" : "ASCEND · PERSONALISED COACHING"}
@@ -121,6 +112,8 @@ export default function AccessShell({
                   : "A clear system to follow, an experienced coach to guide you, and progress you can understand."}
               </p>
             </div>
+
+            {formOnCircleCard && formSection}
 
             <div className="access-art-bottom">
               <strong>{isCoach ? "Built around Sahmi’s decisions" : "How ASCEND works"}</strong>
@@ -158,7 +151,7 @@ export default function AccessShell({
                 )}
               </div>
             </div>
-          </aside>
+          </div>
         </main>
       )}
 
