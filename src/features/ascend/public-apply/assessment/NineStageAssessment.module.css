@@ -1,0 +1,774 @@
+.wrapper {
+  min-height: 100vh;
+  background: radial-gradient(circle at 50% 25%, rgba(199, 164, 91, 0.12), transparent 48%),
+              radial-gradient(circle at 15% 15%, rgba(199, 164, 91, 0.06), transparent 32%),
+              #0a0d0c;
+  color: #f0f1ec;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+.wrapper::before {
+  content: "";
+  position: fixed;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(88vw, 880px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(199, 164, 91, 0.15);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 65px rgba(199, 164, 91, 0.04),
+    0 0 0 135px rgba(199, 164, 91, 0.03),
+    0 0 0 210px rgba(199, 164, 91, 0.02),
+    0 0 0 290px rgba(199, 164, 91, 0.015),
+    0 0 0 380px rgba(199, 164, 91, 0.01);
+  pointer-events: none;
+  z-index: 0;
+}
+.wrapper :global(.assessment-topbar) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background: rgba(12, 16, 14, 0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(199, 164, 91, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  gap: 16px;
+}
+.wrapper :global(.assessment-brand) strong {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px;
+  letter-spacing: 0.15em;
+  color: #f7f5ed;
+}
+.wrapper :global(.assessment-brand) span {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  color: #dfbf77;
+  font-weight: 700;
+}
+.wrapper :global(.assessment-tagline) {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: #d4b875;
+  font-weight: 700;
+}
+.wrapper :global(.assessment-progress-indicator) {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #b8c0b5;
+}
+.wrapper :global(.assessment-progress-bar) {
+  width: 120px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.wrapper :global(.assessment-progress-bar) div {
+  height: 100%;
+  background: linear-gradient(90deg, #c5a359, #dfbf77);
+  box-shadow: 0 0 10px rgba(223, 191, 119, 0.5);
+  transition: width 0.3s ease;
+}
+
+/* Top-Right Stage Indicator Pill & Dropdown */
+.wrapper :global(.top-right-stage-wrapper) {
+  position: relative;
+}
+.wrapper :global(.stage-pill-btn) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(199, 164, 91, 0.12);
+  border: 1px solid rgba(199, 164, 91, 0.35);
+  border-radius: 999px;
+  padding: 6px 14px;
+  color: #f7f5ed;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.wrapper :global(.stage-pill-btn):hover {
+  background: rgba(199, 164, 91, 0.2);
+  border-color: rgba(199, 164, 91, 0.5);
+}
+.wrapper :global(.stage-pill-kicker) {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #dfbf77;
+}
+.wrapper :global(.stage-pill-name) {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f7f5ed;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wrapper :global(.stage-pill-chevron) {
+  font-size: 9px;
+  color: #dfbf77;
+}
+.wrapper :global(.stage-dropdown-menu) {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 290px;
+  background: #141a17;
+  border: 1px solid rgba(199, 164, 91, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  padding: 12px;
+  z-index: 60;
+  backdrop-filter: blur(16px);
+}
+.wrapper :global(.dropdown-header) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 8px;
+}
+.wrapper :global(.dropdown-header) strong {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #dfbf77;
+}
+.wrapper :global(.dropdown-header) small {
+  font-size: 11px;
+  color: #9da69a;
+}
+.wrapper :global(.dropdown-stages-list) {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.wrapper :global(.dropdown-stage-item) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.wrapper :global(.dropdown-stage-item):hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.wrapper :global(.dropdown-stage-item):global(.active) {
+  background: rgba(199, 164, 91, 0.15);
+  border: 1px solid rgba(199, 164, 91, 0.3);
+}
+.wrapper :global(.dropdown-stage-badge) {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #c0c6bc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.wrapper :global(.dropdown-stage-item):global(.complete) :global(.dropdown-stage-badge) {
+  background: #dfbf77;
+  color: #0c100e;
+}
+.wrapper :global(.dropdown-stage-info) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.wrapper :global(.dropdown-stage-title) {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f7f5ed;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wrapper :global(.dropdown-stage-desc) {
+  font-size: 10px;
+  color: #8c9489;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wrapper :global(.dropdown-active-dot) {
+  font-size: 10px;
+  color: #dfbf77;
+}
+
+/* Layout & Main Question Presentation */
+.wrapper :global(.assessment-layout) {
+  max-width: 740px;
+  margin: 0 auto;
+  min-height: calc(100vh - 75px);
+  position: relative;
+  z-index: 10;
+  padding: 36px 20px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.wrapper :global(.assessment-main) {
+  width: 100%;
+}
+.wrapper :global(.single-question-container) {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.wrapper :global(.question-stage-eyebrow) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.wrapper :global(.stage-code-pill) {
+  background: rgba(199, 164, 91, 0.2);
+  border: 1px solid rgba(199, 164, 91, 0.4);
+  color: #dfbf77;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+.wrapper :global(.stage-eyebrow-text) {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #dfbf77;
+  text-transform: uppercase;
+}
+.wrapper :global(.question-item-card) {
+  background: rgba(20, 26, 23, 0.88);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(199, 164, 91, 0.25);
+  border-radius: 18px;
+  padding: 34px 36px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+}
+.wrapper :global(.question-header) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.wrapper :global(.question-id) {
+  font-size: 11px;
+  font-weight: 800;
+  color: #dfbf77;
+  letter-spacing: 0.12em;
+}
+.wrapper :global(.req-pill) {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #dfbf77;
+  background: rgba(199, 164, 91, 0.14);
+  border: 1px solid rgba(199, 164, 91, 0.35);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.wrapper :global(.opt-pill) {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #8c9489;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.wrapper :global(.question-prompt) {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(26px, 3.2vw, 34px);
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 0 0 10px;
+  color: #f7f5ed;
+}
+.wrapper :global(.question-help) {
+  color: #adb6a9;
+  font-size: 14.5px;
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+.wrapper :global(.question-control-wrap) {
+  margin-bottom: 30px;
+}
+
+/* Choice Buttons */
+.wrapper :global(.choice-list), .wrapper :global(.multi-list) {
+  display: grid;
+  gap: 11px;
+}
+.wrapper :global(.multi-limit-hint) {
+  font-size: 11.5px;
+  color: #dfbf77;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.wrapper :global(.choice-card) {
+  width: 100%;
+  min-height: 52px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #e5e8e2;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.wrapper :global(.choice-card):hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(199, 164, 91, 0.35);
+}
+.wrapper :global(.choice-card):global(.active) {
+  background: rgba(199, 164, 91, 0.15);
+  border-color: #dfbf77;
+  color: #ffffff;
+}
+.wrapper :global(.choice-dot) {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(199, 164, 91, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #dfbf77;
+  flex-shrink: 0;
+}
+.wrapper :global(.choice-card):global(.active) :global(.choice-dot) {
+  border-color: #dfbf77;
+  background: #dfbf77;
+  color: #0c100e;
+}
+.wrapper :global(.choice-square) {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(199, 164, 91, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #dfbf77;
+  flex-shrink: 0;
+}
+.wrapper :global(.choice-card):global(.active) :global(.choice-square) {
+  border-color: #dfbf77;
+  background: #dfbf77;
+  color: #0c100e;
+}
+.wrapper :global(.choice-label) {
+  flex: 1;
+}
+.wrapper :global(.detail-input-wrap) {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.wrapper :global(.detail-label) {
+  font-size: 12px;
+  color: #c8d0c4;
+  font-weight: 600;
+}
+
+/* Inputs & Textareas */
+.wrapper :global(.assessment-input) {
+  width: 100%;
+  min-height: 52px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 0 16px;
+  color: #f7f5ed;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.wrapper :global(.assessment-input):focus {
+  border-color: #dfbf77;
+  box-shadow: 0 0 0 3px rgba(223, 191, 119, 0.2);
+}
+.wrapper :global(.assessment-textarea) {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: #f7f5ed;
+  font-size: 15px;
+  line-height: 1.6;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.15s ease;
+}
+.wrapper :global(.assessment-textarea):focus {
+  border-color: #dfbf77;
+  box-shadow: 0 0 0 3px rgba(223, 191, 119, 0.2);
+}
+
+/* Measurement Row */
+.wrapper :global(.measurement-row) {
+  display: flex;
+  gap: 12px;
+}
+.wrapper :global(.measurement-select) {
+  min-height: 52px;
+  background: #19201d;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #dfbf77;
+  padding: 0 16px;
+  font-weight: 700;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Rating Row */
+.wrapper :global(.rating-row-container) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.wrapper :global(.rating-row) {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.wrapper :global(.rating-btn) {
+  flex: 1;
+  min-width: 38px;
+  min-height: 48px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  color: #e5e8e2;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.wrapper :global(.rating-btn):hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(199, 164, 91, 0.4);
+}
+.wrapper :global(.rating-btn):global(.active) {
+  background: #dfbf77;
+  border-color: #dfbf77;
+  color: #0c100e;
+}
+.wrapper :global(.rating-labels-row) {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #8c9489;
+  padding: 0 2px;
+}
+
+/* Check Rows */
+.wrapper :global(.checks-list) {
+  display: grid;
+  gap: 12px;
+}
+.wrapper :global(.check-row) {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: #e5e8e2;
+}
+.wrapper :global(.check-row) input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: #dfbf77;
+  flex-shrink: 0;
+}
+
+/* Imported Display Card */
+.wrapper :global(.imported-display-card) {
+  background: rgba(199, 164, 91, 0.08);
+  border: 1px solid rgba(199, 164, 91, 0.25);
+  border-radius: 12px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.wrapper :global(.imported-row) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.wrapper :global(.imported-label) {
+  font-size: 12px;
+  color: #aeb6ac;
+  font-weight: 600;
+}
+.wrapper :global(.imported-value-wrap) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wrapper :global(.imported-value) {
+  font-size: 13.5px;
+  color: #f7f5ed;
+}
+.wrapper :global(.verified-pill) {
+  font-size: 10px;
+  font-weight: 700;
+  color: #79c8a8;
+  background: rgba(121, 200, 168, 0.15);
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+.wrapper :global(.imported-subtext) {
+  margin: 0;
+  font-size: 12px;
+  color: #8c9489;
+  line-height: 1.5;
+}
+
+/* Navigation Bar */
+.wrapper :global(.assessment-navigation-bar) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.wrapper :global(.btn-gold) {
+  background: #dfbf77;
+  color: #0c100e;
+  border: none;
+  border-radius: 9px;
+  padding: 13px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.wrapper :global(.btn-gold):hover {
+  background: #ebd292;
+}
+.wrapper :global(.btn-secondary) {
+  background: transparent;
+  color: #dfbf77;
+  border: 1px solid rgba(199, 164, 91, 0.4);
+  border-radius: 9px;
+  padding: 13px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.wrapper :global(.btn-secondary):hover {
+  background: rgba(199, 164, 91, 0.1);
+}
+
+/* Error Banner */
+.wrapper :global(.assessment-error-banner) {
+  background: rgba(156, 51, 37, 0.2);
+  border: 1px solid rgba(238, 203, 196, 0.4);
+  color: #ff9d91;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+/* Footer Dev Tool */
+.wrapper :global(.assessment-footer-dev) {
+  margin-top: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+}
+.wrapper :global(.dev-fill-btn) {
+  background: transparent;
+  color: #8c9489;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.wrapper :global(.dev-fill-btn):hover {
+  color: #dfbf77;
+  border-color: #dfbf77;
+}
+.wrapper :global(.footer-brand-copy) {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: #687165;
+  font-weight: 600;
+}
+
+/* Finished Card Screen */
+.wrapper :global(.assessment-finished-card) {
+  max-width: 680px;
+  margin: 60px auto;
+  background: rgba(20, 26, 23, 0.88);
+  border: 1px solid rgba(199, 164, 91, 0.3);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6);
+}
+.wrapper :global(.finished-badge) {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #dfbf77;
+  background: rgba(199, 164, 91, 0.15);
+  border: 1px solid rgba(199, 164, 91, 0.4);
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+}
+.wrapper :global(.assessment-finished-card) h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 40px;
+  font-weight: 500;
+  margin: 0 0 14px;
+  color: #f7f5ed;
+}
+.wrapper :global(.finished-lede) {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #adb6a9;
+  margin: 0 0 28px;
+}
+.wrapper :global(.safety-alert-banner) {
+  background: rgba(199, 164, 91, 0.12);
+  border-left: 3px solid #dfbf77;
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #f0f1ec;
+  border-radius: 6px;
+  margin-bottom: 28px;
+}
+.wrapper :global(.stage-review-grid) {
+  text-align: left;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
+}
+.wrapper :global(.stage-review-grid) h3 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #dfbf77;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+}
+.wrapper :global(.stage-review-grid) ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.wrapper :global(.stage-review-grid) li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+}
+.wrapper :global(.stage-check) {
+  color: #dfbf77;
+  font-weight: 800;
+}
+.wrapper :global(.stage-review-grid) strong {
+  color: #f7f5ed;
+}
+.wrapper :global(.stage-review-grid) small {
+  color: #8c9489;
+  margin-left: auto;
+}
+.wrapper :global(.finished-actions) {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .wrapper :global(.assessment-topbar) {
+    padding: 12px 16px;
+  }
+  .wrapper :global(.assessment-progress-indicator) {
+    display: none;
+  }
+  .wrapper :global(.stage-pill-name) {
+    display: none;
+  }
+  .wrapper :global(.question-item-card) {
+    padding: 24px 20px;
+  }
+  .wrapper :global(.assessment-finished-card) {
+    padding: 28px 20px;
+    margin: 24px 12px;
+  }
+}
