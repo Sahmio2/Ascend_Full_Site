@@ -115,42 +115,44 @@ export default function AccessShell({
 
             {formOnCircleCard && formSection}
 
-            <div className="access-art-bottom">
-              <strong>{isCoach ? "Built around Sahmi’s decisions" : "How ASCEND works"}</strong>
-              <div className="access-art-steps">
-                {isCoach ? (
-                  <>
-                    <div className="access-art-step">
-                      <b>01</b>
-                      <span>Review</span>
-                    </div>
-                    <div className="access-art-step">
-                      <b>02</b>
-                      <span>Decide</span>
-                    </div>
-                    <div className="access-art-step">
-                      <b>03</b>
-                      <span>Publish</span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="access-art-step">
-                      <b>01</b>
-                      <span>Register</span>
-                    </div>
-                    <div className="access-art-step">
-                      <b>02</b>
-                      <span>Get your plan</span>
-                    </div>
-                    <div className="access-art-step">
-                      <b>03</b>
-                      <span>Progress</span>
-                    </div>
-                  </>
-                )}
+            {!formOnCircleCard && (
+              <div className="access-art-bottom">
+                <strong>{isCoach ? "Built around Sahmi’s decisions" : "How ASCEND works"}</strong>
+                <div className="access-art-steps">
+                  {isCoach ? (
+                    <>
+                      <div className="access-art-step">
+                        <b>01</b>
+                        <span>Review</span>
+                      </div>
+                      <div className="access-art-step">
+                        <b>02</b>
+                        <span>Decide</span>
+                      </div>
+                      <div className="access-art-step">
+                        <b>03</b>
+                        <span>Publish</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="access-art-step">
+                        <b>01</b>
+                        <span>Register</span>
+                      </div>
+                      <div className="access-art-step">
+                        <b>02</b>
+                        <span>Get your plan</span>
+                      </div>
+                      <div className="access-art-step">
+                        <b>03</b>
+                        <span>Progress</span>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </main>
       )}
