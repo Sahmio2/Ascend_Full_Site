@@ -12,6 +12,7 @@ interface AccessShellProps {
   artVariant?: "client" | "coach";
   hideSideArt?: boolean;
   formOnCircleCard?: boolean;
+  accountOverview?: boolean;
 }
 
 export default function AccessShell({
@@ -22,6 +23,7 @@ export default function AccessShell({
   artVariant = "client",
   hideSideArt = false,
   formOnCircleCard = true,
+  accountOverview = false,
 }: AccessShellProps) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
@@ -45,7 +47,7 @@ export default function AccessShell({
   const isCoach = artVariant === "coach";
 
   return (
-    <div className="ascend-access-scope" data-theme={theme}>
+    <div className={accountOverview ? "ascend-access-scope account-overview-shell" : "ascend-access-scope"} data-theme={theme}>
       <header className="ascend-access-nav">
         <Link className="access-brand" href="/" aria-label="ASCEND home">
           <span className="access-mark">A</span>
@@ -55,12 +57,16 @@ export default function AccessShell({
           </span>
         </Link>
         <nav className="access-nav-actions" aria-label="Access navigation">
-          <Link className="access-navlink" href="/login">
-            Client login
-          </Link>
-          <Link className="access-navlink" href="/coach/login">
-            Coach access
-          </Link>
+          {!accountOverview && (
+            <>
+              <Link className="access-navlink" href="/login">
+                Client login
+              </Link>
+              <Link className="access-navlink" href="/coach/login">
+                Coach access
+              </Link>
+            </>
+          )}
           <button
             type="button"
             className="access-theme-toggle"
@@ -210,9 +216,9 @@ export default function AccessShell({
       <footer className="access-footer">
         <span>© ASCEND by Sahmi El · Account access</span>
         <div className="access-linkrow">
-          <Link href="/login">Login</Link>
+          {!accountOverview && <Link href="/login">Login</Link>}
           <Link href="/auth/recover">Help accessing account</Link>
-          <Link href="/coach/login">Coach</Link>
+          {!accountOverview && <Link href="/coach/login">Coach</Link>}
         </div>
       </footer>
     </div>
