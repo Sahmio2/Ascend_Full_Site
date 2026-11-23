@@ -265,7 +265,11 @@ test('Access 6: GET /api/account/snapshot returns server-authoritative state and
   assert.ok(snapData.snapshot.status);
   assert.ok(snapData.snapshot.badge);
 
-  // 2. Submit assessment
+  // 2. The same signed-in account cannot submit until it has paid.
+  const userId = snapData.snapshot.userId;
+  await prisma.membership.deleteMany({ where: { userId } });
+
+  // 3. Submit assessment after payment.
   const assessReq = new Request(`${ORIGIN}/api/assessment`, {
     method: 'POST',
     headers: {
@@ -282,12 +286,17 @@ test('Access 6: GET /api/account/snapshot returns server-authoritative state and
       isSubmitted: true,
     }),
   });
+  assert.equal((await assessmentPost(assessReq.clone())).status, 403);
+  await prisma.membership.create({
+    data: { userId, status: 'ACTIVE_RENEWING', paidThrough: new Date(Date.now() + 86_400_000) },
+  });
   const assessRes = await assessmentPost(assessReq);
   assert.equal(assessRes.status, 200);
   const assessData = await assessRes.json();
   assert.equal(assessData.assessment.status, 'SUBMITTED');
+  await prisma.membership.deleteMany({ where: { userId } });
 
-  // 3. Logout
+  // 4. Logout
   const logoutReq = new Request(`${ORIGIN}/api/auth/logout`, {
     method: 'POST',
     headers: { Origin: ORIGIN, Cookie: `ascend_session=${token}` },

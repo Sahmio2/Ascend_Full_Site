@@ -1,6 +1,6 @@
 import { db } from '@/server/db';
-import { requireUser } from '@/server/auth';
-import { handler, json, body, assertOrigin } from '@/server/http';
+import { assessmentAccess, requireUser } from '@/server/auth';
+import { handler, json, body, assertOrigin, ApiError } from '@/server/http';
 import { z } from 'zod';
 
 export const runtime = 'nodejs';
@@ -21,6 +21,7 @@ function calculateFiveBusinessDays(startDate = new Date()): Date {
 
 export const GET = handler(async (request: Request) => {
   const userId = await requireUser(request);
+  if (!(await assessmentAccess(userId)).allowed) throw new ApiError(403, "ASSESSMENT_ACCESS_REQUIRED");
   const prisma = db();
 
   const assessment = await prisma.clientAssessment.findUnique({
@@ -60,6 +61,7 @@ export const GET = handler(async (request: Request) => {
 export const POST = handler(async (request: Request) => {
   assertOrigin(request);
   const userId = await requireUser(request);
+  if (!(await assessmentAccess(userId)).allowed) throw new ApiError(403, "ASSESSMENT_ACCESS_REQUIRED");
   const raw = await body(request);
   const prisma = db();
 

@@ -1427,3 +1427,56 @@ form .access-button-row:not(.access-modal-actions) button {
     padding-block: 8px;
   }
 }
+
+.account-overview-journey {
+  display: grid;
+  max-width: 410px;
+  gap: 4px;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.account-overview-journey .account-overview-btn-primary {
+  width: 100%;
+  min-height: 44px;
+  background: #c7a45b;
+  color: #1d1710;
+  font-weight: 600;
+  white-space: normal;
+}
+
+.account-overview-journey .account-overview-btn-primary:hover:not(:disabled) {
+  background: #d3b370;
+}
+
+.account-overview-journey .account-overview-btn-primary:disabled {
+  opacity: 1;
+  border-color: var(--access-line);
+  background: var(--access-pale);
+  color: var(--access-ink);
+  box-shadow: none;
+}
+
+.account-overview-journey p,
+.account-overview-pay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.account-overview-pay {
+  border: 0;
+  background: transparent;
+  color: var(--access-gold);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.account-overview-pay:disabled {
+  cursor: default;
+}

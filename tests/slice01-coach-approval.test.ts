@@ -27,6 +27,13 @@ test('Slice 01 - T1: Client submits same assessment twice: idempotent submission
     create: { email, role: 'CLIENT' },
   });
 
+  const paidPeriod = { status: 'ACTIVE_RENEWING' as const, paidThrough: new Date(Date.now() + 86_400_000) };
+  await prisma.membership.upsert({
+    where: { userId: user.id },
+    update: paidPeriod,
+    create: { userId: user.id, ...paidPeriod },
+  });
+
   // Clean prior assessment
   await prisma.assessmentStageData.deleteMany({ where: { assessment: { userId: user.id } } });
   await prisma.clientAssessment.deleteMany({ where: { userId: user.id } });
@@ -545,6 +552,13 @@ test('Slice 01 - T12: Assessment resumption and Coach queue visibility', async (
 
   await prisma.assessmentStageData.deleteMany({ where: { assessment: { userId: client.id } } });
   await prisma.clientAssessment.deleteMany({ where: { userId: client.id } });
+
+  const paidPeriod = { status: 'ACTIVE_RENEWING' as const, paidThrough: new Date(Date.now() + 86_400_000) };
+  await prisma.membership.upsert({
+    where: { userId: client.id },
+    update: paidPeriod,
+    create: { userId: client.id, ...paidPeriod },
+  });
 
   const clientSession = await issueUserSession(client.id);
   const coachSession = await issueUserSession(coach.id);

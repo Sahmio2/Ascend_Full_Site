@@ -3,7 +3,7 @@ import crypto, { createHash, randomBytes } from 'node:crypto';
 import { db } from './db';
 import { ApiError } from './http';
 import { getCapacityStatus } from './capacity';
-import type { User, Role } from '../generated/prisma/client';
+import type { User, Role, Membership, RegistrantScreening, AssessmentStatus } from '../generated/prisma/client';
 
 export const tokenHash = (token: string) => createHash('sha256').update(token).digest('hex');
 
@@ -93,6 +93,43 @@ export async function issueUserSession(userId: string, hours = 168): Promise<Iss
   return { token, cookieHeader, expiresAt };
 }
 
+export function hasPaidMembership(
+  membership: Pick<Membership, 'status' | 'paidThrough'> | null,
+  now = new Date(),
+) {
+  return Boolean(
+    membership?.paidThrough && membership.paidThrough > now &&
+    (membership.status === 'ACTIVE_RENEWING' || membership.status === 'NON_RENEWING')
+  );
+}
+
+function coachingHold(
+  screening: Pick<RegistrantScreening, 'ageRange' | 'eligibility'> | null,
+  assessmentStatus?: AssessmentStatus,
+) {
+  if (screening?.ageRange === 'under_16' || screening?.eligibility === 'UNDER_16') return 'under_16';
+  if (screening?.eligibility === 'SAFETY_HOLD' || assessmentStatus === 'SAFETY_HELD') return 'safety';
+  if (screening?.ageRange === '16_17' || screening?.eligibility === 'GUARDIAN_PENDING') return 'guardian';
+  return null;
+}
+
+export async function assessmentAccess(userId: string) {
+  const prisma = db();
+  const where = { userId };
+  const [screening, membership, assessment] = await Promise.all([
+    prisma.registrantScreening.findUnique({ where }),
+    prisma.membership.findUnique({ where }),
+    prisma.clientAssessment.findUnique({ where, select: { status: true } }),
+  ]);
+
+  const hold = coachingHold(screening, assessment?.status);
+  return {
+    screening,
+    allowed: hasPaidMembership(membership) && !hold &&
+      screening?.eligibility !== 'EQUIPMENT_HOLD' && screening?.eligibility !== 'NOT_READY',
+  };
+}
+
 export type AccountStatusKey =
   | 'assessment'
   | 'review'
@@ -103,7 +140,8 @@ export type AccountStatusKey =
   | 'guardian'
   | 'waitlist'
   | 'payment'
-  | 'under_16';
+  | 'under_16'
+  | 'screening';
 
 export interface AccountSnapshot {
   userId: string;
@@ -143,11 +181,11 @@ const STATUS_DEFINITIONS: Record<
   }
 > = {
   assessment: {
-    title: 'Assessment to complete',
-    desc: 'Your membership is confirmed. Finish the private nine-stage assessment to help Sahmi prepare your programme.',
-    action: 'Continue assessment',
-    path: '/assessment',
-    badge: 'Awaiting assessment',
+    title: 'Your assessment is ready',
+    desc: 'Complete the nine-stage assessment so Sahmi can build your programme.',
+    action: 'Begin your Ascension journey',
+    path: '/account',
+    badge: 'Payment confirmed',
     variant: 'green',
   },
   review: {
@@ -207,11 +245,19 @@ const STATUS_DEFINITIONS: Record<
     variant: '',
   },
   payment: {
-    title: 'Your membership is not yet active',
-    desc: 'Your account is ready. Once eligibility and capacity requirements are met, you can review the membership offer and pay securely.',
-    action: 'View membership',
-    path: '/account/membership',
-    badge: 'Not paid',
+    title: 'Your membership is pending',
+    desc: 'Your private assessment unlocks once payment is confirmed.',
+    action: 'View account',
+    path: '/account',
+    badge: 'Payment required',
+    variant: '',
+  },
+  screening: {
+    title: 'Coaching setup needs review',
+    desc: 'Confirm your training setup and readiness before continuing with coaching.',
+    action: 'View account',
+    path: '/account',
+    badge: 'Registration follow-up',
     variant: '',
   },
   under_16: {
@@ -241,19 +287,8 @@ export async function getAccountSnapshot(userId: string): Promise<AccountSnapsho
   // Determine status key
   let key: AccountStatusKey = 'payment';
 
-  const isMinorUnder16 =
-    screening?.ageRange === 'under_16' || screening?.eligibility === 'UNDER_16';
-  const isGuardianPending =
-    screening?.ageRange === '16_17' || screening?.eligibility === 'GUARDIAN_PENDING';
-  const isSafetyHeld =
-    screening?.eligibility === 'SAFETY_HOLD' || assessment?.status === 'SAFETY_HELD';
-
-  const isPaidPeriod = Boolean(
-    membership &&
-      ['ACTIVE_RENEWING', 'NON_RENEWING'].includes(membership.status) &&
-      membership.paidThrough &&
-      membership.paidThrough > now
-  );
+  const hold = coachingHold(screening, assessment?.status);
+  const isPaidPeriod = hasPaidMembership(membership, now);
 
   const isCancelledPaid = Boolean(
     isPaidPeriod && membership?.status === 'NON_RENEWING' && membership?.cancelAtPeriodEnd
@@ -266,12 +301,10 @@ export async function getAccountSnapshot(userId: string): Promise<AccountSnapsho
       membership.status === 'ENDED'
   );
 
-  if (isMinorUnder16) {
-    key = 'under_16';
-  } else if (isSafetyHeld) {
-    key = 'safety';
-  } else if (isGuardianPending) {
-    key = 'guardian';
+  if (hold) {
+    key = hold;
+  } else if (screening?.eligibility === 'EQUIPMENT_HOLD' || screening?.eligibility === 'NOT_READY') {
+    key = 'screening';
   } else if (isExpired) {
     key = 'expired';
   } else if (isPaidPeriod) {
@@ -294,7 +327,7 @@ export async function getAccountSnapshot(userId: string): Promise<AccountSnapsho
   }
 
   const def = STATUS_DEFINITIONS[key];
-  const clientPortalAccess = (key === 'active' || key === 'cancelled') && !isSafetyHeld;
+  const clientPortalAccess = (key === 'active' || key === 'cancelled');
 
   return {
     userId: user.id,

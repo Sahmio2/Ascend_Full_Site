@@ -1,5 +1,5 @@
-import NineStageAssessment from "@/features/ascend/public-apply/assessment/NineStageAssessment";
+import { redirect } from "next/navigation";
 
-export default function ClientAssessmentPage() {
-  return <NineStageAssessment />;
+export default function AssessmentRedirect() {
+  redirect("/assessment");
 }

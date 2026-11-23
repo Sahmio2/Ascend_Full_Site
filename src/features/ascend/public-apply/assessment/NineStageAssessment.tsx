@@ -37,10 +37,6 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
   const stageMenuRef = useRef<HTMLDivElement>(null);
 
   const [answers, setAnswers] = useState<Record<string, any>>(() => {
-    try {
-      const saved = localStorage.getItem('ascend_assessment_answers');
-      if (saved) return JSON.parse(saved);
-    } catch {}
     // Initial answers start clean with only verified registration details imported
     return {
       'FT-01': {
@@ -54,6 +50,8 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [saving, setSaving] = useState(false);
 
   // Close stage dropdown on outside click
   useEffect(() => {
@@ -66,47 +64,34 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Load existing assessment from server if available
   useEffect(() => {
-    let ignore = false;
+    const controller = new AbortController();
     async function loadSavedAssessment() {
       try {
-        const res = await fetch('/api/assessment');
-        if (!res.ok) return;
+        const res = await fetch('/api/assessment', { signal: controller.signal });
+        if (res.status === 401 || res.status === 403) {
+          window.location.replace('/account');
+          return;
+        }
+        if (!res.ok) throw new Error('Assessment unavailable');
         const data = await res.json();
-        if (ignore || !data.assessment) return;
+        if (controller.signal.aborted) return;
 
-        if (
-          data.assessment.status === 'SUBMITTED' ||
-          data.assessment.status === 'APPROVED' ||
-          data.assessment.status === 'SAFETY_HELD'
-        ) {
-          setIsSubmitted(true);
+        const saved = data.answers as Record<string, unknown> | undefined;
+        if (saved && Object.keys(saved).length) {
+          setAnswers(previous => ({ ...previous, ...saved }));
+          const next = questions.filter(q => isQuestionVisible(q, saved)).findIndex(q => !isAnswered(q, saved));
+          setCurrentQuestionIndex(Math.max(0, next));
         }
-
-        if (Array.isArray(data.assessment.stages) && data.assessment.stages.length > 0) {
-          const merged: Record<string, any> = {};
-          for (const s of data.assessment.stages) {
-            if (s.data && typeof s.data === 'object') {
-              Object.assign(merged, s.data);
-            }
-          }
-          if (Object.keys(merged).length > 0) {
-            setAnswers((prev) => ({ ...prev, ...merged }));
-          }
-        }
-      } catch {}
+        setIsSubmitted(Boolean(data.assessment?.isSubmitted));
+        setLoadState('ready');
+      } catch {
+        if (!controller.signal.aborted) setLoadState('error');
+      }
     }
-    loadSavedAssessment();
-    return () => { ignore = true; };
+    void loadSavedAssessment();
+    return () => controller.abort();
   }, []);
-
-  // Persist answers locally
-  useEffect(() => {
-    try {
-      localStorage.setItem('ascend_assessment_answers', JSON.stringify(answers));
-    } catch {}
-  }, [answers]);
 
   // Questions visible based on dynamic dependencies
   const visibleQuestions = useMemo(() => {
@@ -215,43 +200,35 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
     setError(null);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    if (saving) return;
     const err = validateCurrentQuestion();
     if (err) {
       setError(err);
       return;
     }
     setError(null);
-
+    setSaving(true);
     const isLastQuestion = safeIndex >= visibleQuestions.length - 1;
-    if (!isLastQuestion) {
-      setCurrentQuestionIndex(safeIndex + 1);
+
+    try {
+      const response = await fetch('/api/assessment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers, isSubmitted: isLastQuestion }),
+      });
+      if (response.status === 401 || response.status === 403) {
+        window.location.replace('/account');
+        return;
+      }
+      if (!response.ok) throw new Error('Assessment could not be saved');
+      if (isLastQuestion) setIsSubmitted(true);
+      else setCurrentQuestionIndex(safeIndex + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      // Non-blocking intermediate autosave
-      try {
-        fetch('/api/assessment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Origin: typeof window !== 'undefined' ? window.location.origin : '',
-          },
-          body: JSON.stringify({ answers, isSubmitted: false }),
-        }).catch(() => {});
-      } catch {}
-    } else {
-      setIsSubmitted(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      // Final submission
-      try {
-        fetch('/api/assessment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Origin: typeof window !== 'undefined' ? window.location.origin : '',
-          },
-          body: JSON.stringify({ answers, isSubmitted: true }),
-        }).catch(() => {});
-      } catch {}
+    } catch {
+      setError('We couldn’t save your answers. Try again to continue.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -281,6 +258,20 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
     ['Yes', 'Unsure'].includes(bs05) ||
     bs06 === 'Pregnant' ||
     ['Yes', 'Unsure', 'Prefer private discussion'].includes(bs07);
+
+  if (loadState !== 'ready') {
+    return (
+      <main className={styles.wrapper}>
+        <section className="assessment-finished-card">
+          <h1>Private assessment</h1>
+          <p role="status">
+            {loadState === 'loading' ? 'Loading your assessment…' : 'We couldn’t load your assessment. Please try again.'}
+          </p>
+          {loadState === 'error' && <button type="button" className="btn-gold" onClick={() => window.location.reload()}>Try again</button>}
+        </section>
+      </main>
+    );
+  }
 
   if (isSubmitted) {
     return (
@@ -756,11 +747,11 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
 
                 {/* Bottom Navigation Controls for the Active Question */}
                 <div className="assessment-navigation-bar">
-                  <button type="button" className="btn-secondary" onClick={handleBack}>
+                  <button type="button" className="btn-secondary" onClick={handleBack} disabled={saving}>
                     ← {safeIndex === 0 ? 'Back' : 'Previous'}
                   </button>
-                  <button type="button" className="btn-gold" onClick={handleNext}>
-                    {isLastQuestion ? 'Submit 9-Stage Assessment' : 'Continue'} →
+                  <button type="button" className="btn-gold" onClick={handleNext} disabled={saving}>
+                    {saving ? 'Saving…' : isLastQuestion ? 'Submit 9-Stage Assessment' : 'Continue'} →
                   </button>
                 </div>
               </div>
@@ -769,9 +760,11 @@ export default function NineStageAssessment({ onBackToEntrance, prefillProfile }
 
           {/* Discreet Footer Dev Action */}
           <div className="assessment-footer-dev">
-            <button type="button" onClick={fillSampleAnswers} className="dev-fill-btn">
-              ⚡ Fill Sample Answers (Dev)
-            </button>
+            {process.env.NODE_ENV !== 'production' && (
+              <button type="button" onClick={fillSampleAnswers} className="dev-fill-btn">
+                ⚡ Fill Sample Answers (Dev)
+              </button>
+            )}
             <span className="footer-brand-copy">ASCEND BY SAHMI EL · FOUNDING COHORT</span>
           </div>
         </main>

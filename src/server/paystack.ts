@@ -21,7 +21,7 @@ export interface PaystackVerifyResult {
     reference: string;
     amount: number;
     currency: string;
-    status: 'success' | 'failed' | 'abandoned';
+    status: string;
     paid_at: string;
     channel: string;
     customer: {
@@ -62,11 +62,19 @@ export function verifyPaystackWebhookSignature(
   }
 }
 
+function checkoutSecret() {
+  const key = process.env.PAYSTACK_SECRET_KEY;
+  if (process.env.NODE_ENV === 'production' && (!key || key.startsWith('mock_'))) {
+    throw new Error('Paystack checkout is not configured.');
+  }
+  return key;
+}
+
 /**
  * Initializes a Paystack recurring subscription checkout.
  */
 export async function initializePaystackCheckout(params: PaystackInitParams) {
-  const secretKey = process.env.PAYSTACK_SECRET_KEY;
+  const secretKey = checkoutSecret();
   const amount = params.amountKobo || ASCEND_MONTHLY_PRICE_KOBO;
 
   // In test / simulation environment if secret key is not set or mock requested
@@ -113,7 +121,7 @@ export async function initializePaystackCheckout(params: PaystackInitParams) {
  * Authoritatively verifies a transaction reference directly against Paystack.
  */
 export async function verifyPaystackTransaction(reference: string): Promise<PaystackVerifyResult> {
-  const secretKey = process.env.PAYSTACK_SECRET_KEY;
+  const secretKey = checkoutSecret();
 
   // In test / simulation environment
   if (!secretKey || secretKey.startsWith('mock_') || process.env.NODE_ENV === 'test') {

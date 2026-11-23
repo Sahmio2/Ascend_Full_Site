@@ -7,12 +7,13 @@ import AccessShell from "./AccessShell";
 import type { AccountSnapshot, AccountStatusKey } from "@/server/auth";
 
 const membershipPath = "/account/membership";
+const journeyLabel = "Begin your Ascension journey";
 type OverviewAction = { label: string; href: string } | { label: string; guidance: string };
 
 const overviewActions: Record<AccountStatusKey, OverviewAction | null> = {
   payment: null,
   active: { label: "Manage coaching membership", href: membershipPath },
-  assessment: { label: "Continue assessment", href: "/assessment" },
+  assessment: { label: journeyLabel, href: "/assessment" },
   review: { label: "Review submitted assessment", href: "/assessment" },
   cancelled: { label: "View cancellation details", href: `${membershipPath}#membership-renewal` },
   expired: { label: "View rejoining options", href: membershipPath },
@@ -25,6 +26,7 @@ const overviewActions: Record<AccountStatusKey, OverviewAction | null> = {
     guidance: "Ask a parent or legal guardian to help with verification. Wait for ASCEND to confirm consent before making a payment.",
   },
   waitlist: { label: "Join the waitlist", href: "/waitlist" },
+  screening: { label: "View registration requirements", guidance: "A suitable training setup and readiness to begin are required before you can continue with coaching." },
   under_16: { label: "Return to ASCEND", href: "/" },
 };
 
@@ -165,38 +167,27 @@ export default function AccountOverview() {
                   {snapshot.badge}
                 </span>
                 <h2 id="coaching-status">{snapshot.statusTitle}</h2>
-                <p>{snapshot.statusDescription}</p>
-                {needsPayment && (
-                  <p className="account-overview-subnote">You can open your assessment before paying.</p>
-                )}
+                <p id={needsPayment ? "journey-payment-note" : undefined}>{snapshot.statusDescription}</p>
                 {needsPayment ? (
-                  <div className="account-overview-actions">
-                    <button
-                      type="button"
-                      className="account-overview-btn-primary"
-                      onClick={handleCheckout}
-                      disabled={paying || signingOut}
-                    >
-                      {paying ? "Connecting to Paystack…" : "Pay membership"}
+                  <div className="account-overview-journey">
+                    <button type="button" className="account-overview-btn-primary" disabled aria-describedby="journey-payment-note">
+                      {journeyLabel}
                     </button>
-                    <Link className="account-overview-btn-secondary" href="/assessment">
-                      Open assessment
-                    </Link>
+                    <button type="button" className="account-overview-pay" onClick={handleCheckout} disabled={paying || signingOut}>
+                      {paying ? "Connecting to Paystack…" : `Pay membership · ${snapshot.membership.priceFormatted}/month`}
+                    </button>
                   </div>
-                ) : (
-                  action && (
-                    "href" in action ? (
-                      <div className="account-overview-actions">
-                        <Link className="account-overview-btn-primary" href={action.href}>
-                          {action.label}
-                        </Link>
-                      </div>
-                    ) : (
-                      <details className="account-overview-guidance">
-                        <summary className="account-overview-btn-primary">{action.label}</summary>
-                        <p>{action.guidance}</p>
-                      </details>
-                    )
+                ) : action && (
+                  "href" in action ? (
+                    <div className={snapshot.status === "assessment" ? "account-overview-journey" : "account-overview-actions"}>
+                      <Link className="account-overview-btn-primary" href={action.href}>{action.label}</Link>
+                      {snapshot.status === "assessment" && <p>Your progress is saved as you go.</p>}
+                    </div>
+                  ) : (
+                    <details className="account-overview-guidance">
+                      <summary className="account-overview-btn-primary">{action.label}</summary>
+                      <p>{action.guidance}</p>
+                    </details>
                   )
                 )}
                 {checkoutError && (
