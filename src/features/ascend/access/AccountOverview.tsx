@@ -50,7 +50,9 @@ export default function AccountOverview() {
 
     async function loadSnapshot() {
       try {
-        const response = await fetch("/api/account/snapshot", { signal: controller.signal });
+        const devUserId = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("devUserId") : null;
+        const snapshotUrl = devUserId ? `/api/account/snapshot?devUserId=${encodeURIComponent(devUserId)}` : "/api/account/snapshot";
+        const response = await fetch(snapshotUrl, { signal: controller.signal });
         if (response.status === 401) {
           router.replace("/login");
           return;

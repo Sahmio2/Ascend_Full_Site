@@ -29,6 +29,11 @@ export default function AccessShell({
 
   useEffect(() => {
     try {
+      const qTheme = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("theme") : null;
+      if (qTheme === "dark" || qTheme === "light") {
+        setTheme(qTheme);
+        return;
+      }
       const saved = localStorage.getItem("ascend_access_theme");
       if (saved === "dark" || saved === "light") {
         setTheme(saved);
