@@ -952,51 +952,51 @@ form .access-button-row:not(.access-modal-actions) button {
   color: #8c9489;
 }
 
-/* Apple Design System Reference for Account Overview */
+/* Apple Layout Rules with ASCEND Brand Palette & DM Sans Typography */
 .account-overview-shell {
   --overview-width: 800px;
   --overview-gutter: 20px;
-  --overview-radius: 16px;
-  --overview-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", sans-serif;
+  --overview-radius: 14px;
+  --overview-card-shadow: 0 1px 3px rgba(25, 33, 38, 0.04), 0 4px 12px rgba(25, 33, 38, 0.02);
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   letter-spacing: -0.015em;
   background-color: var(--access-paper);
 }
 
 .account-overview-shell[data-theme='light'] {
   color-scheme: light;
-  --access-paper: #f5f5f7; /* Apple signature neutral parchment background */
-  --access-surface: #ffffff; /* Apple crisp white card surface */
-  --access-ink: #1d1d1f; /* Apple primary text */
-  --access-muted: #86868b; /* Apple system secondary gray */
-  --access-line: #e5e5ea; /* Apple hairline divider */
-  --access-pale: #f0f0f2; /* Apple subtle chip/hover tint */
-  --access-gold: #0071e3; /* Apple Action Blue for links/accents */
-  --access-good: #34c759; /* Apple System Green */
-  --access-danger: #ff3b30; /* Apple System Red */
-  --overview-accent: #0071e3; /* Apple Action Blue CTA */
-  --overview-accent-hover: #0077ed;
-  --overview-accent-ink: #ffffff;
-  --overview-secondary-border: #d2d2d7;
-  --overview-secondary-hover: #f0f0f2;
+  --access-paper: #f4efe3;
+  --access-surface: #faf7ef;
+  --access-ink: #0b0b0a;
+  --access-muted: #625b50;
+  --access-line: #d8cdb8;
+  --access-pale: #eee5d4;
+  --access-gold: #c7a45b;
+  --access-good: #2e624d;
+  --access-danger: #9d343b;
+  --overview-accent: #c7a45b;
+  --overview-accent-hover: #d3b370;
+  --overview-accent-ink: #0b0b0a;
+  --overview-secondary-border: #d8cdb8;
+  --overview-secondary-hover: #eee5d4;
 }
 
 .account-overview-shell[data-theme='dark'] {
   color-scheme: dark;
-  --access-paper: #000000; /* Apple OLED true black background */
-  --access-surface: #1c1c1e; /* Apple System Gray 6 dark tile surface */
-  --access-ink: #f5f5f7; /* Apple primary text on dark */
-  --access-muted: #86868b; /* Apple secondary text */
-  --access-line: #2c2c2e; /* Apple dark hairline */
-  --access-pale: #2c2c2e; /* Apple subtle dark chip/hover */
-  --access-gold: #2997ff; /* Apple Dark Mode Action Blue */
-  --access-good: #30d158; /* Apple System Green dark */
-  --access-danger: #ff453a; /* Apple System Red dark */
-  --overview-accent: #2997ff; /* Apple Action Blue on dark */
-  --overview-accent-hover: #409cff;
-  --overview-accent-ink: #000000;
-  --overview-secondary-border: #3a3a3c;
-  --overview-secondary-hover: #2c2c2e;
+  --access-paper: #0b0b0a;
+  --access-surface: #111817;
+  --access-ink: #f4efe3;
+  --access-muted: #b9b2a4;
+  --access-line: #35403a;
+  --access-pale: #272c24;
+  --access-gold: #c7a45b;
+  --access-good: #a0cdb4;
+  --access-danger: #ffa5aa;
+  --overview-accent: #c7a45b;
+  --overview-accent-hover: #d3b370;
+  --overview-accent-ink: #0b0b0a;
+  --overview-secondary-border: #35403a;
+  --overview-secondary-hover: #272c24;
 }
 
 .account-overview-shell .ascend-access-nav {
