@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import WorkoutLoggerPage from "@/features/ascend/portal/pages/WorkoutLoggerPage";
+import WorkoutsPage from "@/features/ascend/portal/pages/WorkoutsPage";
 
 export default function Page() {
-  return <WorkoutLoggerPage scope="live" />;
+  return <WorkoutsPage scope="live" />;
 }

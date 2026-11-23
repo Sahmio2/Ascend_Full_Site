@@ -3,14 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useClientPortalData } from "../data/useClientPortalData";
 import type { PortalScope } from "../data/types";
+import { useClientPortalData } from "../data/useClientPortalData";
 
-interface ClientPortalHeaderProps {
-  scope?: PortalScope;
-}
-
-export default function ClientPortalHeader({ scope = "live" }: ClientPortalHeaderProps) {
+export default function PortalHeader({ scope = "live" }: { scope?: PortalScope }) {
   const pathname = usePathname();
   const basePath = scope === "demo" ? "/demo" : "/client";
   const data = useClientPortalData(scope);
@@ -31,49 +27,36 @@ export default function ClientPortalHeader({ scope = "live" }: ClientPortalHeade
     .toUpperCase();
 
   return (
-    <header className="client-portal-header">
-      {/* Brand & Client Phase */}
-      <div className="client-header-left">
-        <Link href={`${basePath}/dashboard`} className="client-header-brand">
+    <header className="portal-header">
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Link href={`${basePath}/dashboard`} className="portal-header-brand">
           ASCEND
         </Link>
-        <span className="client-header-phase">
+        <span className="portal-header-phase">
           {data.client.phaseName || "Phase 1"}
         </span>
       </div>
 
-      {/* Center Nav (Desktop / Tablet) */}
-      <nav className="client-portal-top-nav" aria-label="Client Portal Navigation">
+      <nav className="portal-nav-pills" aria-label="Portal Navigation">
         {navItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={`client-nav-link ${item.active ? "active" : ""}`}
+            className={`portal-nav-link ${item.active ? "active" : ""}`}
           >
             {item.label}
           </Link>
         ))}
       </nav>
 
-      {/* Right: Coach Status & Account Access */}
-      <div className="client-header-right">
-        <Link
-          href={`${basePath}/progress`}
-          className="header-coach-pill"
-          title="Direct message Coach Sahmi"
-        >
-          <span className="coach-dot" />
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <Link href={`${basePath}/progress`} className="portal-coach-pill" title="Coach Sahmi">
+          <span className="portal-coach-dot" />
           <span>Coach Sahmi</span>
-          <span className="priority-msg-badge">2 msgs</span>
         </Link>
 
-        <Link href="/account" className="client-account-link" title="Account Overview">
-          <div className="client-avatar">
-            {initials || "AS"}
-          </div>
-          <span className="client-header-username">
-            {data.client.fullName}
-          </span>
+        <Link href="/account" title="Account Settings" style={{ textDecoration: "none" }}>
+          <div className="portal-avatar">{initials || "AS"}</div>
         </Link>
       </div>
     </header>

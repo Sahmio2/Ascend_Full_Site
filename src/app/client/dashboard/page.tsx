@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import DashboardPage from "@/features/ascend/portal/pages/DashboardPage";
+import TodayPage from "@/features/ascend/portal/pages/TodayPage";
 
 export default function Page() {
-  return <DashboardPage scope="live" />;
+  return <TodayPage scope="live" />;
 }

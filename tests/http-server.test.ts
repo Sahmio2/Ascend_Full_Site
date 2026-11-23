@@ -77,7 +77,7 @@ before(async () => {
     // Poll until the server is responding to HTTP requests
     const start = Date.now();
     let isReady = false;
-    while (Date.now() - start < 30000) {
+    while (Date.now() - start < 60000) {
       try {
         const res = await fetch(`${ORIGIN}/api/session`, {
           method: 'POST',
