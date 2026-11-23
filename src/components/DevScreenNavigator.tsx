@@ -42,9 +42,7 @@ export default function DevScreenNavigator() {
   // Update active category based on current pathname
   useEffect(() => {
     if (!pathname) return;
-    if (pathname.startsWith("/client") || pathname.startsWith("/demo")) {
-      setActiveCategory("portal");
-    } else if (pathname.startsWith("/coach")) {
+    if (pathname.startsWith("/coach")) {
       setActiveCategory("coach");
     } else {
       setActiveCategory("access");
