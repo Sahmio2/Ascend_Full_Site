@@ -1,21 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap');
 
 .ascend-access-scope {
-  --access-paper: #f7f7f6;
-  --access-surface: #ffffff;
+  --access-paper: #f4efe3;
+  --access-surface: #faf7ef;
   --access-cream: #faf8f4;
-  --access-ink: #24292d;
-  --access-muted: #687179;
-  --access-line: #e6e8e9;
-  --access-gold: #967a52;
-  --access-gold-hover: #b7965d;
-  --access-pale: #f4efe6;
+  --access-ink: #0b0b0a;
+  --access-muted: #625b50;
+  --access-line: #d8cdb8;
+  --access-gold: #c7a45b;
+  --access-gold-hover: #d3b370;
+  --access-pale: #eee5d4;
   --access-dark: #161b1c;
-  --access-btn: #222a2d;
-  --access-btn-text: #ffffff;
-  --access-good: #21856a;
-  --access-danger: #b0544a;
-  --access-shadow: 0 18px 65px rgba(25, 33, 38, 0.05);
+  --access-btn: #0b0b0a;
+  --access-btn-text: #f4efe3;
+  --access-good: #2e624d;
+  --access-danger: #9d343b;
+  --access-shadow: 0 4px 20px rgba(25, 33, 38, 0.04);
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--access-paper);
   color: var(--access-ink);
@@ -26,21 +26,21 @@
 }
 
 .ascend-access-scope[data-theme='dark'] {
-  --access-paper: #111516;
-  --access-surface: #191f20;
-  --access-cream: #1f2424;
-  --access-ink: #f0f1ef;
-  --access-muted: #a4adb0;
-  --access-line: #333b3d;
-  --access-gold: #d1b78a;
-  --access-gold-hover: #e5cb9e;
-  --access-pale: #302d27;
+  --access-paper: #0b0b0a;
+  --access-surface: #111817;
+  --access-cream: #18201f;
+  --access-ink: #f4efe3;
+  --access-muted: #b9b2a4;
+  --access-line: #35403a;
+  --access-gold: #c7a45b;
+  --access-gold-hover: #d3b370;
+  --access-pale: #272c24;
   --access-dark: #090d0e;
-  --access-btn: #d2bb93;
-  --access-btn-text: #192021;
-  --access-good: #79c8a8;
-  --access-danger: #e5a098;
-  --access-shadow: 0 18px 65px rgba(0, 0, 0, 0.35);
+  --access-btn: #c7a45b;
+  --access-btn-text: #0b0b0a;
+  --access-good: #a0cdb4;
+  --access-danger: #ffa5aa;
+  --access-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
 .ascend-access-nav {
@@ -516,46 +516,47 @@ form .access-button-row:not(.access-modal-actions) button {
 
 /* Account Overview & Membership Specific */
 .access-account-layout {
-  max-width: 1120px;
+  max-width: 1080px;
   width: 100%;
   margin: 0 auto;
-  padding: 45px 20px 75px;
+  padding: clamp(20px, 3.5vw, 36px) clamp(16px, 3vw, 24px) 50px;
   flex: 1;
 }
 
 .access-account-head {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .access-account-head h1 {
-  font-size: 35px;
-  letter-spacing: -0.04em;
-  margin: 0 0 6px;
+  font-size: clamp(22px, 3.2vw, 30px);
+  letter-spacing: -0.03em;
+  margin: 0 0 4px;
 }
 
 .access-account-head p {
   margin: 0;
   color: var(--access-muted);
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .access-nav-account {
   display: flex;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
 .access-nav-account a,
 .access-nav-account button {
   font-size: 13px;
+  font-weight: 500;
   border: 1px solid var(--access-line);
-  padding: 10px 16px;
+  padding: 8px 16px;
   border-radius: 8px;
   background: var(--access-surface);
   color: var(--access-muted);
@@ -564,62 +565,112 @@ form .access-button-row:not(.access-modal-actions) button {
   transition: all 0.15s ease;
 }
 
+.access-nav-account a:hover,
+.access-nav-account button:hover {
+  color: var(--access-ink);
+  border-color: var(--access-gold);
+}
+
 .access-nav-account a.active,
 .access-nav-account button.active {
   background: var(--access-pale);
-  border-color: #d0bda0;
+  border-color: var(--access-gold);
   color: var(--access-gold);
   font-weight: 700;
 }
 
 .access-account-intro {
-  padding: 28px;
+  padding: clamp(18px, 2.5vw, 24px);
   background: var(--access-surface);
   border: 1px solid var(--access-line);
-  border-radius: 15px;
-  margin-bottom: 20px;
+  border-radius: 14px;
+  margin-bottom: 18px;
   box-shadow: var(--access-shadow);
 }
 
 .access-account-intro h2 {
-  margin: 10px 0;
-  font-size: 26px;
-  letter-spacing: -0.035em;
+  margin: 8px 0;
+  font-size: clamp(20px, 2.5vw, 24px);
+  letter-spacing: -0.03em;
 }
 
 .access-account-intro p {
   color: var(--access-muted);
-  line-height: 1.65;
+  line-height: 1.6;
   max-width: 670px;
-  margin: 0 0 20px;
+  margin: 0 0 16px;
+  font-size: 13.5px;
 }
 
 .access-account-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
-  gap: 20px;
+  gap: 18px;
+}
+
+.access-cardset {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.access-small-card {
+  background: var(--access-surface);
+  border: 1px solid var(--access-line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: var(--access-shadow);
+}
+
+.access-small-card .smallcap {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--access-muted);
+  margin-bottom: 6px;
+}
+
+.access-small-card .big {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--access-ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.access-small-card .micro {
+  font-size: 12px;
+  color: var(--access-muted);
 }
 
 .access-action-card {
   background: var(--access-surface);
   border: 1px solid var(--access-line);
-  border-radius: 13px;
-  padding: 24px;
-  margin-bottom: 20px;
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 18px;
   box-shadow: var(--access-shadow);
 }
 
 .access-action-card h3 {
-  font-size: 18px;
-  margin: 8px 0 9px;
+  font-size: 16px;
+  margin: 6px 0 8px;
   letter-spacing: -0.02em;
 }
 
 .access-action-card p {
   font-size: 13px;
-  line-height: 1.7;
+  line-height: 1.65;
   color: var(--access-muted);
-  margin: 0 0 18px;
+  margin: 0 0 16px;
+}
+
+@media (max-width: 768px) {
+  .access-account-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .access-tag {
