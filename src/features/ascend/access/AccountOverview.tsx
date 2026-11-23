@@ -1,386 +1,216 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AccessShell from "./AccessShell";
-import type { AccountSnapshot } from "@/server/auth";
+import type { AccountSnapshot, AccountStatusKey } from "@/server/auth";
 
-const STATE_PREVIEWS: Record<
-  string,
-  {
-    badge: string;
-    badgeVariant: "green" | "red" | "";
-    statusTitle: string;
-    statusDescription: string;
-    statusActionLabel: string;
-    statusActionPath: string;
-  }
-> = {
-  payment: {
-    badge: "Not paid",
-    badgeVariant: "",
-    statusTitle: "Your membership is not yet active",
-    statusDescription: "Your registration is saved. You can complete your membership payment (₦40,000/month) and also begin your private 9-stage intake right away.",
-    statusActionLabel: "Pay membership (₦40,000 / month)",
-    statusActionPath: "/account/membership",
-  },
-  active: {
-    badge: "Active coaching",
-    badgeVariant: "green",
-    statusTitle: "Your coaching is active",
-    statusDescription: "Your approved plan is ready. Your membership details and active status are shown below.",
-    statusActionLabel: "View account overview",
-    statusActionPath: "/account",
-  },
-  assessment: {
-    badge: "Awaiting assessment",
-    badgeVariant: "green",
-    statusTitle: "Assessment to complete",
-    statusDescription: "Your membership is confirmed. Complete your private nine-stage assessment to help Sahmi prepare your personalised programme.",
-    statusActionLabel: "Start 9-stage assessment",
-    statusActionPath: "/assessment",
-  },
-  review: {
-    badge: "In review",
-    badgeVariant: "",
-    statusTitle: "Programme under review",
-    statusDescription: "Your completed assessment has been received. Sahmi will review your training and nutrition programme within five business days.",
-    statusActionLabel: "View review status",
-    statusActionPath: "/account",
-  },
-  cancelled: {
-    badge: "Paid through · not renewing",
-    badgeVariant: "",
-    statusTitle: "Renewal cancelled",
-    statusDescription: "Your subscription will not renew. Continue using the paid coaching period until the recorded end date.",
-    statusActionLabel: "View membership",
-    statusActionPath: "/account/membership",
-  },
-  expired: {
-    badge: "Expired",
-    badgeVariant: "",
-    statusTitle: "Your paid period has ended",
-    statusDescription: "You can still access permitted account and billing details. Rejoining coaching depends on current eligibility and available capacity.",
-    statusActionLabel: "View membership options",
-    statusActionPath: "/account/membership",
-  },
+const membershipPath = "/account/membership";
+type OverviewAction = { label: string; href: string } | { label: string; guidance: string };
+
+const overviewActions: Record<AccountStatusKey, OverviewAction | null> = {
+  payment: null,
+  active: { label: "Manage coaching membership", href: membershipPath },
+  assessment: { label: "Continue assessment", href: "/assessment" },
+  review: { label: "Review submitted assessment", href: "/assessment" },
+  cancelled: { label: "View cancellation details", href: `${membershipPath}#membership-renewal` },
+  expired: { label: "View rejoining options", href: membershipPath },
   safety: {
-    badge: "Safety hold",
-    badgeVariant: "red",
-    statusTitle: "Safety review required",
-    statusDescription: "A coaching safety restriction is being reviewed. No new programme can be activated while this restriction remains.",
-    statusActionLabel: "View required action",
-    statusActionPath: "/account",
+    label: "View safety next steps",
+    guidance: "Check the contact details you used to register for a message from Sahmi. If Sahmi has requested more information, reply there before continuing.",
   },
   guardian: {
-    badge: "Guardian consent pending",
-    badgeVariant: "",
-    statusTitle: "Guardian verification pending",
-    statusDescription: "A verified parent or legal guardian must complete the required consent and payment steps before a minor can begin paid coaching.",
-    statusActionLabel: "View next steps",
-    statusActionPath: "/account",
+    label: "View guardian requirements",
+    guidance: "Ask a parent or legal guardian to help with verification. Wait for ASCEND to confirm consent before making a payment.",
   },
-  waitlist: {
-    badge: "Capacity full",
-    badgeVariant: "",
-    statusTitle: "Currently at capacity",
-    statusDescription: "Your account is saved, but all coaching places are currently occupied or this week’s onboarding cap has been reached.",
-    statusActionLabel: "Join optional waitlist",
-    statusActionPath: "/waitlist",
-  },
+  waitlist: { label: "Join the waitlist", href: "/waitlist" },
+  under_16: { label: "Return to ASCEND", href: "/" },
 };
+
+const dateFormat = new Intl.DateTimeFormat("en-NG", {
+  dateStyle: "long",
+  timeZone: "Africa/Lagos",
+});
 
 export default function AccountOverview() {
   const router = useRouter();
   const [snapshot, setSnapshot] = useState<AccountSnapshot | null>(null);
-  const [simulatedState, setSimulatedState] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [signOutError, setSignOutError] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
-    let active = true;
+    const controller = new AbortController();
+
     async function loadSnapshot() {
       try {
-        const res = await fetch("/api/account/snapshot");
-        if (!res.ok) {
-          if (res.status === 401) {
-            router.push("/login");
-            return;
-          }
-          throw new Error("Failed to load account status.");
+        const response = await fetch("/api/account/snapshot", { signal: controller.signal });
+        if (response.status === 401) {
+          router.replace("/login");
+          return;
         }
-        const data = await res.json();
-        if (active) setSnapshot(data.snapshot);
-      } catch (err: any) {
-        if (active) setError(err.message || "Failed to load account.");
-      } finally {
-        if (active) setLoading(false);
+        if (!response.ok) throw new Error("Account unavailable.");
+
+        const data: { snapshot: AccountSnapshot } = await response.json();
+        if (!controller.signal.aborted) {
+          setSnapshot(data.snapshot);
+          setLoading(false);
+        }
+      } catch {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     }
-    loadSnapshot();
-    return () => {
-      active = false;
-    };
-  }, [router]);
 
-  const [paying, setPaying] = useState(false);
+    void loadSnapshot();
+    return () => controller.abort();
+  }, [loadAttempt, router]);
 
-  const handleCheckout = async () => {
+  function retryLoad() {
+    setLoading(true);
+    setLoadAttempt((attempt) => attempt + 1);
+  }
+
+  async function handleCheckout() {
     setPaying(true);
-    setError(null);
+    setCheckoutError(null);
     try {
-      const res = await fetch("/api/billing/checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Origin: window.location.origin,
-        },
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || data.error || "Failed to initialize checkout.");
+      const response = await fetch("/api/billing/checkout", { method: "POST" });
+      if (response.status === 401) {
+        router.replace("/login");
+        return;
       }
-      if (data.authorizationUrl) {
-        window.location.href = data.authorizationUrl;
+      const data = await response.json().catch(() => null);
+      if (data?.error === "CAPACITY_FULL_FOUNDING_10" || data?.error === "CAPACITY_FULL_WEEKLY_3") {
+        throw new Error("Coaching is currently at capacity. Check your account again before trying to pay.");
       }
-    } catch (err: any) {
-      setError(err.message || "Failed to initialize payment.");
+      if (!response.ok || !data?.authorizationUrl) {
+        throw new Error("Payment could not start. Please try again.");
+      }
+      window.location.assign(data.authorizationUrl);
+    } catch (error) {
+      setCheckoutError(error instanceof Error ? error.message : "Payment could not start. Please try again.");
       setPaying(false);
     }
-  };
+  }
 
-  const handleSignOut = async () => {
+  async function handleSignOut() {
+    setSigningOut(true);
+    setSignOutError(false);
     try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        headers: { Origin: window.location.origin },
-      });
-    } catch {}
-    router.push("/login");
-  };
-
-  if (loading) {
-    return (
-      <AccessShell title="Loading..." description="Checking account status" hideSideArt>
-        <div className="access-account-layout">
-          <p>Verifying secure account credentials...</p>
-        </div>
-      </AccessShell>
-    );
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok && response.status !== 401) throw new Error("Sign-out failed.");
+      router.replace("/login");
+    } catch {
+      setSignOutError(true);
+      setSigningOut(false);
+    }
   }
 
-  if (error || !snapshot) {
-    return (
-      <AccessShell title="Account Notice" description="Unable to load account" hideSideArt>
-        <div className="access-account-layout">
-          <div className="access-alert err">{error || "Account not found."}</div>
-          <Link href="/login" className="access-btn-main" style={{ maxWidth: "240px" }}>
-            Return to sign in →
-          </Link>
-        </div>
-      </AccessShell>
-    );
-  }
-
-  const activeView =
-    simulatedState && STATE_PREVIEWS[simulatedState]
-      ? {
-          ...snapshot,
-          ...STATE_PREVIEWS[simulatedState],
-        }
-      : snapshot;
+  const needsPayment = snapshot?.status === "payment";
+  const action = snapshot ? overviewActions[snapshot.status] : null;
+  const actionHref = action && "href" in action ? action.href : null;
+  const paidThrough = snapshot?.membership.paidThrough;
 
   return (
-    <AccessShell title="Account" description="" hideSideArt>
-      <main className="access-account-layout">
-        <div className="access-crumb">ACCOUNT / OVERVIEW</div>
-        <div className="access-account-head">
+    <AccessShell title="Account overview" description="" hideSideArt accountOverview>
+      <main className="account-overview">
+        <header className="account-overview-content account-overview-header">
           <div>
-            <h1>Welcome back, {snapshot.firstName}.</h1>
-            <p>Manage your membership and continue your ASCEND journey.</p>
+            <h1>Account overview</h1>
+            {snapshot && <p>Welcome back, {snapshot.firstName}.</p>}
           </div>
-          <button type="button" className="access-btn-secondary" onClick={handleSignOut}>
-            Sign out
-          </button>
-        </div>
-
-        <nav className="access-nav-account" aria-label="Account navigation">
-          <Link className="active" href="/account">
-            Overview
-          </Link>
-          <Link href="/account/membership">Membership & billing</Link>
-          <Link href="/waitlist">Waitlist</Link>
-        </nav>
-
-        {/* Dev State Switcher & Direct Portal Inspection */}
-        <div
-          style={{
-            background: "rgba(223, 191, 119, 0.1)",
-            border: "1px dashed rgba(223, 191, 119, 0.35)",
-            borderRadius: "10px",
-            padding: "12px 16px",
-            marginBottom: "24px",
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "12px",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-            <span style={{ color: "var(--access-gold)", fontWeight: 700, fontSize: "12px", letterSpacing: "0.05em" }}>
-              ⚡ PREVIEW CLIENT STATE:
-            </span>
-            <select
-              value={simulatedState || snapshot.status}
-              onChange={(e) => setSimulatedState(e.target.value)}
-              style={{
-                background: "var(--access-surface)",
-                border: "1px solid var(--access-line)",
-                color: "var(--access-ink)",
-                borderRadius: "6px",
-                padding: "6px 12px",
-                fontSize: "12.5px",
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
+          {snapshot && (
+            <button
+              type="button"
+              className="access-btn-secondary"
+              onClick={handleSignOut}
+              disabled={signingOut || paying}
             >
-              <option value="payment">Not Paid (Initial)</option>
-              <option value="active">Active Coaching (Full Portal)</option>
-              <option value="assessment">Awaiting 9-Stage Assessment</option>
-              <option value="review">Programme In Review</option>
-              <option value="cancelled">Renewal Cancelled</option>
-              <option value="expired">Paid Period Expired</option>
-              <option value="safety">Safety Hold</option>
-              <option value="guardian">Guardian Pending</option>
-              <option value="waitlist">Capacity Full / Waitlist</option>
-            </select>
-          </div>
-        </div>
+              {signingOut ? "Signing out…" : "Sign out"}
+            </button>
+          )}
+        </header>
 
-        <div className="access-account-intro">
-          <div className={`access-tag ${activeView.badgeVariant}`}>{activeView.badge}</div>
-          <h2>{activeView.statusTitle}</h2>
-          <p>{activeView.statusDescription}</p>
-          <div className="access-button-row" style={{ marginTop: "16px" }}>
-            {activeView.status === "payment" ? (
-              <>
-                <button
-                  type="button"
-                  className="access-btn-main"
-                  onClick={handleCheckout}
-                  disabled={paying}
-                >
-                  {paying ? "Connecting to Paystack..." : "Pay Membership (₦40,000 / month) →"}
-                </button>
-                <Link
-                  href="/assessment"
-                  className="access-btn-secondary"
-                >
-                  Begin 9-Stage Assessment →
-                </Link>
-                <Link
-                  href="/account/membership"
-                  className="access-btn-secondary"
-                >
-                  Billing Details →
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href={activeView.statusActionPath} className="access-btn-main">
-                  {activeView.statusActionLabel} →
-                </Link>
-                <Link
-                  href="/account/membership"
-                  className="access-btn-secondary"
-                >
-                  Billing Details →
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
+        {signOutError && <p className="account-overview-content account-overview-error" role="alert">Sign-out failed. Please try again.</p>}
 
-        <div className="access-account-grid">
-          <div>
-            <div className="access-cardset">
-              <div className="access-small-card">
-                <div className="smallcap">Membership status</div>
-                <div className="big">{activeView.badge}</div>
-                <div className="micro">Authoritative account status</div>
+        {loading ? (
+          <div className="account-overview-panel">
+            <p className="account-overview-content" role="status">Loading your account…</p>
+          </div>
+        ) : !snapshot ? (
+          <section className="account-overview-panel" aria-labelledby="account-load-error">
+            <div className="account-overview-content">
+              <h2 id="account-load-error">We couldn’t load your account</h2>
+              <p role="alert">Try again to see your coaching and membership details.</p>
+              <button type="button" className="access-btn-main" onClick={retryLoad}>Try again</button>
+            </div>
+          </section>
+        ) : (
+          <>
+            <section className="account-overview-panel" aria-labelledby="coaching-status">
+              <div className="account-overview-content">
+                <span className="account-overview-badge" data-variant={snapshot.badgeVariant}>
+                  {snapshot.badge}
+                </span>
+                <h2 id="coaching-status">{snapshot.statusTitle}</h2>
+                <p>{snapshot.statusDescription}</p>
+                {needsPayment && (
+                  <p>You can open your assessment before paying.</p>
+                )}
+                {needsPayment ? (
+                  <div className="account-overview-actions">
+                    <button type="button" className="access-btn-main" onClick={handleCheckout} disabled={paying || signingOut}>
+                      {paying ? "Connecting to Paystack…" : "Pay membership"}
+                    </button>
+                    <Link className="access-btn-secondary" href="/assessment">Open assessment</Link>
+                  </div>
+                ) : action && (
+                  "href" in action ? (
+                    <Link className="access-btn-main" href={action.href}>{action.label}</Link>
+                  ) : (
+                    <details className="account-overview-guidance">
+                      <summary className="access-btn-main">{action.label}</summary>
+                      <p>{action.guidance}</p>
+                    </details>
+                  )
+                )}
+                {checkoutError && <p className="account-overview-error" role="alert">{checkoutError}</p>}
               </div>
-              <div className="access-small-card">
-                <div className="smallcap">Next coaching step</div>
-                <div className="big" style={{ fontSize: "18px" }}>
-                  {activeView.statusActionLabel}
+            </section>
+
+            <section className="account-overview-details" aria-labelledby="account-details">
+              <div className="account-overview-content">
+                <div className="account-overview-details-heading">
+                  <h2 id="account-details">Membership &amp; billing</h2>
+                  {actionHref?.split("#")[0] !== membershipPath && <Link href={membershipPath}>View billing</Link>}
                 </div>
-                <div className="micro">Server-determined next action</div>
+                <dl>
+                  {needsPayment ? (
+                    <div>
+                      <dt>Monthly membership</dt>
+                      <dd>{snapshot.membership.priceFormatted}</dd>
+                    </div>
+                  ) : paidThrough && (
+                    <div>
+                      <dt>{snapshot.status === "expired" ? "Paid period ended" : "Paid through"}</dt>
+                      <dd><time dateTime={paidThrough}>{dateFormat.format(new Date(paidThrough))}</time></dd>
+                    </div>
+                  )}
+                  <div>
+                    <dt>Account email</dt>
+                    <dd>{snapshot.email}</dd>
+                  </div>
+                </dl>
               </div>
-            </div>
-
-            {/* 9-Stage Intake Card */}
-            <div className="access-action-card">
-              <div className="access-art-kicker" style={{ color: "var(--access-gold)" }}>
-                COACHING INTAKE
-              </div>
-              <h3>Nine-Stage Private Assessment</h3>
-              <p>
-                {activeView.status === "payment"
-                  ? "Complete your private nine-stage physical intake so Coach Sahmi can prepare your personalized training and nutrition plan. You can complete this before or after confirming your membership payment."
-                  : activeView.status === "assessment"
-                  ? "Your membership is active! Complete your 9 stages now so Coach Sahmi can prepare your training and nutrition plan."
-                  : activeView.status === "review"
-                  ? "Your 9 stages are submitted and currently under review by Coach Sahmi (delivery within 5 business days)."
-                  : "Your 9-stage foundations are recorded and approved."}
-              </p>
-              <Link
-                href="/assessment"
-                className="access-btn-main"
-                style={{ textDecoration: "none", display: "inline-flex" }}
-              >
-                {activeView.status === "review"
-                  ? "View Assessment Answers →"
-                  : "Begin 9-Stage Assessment →"}
-              </Link>
-            </div>
-
-            <div className="access-action-card">
-              <div className="access-art-kicker" style={{ color: "var(--access-gold)" }}>
-                YOUR ACCOUNT
-              </div>
-              <h3>One account. No repeated registration.</h3>
-              <p>
-                Your ten registration answers stay linked to the same account. Any private
-                assessment, paid membership and coaching records belong to that verified account.
-              </p>
-              <Link href="/account/membership" className="access-btn-secondary">
-                Manage membership →
-              </Link>
-            </div>
-          </div>
-
-          <aside className="access-action-card">
-            <div className="access-art-kicker" style={{ color: "var(--access-gold)" }}>
-              YOUR ACCESS
-            </div>
-            <h3>Coaching isn’t the same as logging in</h3>
-            <p>
-              Signing in verifies identity. Active programme access depends separately on paid
-              membership, guardian requirements, approved plans and applicable safety
-              restrictions.
-            </p>
-            <div className="access-muted-row">
-              <span>Registration</span>
-              <strong>Saved</strong>
-            </div>
-            <div className="access-muted-row">
-              <span>Coaching access</span>
-              <strong>{snapshot.clientPortalAccess ? "Active" : "Pending"}</strong>
-            </div>
-          </aside>
-        </div>
+            </section>
+          </>
+        )}
       </main>
     </AccessShell>
   );
