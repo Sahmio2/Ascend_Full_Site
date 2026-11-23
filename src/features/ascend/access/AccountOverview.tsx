@@ -263,7 +263,7 @@ export default function AccountOverview() {
           <div className={`access-tag ${activeView.badgeVariant}`}>{activeView.badge}</div>
           <h2>{activeView.statusTitle}</h2>
           <p>{activeView.statusDescription}</p>
-          <div className="access-button-row" style={{ maxWidth: "620px", flexWrap: "wrap", gap: "10px" }}>
+          <div className="access-button-row" style={{ marginTop: "16px" }}>
             {activeView.status === "payment" ? (
               <>
                 <button
@@ -276,15 +276,13 @@ export default function AccountOverview() {
                 </button>
                 <Link
                   href="/assessment"
-                  className="access-btn-main"
-                  style={{ textDecoration: "none", whiteSpace: "nowrap" }}
+                  className="access-btn-secondary"
                 >
                   Begin 9-Stage Assessment →
                 </Link>
                 <Link
                   href="/account/membership"
                   className="access-btn-secondary"
-                  style={{ textDecoration: "none", whiteSpace: "nowrap" }}
                 >
                   Billing Details →
                 </Link>
@@ -297,7 +295,6 @@ export default function AccountOverview() {
                 <Link
                   href="/account/membership"
                   className="access-btn-secondary"
-                  style={{ textDecoration: "none", whiteSpace: "nowrap" }}
                 >
                   Billing Details →
                 </Link>

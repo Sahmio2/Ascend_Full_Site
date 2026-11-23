@@ -184,7 +184,7 @@ export default function MembershipBilling() {
                 {!isPaidPeriod && (
                   <button
                     type="button"
-                    className="access-btn-primary"
+                    className="access-btn-main"
                     onClick={handleCheckout}
                     disabled={paying}
                   >

@@ -214,31 +214,48 @@
   padding-left: 0.44em;
 }
 
-.access-btn-main {
-  display: flex;
+.access-btn-main,
+.access-btn-primary {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  gap: 10px;
-  min-height: 49px;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 22px;
   border-radius: 9px;
-  border: 0;
+  border: 1px solid transparent;
   background: var(--access-btn);
   color: var(--access-btn-text);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 14px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
   cursor: pointer;
-  transition: opacity var(--duration-quick, 150ms) var(--ease-smooth-out), transform var(--duration-micro, 80ms) var(--ease-smooth-out);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: opacity var(--duration-quick, 150ms) var(--ease-smooth-out),
+              transform var(--duration-micro, 80ms) var(--ease-smooth-out),
+              box-shadow var(--duration-quick, 150ms) var(--ease-smooth-out);
   text-decoration: none;
 }
 
-.access-btn-main:hover {
-  opacity: 0.92;
+.access-btn-main:hover,
+.access-btn-primary:hover {
+  opacity: 0.94;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
 }
 
-.access-btn-main:disabled {
+.access-btn-main:active,
+.access-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.access-btn-main:disabled,
+.access-btn-primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .access-btn-secondary {
@@ -248,31 +265,68 @@
   gap: 8px;
   border-radius: 9px;
   border: 1px solid var(--access-line);
-  background: transparent;
+  background: var(--access-card, rgba(255, 255, 255, 0.03));
   color: var(--access-ink);
-  min-height: 43px;
-  padding: 0 16px;
+  min-height: 46px;
+  padding: 0 20px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
   cursor: pointer;
   text-decoration: none;
-  transition: background var(--duration-quick, 150ms) var(--ease-smooth-out), border-color var(--duration-quick, 150ms) var(--ease-smooth-out);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: background var(--duration-quick, 150ms) var(--ease-smooth-out),
+              border-color var(--duration-quick, 150ms) var(--ease-smooth-out),
+              color var(--duration-quick, 150ms) var(--ease-smooth-out),
+              transform var(--duration-micro, 80ms) var(--ease-smooth-out);
 }
 
 .access-btn-secondary:hover {
   background: var(--access-pale);
   border-color: var(--access-gold);
+  transform: translateY(-1px);
+}
+
+.access-btn-secondary:active {
+  transform: scale(0.98);
 }
 
 .access-button-row {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .access-button-row button,
 .access-button-row a {
+  flex: 0 0 auto;
+}
+
+form > .access-btn-main,
+.access-circle-form .access-btn-main,
+form .access-button-row:not(.access-modal-actions) button {
+  width: 100%;
+}
+
+.access-modal-panel .access-button-row button {
   flex: 1;
+}
+
+@media (max-width: 640px) {
+  .access-button-row {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .access-button-row button,
+  .access-button-row a {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
 }
 
 .access-rule {
