@@ -25,16 +25,18 @@ export default function AccessShell({
   formOnCircleCard = true,
   accountOverview = false,
 }: AccessShellProps) {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">(accountOverview ? "dark" : "light");
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem("ascend_access_theme");
       if (saved === "dark" || saved === "light") {
         setTheme(saved);
+      } else if (accountOverview) {
+        setTheme("dark");
       }
     } catch {}
-  }, []);
+  }, [accountOverview]);
 
   const toggleTheme = () => {
     const next = theme === "light" ? "dark" : "light";

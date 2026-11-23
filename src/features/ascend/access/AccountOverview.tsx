@@ -120,100 +120,132 @@ export default function AccountOverview() {
   const paidThrough = snapshot?.membership.paidThrough;
 
   return (
-    <AccessShell title="Account overview" description="" hideSideArt accountOverview>
-      <main className="account-overview">
-        <div className="account-overview-container">
-          <header className="account-overview-header">
-            <div>
-              <h1>Account overview</h1>
-              {snapshot && <p>Welcome back, {snapshot.firstName}.</p>}
+    <AccessShell title="Account overview" description="" crumb="YOUR ASCEND MEMBERSHIP" hideSideArt accountOverview>
+      <main className="access-layout access-layout-centered">
+        <div className="access-side-art access-circle-form account-overview-card" aria-label="ASCEND account overview">
+          <div className="access-circle-form-header">
+            <div className="access-crumb">YOUR ASCEND MEMBERSHIP</div>
+            <div className="account-overview-title-row">
+              <h1 className="access-headline" style={{ margin: 0 }}>Account overview</h1>
+              {snapshot && (
+                <button
+                  type="button"
+                  className="account-overview-signout-btn"
+                  onClick={handleSignOut}
+                  disabled={signingOut || paying}
+                  aria-label="Sign out of your account"
+                >
+                  {signingOut ? "Signing out…" : "Sign out"}
+                </button>
+              )}
             </div>
             {snapshot && (
-              <button
-                type="button"
-                className="account-overview-signout-btn"
-                onClick={handleSignOut}
-                disabled={signingOut || paying}
-              >
-                {signingOut ? "Signing out…" : "Sign out"}
-              </button>
+              <p className="account-overview-welcome">
+                Welcome back, {snapshot.firstName}.
+              </p>
             )}
-          </header>
+          </div>
 
-          {signOutError && (
-            <p className="account-overview-error" role="alert">
-              Sign-out failed. Please try again.
-            </p>
-          )}
+          <div className="access-circle-form-body">
+            {signOutError && (
+              <div className="access-alert err" role="alert" style={{ marginBottom: "16px" }}>
+                Sign-out failed. Please try again.
+              </div>
+            )}
 
-          {loading ? (
-            <div className="account-overview-card">
-              <p role="status">Loading your account…</p>
-            </div>
-          ) : !snapshot ? (
-            <section className="account-overview-card" aria-labelledby="account-load-error">
-              <h2 id="account-load-error">We couldn’t load your account</h2>
-              <p role="alert">Try again to see your coaching and membership details.</p>
-              <div className="account-overview-actions">
-                <button type="button" className="account-overview-btn-primary" onClick={retryLoad}>
+            {loading ? (
+              <div className="access-panel">
+                <p role="status">Loading your account…</p>
+              </div>
+            ) : !snapshot ? (
+              <div className="access-panel">
+                <h2 style={{ margin: "0 0 10px", fontSize: "18px", color: "#f7f5ed" }}>We couldn’t load your account</h2>
+                <p className="access-desc">Try again to see your coaching and membership details.</p>
+                <button type="button" className="access-btn-main" onClick={retryLoad}>
                   Try again
                 </button>
               </div>
-            </section>
-          ) : (
-            <div className="account-overview-grid">
-              <section className="account-overview-card account-overview-status-card" aria-labelledby="coaching-status">
-                <span className="account-overview-badge" data-variant={snapshot.badgeVariant}>
+            ) : (
+              <div className="account-overview-inner">
+                <div className={`access-tag ${snapshot.badgeVariant || ""}`} style={{ marginBottom: "14px" }}>
                   {snapshot.badge}
-                </span>
-                <h2 id="coaching-status">{snapshot.statusTitle}</h2>
-                <p id={needsPayment ? "journey-payment-note" : undefined}>{snapshot.statusDescription}</p>
+                </div>
+
+                <h2 className="account-overview-status-title">
+                  {snapshot.statusTitle}
+                </h2>
+
+                <p className="account-overview-status-desc" id={needsPayment ? "journey-payment-note" : undefined}>
+                  {snapshot.statusDescription}
+                </p>
+
                 {needsPayment ? (
                   <div className="account-overview-journey">
-                    <button type="button" className="account-overview-btn-primary" disabled aria-describedby="journey-payment-note">
+                    <button
+                      type="button"
+                      className="access-btn-main account-overview-btn-disabled"
+                      disabled
+                      aria-describedby="journey-payment-note"
+                    >
                       {journeyLabel}
                     </button>
-                    <button type="button" className="account-overview-pay" onClick={handleCheckout} disabled={paying || signingOut}>
-                      {paying ? "Connecting to Paystack…" : `Pay membership · ${snapshot.membership.priceFormatted}/month`}
+                    <p className="account-overview-unlock-note">
+                      Your private nine-stage physical intake unlocks once payment is confirmed.
+                    </p>
+                    <button
+                      type="button"
+                      className="access-btn-main account-overview-pay-btn"
+                      onClick={handleCheckout}
+                      disabled={paying || signingOut}
+                    >
+                      {paying ? "Connecting to Paystack…" : `Pay membership · ${snapshot.membership.priceFormatted}/month →`}
                     </button>
                   </div>
                 ) : action && (
                   "href" in action ? (
-                    <div className={snapshot.status === "assessment" ? "account-overview-journey" : "account-overview-actions"}>
-                      <Link className="account-overview-btn-primary" href={action.href}>{action.label}</Link>
-                      {snapshot.status === "assessment" && <p>Your progress is saved as you go.</p>}
+                    <div className="account-overview-journey">
+                      <Link className="access-btn-main account-overview-journey-enabled" href={action.href}>
+                        {action.label} →
+                      </Link>
+                      {snapshot.status === "assessment" && (
+                        <p className="account-overview-unlock-note">Your progress is saved as you go.</p>
+                      )}
                     </div>
                   ) : (
                     <details className="account-overview-guidance">
-                      <summary className="account-overview-btn-primary">{action.label}</summary>
+                      <summary className="access-btn-main">{action.label}</summary>
                       <p>{action.guidance}</p>
                     </details>
                   )
                 )}
-                {checkoutError && (
-                  <p className="account-overview-error" role="alert" style={{ marginTop: "12px", marginBottom: "0" }}>
-                    {checkoutError}
-                  </p>
-                )}
-              </section>
 
-              <section className="account-overview-card account-overview-details-card" aria-labelledby="account-details">
-                <div className="account-overview-details-heading">
-                  <h2 id="account-details">Membership &amp; billing</h2>
-                  {actionHref?.split("#")[0] !== membershipPath && (
-                    <Link href={membershipPath}>View billing →</Link>
-                  )}
-                </div>
-                <div className="account-overview-details">
-                  <dl>
+                {checkoutError && (
+                  <div className="access-alert err" role="alert" style={{ marginTop: "14px", marginBottom: "0" }}>
+                    {checkoutError}
+                  </div>
+                )}
+
+                <div className="account-overview-divider" />
+
+                <div className="account-overview-billing-section">
+                  <div className="account-overview-billing-heading">
+                    <h3>Membership &amp; billing</h3>
+                    {actionHref?.split("#")[0] !== membershipPath && (
+                      <Link href={membershipPath} className="account-overview-billing-link">
+                        View billing →
+                      </Link>
+                    )}
+                  </div>
+
+                  <dl className="account-overview-details-list">
                     {needsPayment ? (
-                      <div>
+                      <div className="account-overview-detail-row">
                         <dt>Monthly membership</dt>
                         <dd>{snapshot.membership.priceFormatted}</dd>
                       </div>
                     ) : (
                       paidThrough && (
-                        <div>
+                        <div className="account-overview-detail-row">
                           <dt>{snapshot.status === "expired" ? "Paid period ended" : "Paid through"}</dt>
                           <dd>
                             <time dateTime={paidThrough}>{dateFormat.format(new Date(paidThrough))}</time>
@@ -221,15 +253,15 @@ export default function AccountOverview() {
                         </div>
                       )
                     )}
-                    <div>
+                    <div className="account-overview-detail-row">
                       <dt>Account email</dt>
-                      <dd>{snapshot.email}</dd>
+                      <dd className="account-overview-email">{snapshot.email}</dd>
                     </div>
                   </dl>
                 </div>
-              </section>
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
       </main>
     </AccessShell>
