@@ -992,7 +992,8 @@
   line-height: 1.1;
 }
 
-.account-overview-panel > div > p {
+.account-overview-panel > div > p,
+.account-overview-guidance p {
   max-width: 55ch;
   margin: 12px 0 0;
   color: var(--access-muted);
@@ -1006,7 +1007,8 @@
   margin-top: 24px;
 }
 
-.account-overview-panel > div > .access-btn-main {
+.account-overview-panel > div > .access-btn-main,
+.account-overview-guidance {
   margin-top: 24px;
 }
 
@@ -1026,6 +1028,10 @@
 .account-overview-panel .access-btn-main {
   background: var(--overview-accent);
   color: var(--overview-accent-ink);
+}
+
+.account-overview-guidance summary::-webkit-details-marker {
+  display: none;
 }
 
 .account-overview-panel .access-btn-main:hover:not(:disabled) {
@@ -1136,7 +1142,8 @@
   }
 
   .account-overview-actions,
-  .account-overview-panel > div > .access-btn-main {
+  .account-overview-panel > div > .access-btn-main,
+  .account-overview-guidance {
     margin-top: 16px;
   }
 

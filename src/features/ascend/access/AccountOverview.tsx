@@ -4,9 +4,30 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AccessShell from "./AccessShell";
-import type { AccountSnapshot } from "@/server/auth";
+import type { AccountSnapshot, AccountStatusKey } from "@/server/auth";
 
 const membershipPath = "/account/membership";
+type OverviewAction = { label: string; href: string } | { label: string; guidance: string };
+
+const overviewActions: Record<AccountStatusKey, OverviewAction | null> = {
+  payment: null,
+  active: { label: "Manage coaching membership", href: membershipPath },
+  assessment: { label: "Continue assessment", href: "/assessment" },
+  review: { label: "Review submitted assessment", href: "/assessment" },
+  cancelled: { label: "View cancellation details", href: `${membershipPath}#membership-renewal` },
+  expired: { label: "View rejoining options", href: membershipPath },
+  safety: {
+    label: "View safety next steps",
+    guidance: "Check the contact details you used to register for a message from Sahmi. If Sahmi has requested more information, reply there before continuing.",
+  },
+  guardian: {
+    label: "View guardian requirements",
+    guidance: "Ask a parent or legal guardian to help with verification. Wait for ASCEND to confirm consent before making a payment.",
+  },
+  waitlist: { label: "Join the waitlist", href: "/waitlist" },
+  under_16: { label: "Return to ASCEND", href: "/" },
+};
+
 const dateFormat = new Intl.DateTimeFormat("en-NG", {
   dateStyle: "long",
   timeZone: "Africa/Lagos",
@@ -92,10 +113,8 @@ export default function AccountOverview() {
   }
 
   const needsPayment = snapshot?.status === "payment";
-  const inReview = snapshot?.status === "review";
-  const actionPath = inReview ? "/assessment" : snapshot?.statusActionPath;
-  const actionLabel = inReview ? "View assessment status" : snapshot?.statusActionLabel;
-  const hasAction = actionPath && actionPath !== "/account";
+  const action = snapshot ? overviewActions[snapshot.status] : null;
+  const actionHref = action && "href" in action ? action.href : null;
   const paidThrough = snapshot?.membership.paidThrough;
 
   return (
@@ -151,8 +170,15 @@ export default function AccountOverview() {
                     </button>
                     <Link className="access-btn-secondary" href="/assessment">Open assessment</Link>
                   </div>
-                ) : hasAction && (
-                  <Link className="access-btn-main" href={actionPath}>{actionLabel}</Link>
+                ) : action && (
+                  "href" in action ? (
+                    <Link className="access-btn-main" href={action.href}>{action.label}</Link>
+                  ) : (
+                    <details className="account-overview-guidance">
+                      <summary className="access-btn-main">{action.label}</summary>
+                      <p>{action.guidance}</p>
+                    </details>
+                  )
                 )}
                 {checkoutError && <p className="account-overview-error" role="alert">{checkoutError}</p>}
               </div>
@@ -162,15 +188,15 @@ export default function AccountOverview() {
               <div className="account-overview-content">
                 <div className="account-overview-details-heading">
                   <h2 id="account-details">Membership &amp; billing</h2>
-                  {(needsPayment || actionPath !== membershipPath) && <Link href={membershipPath}>View billing</Link>}
+                  {actionHref?.split("#")[0] !== membershipPath && <Link href={membershipPath}>View billing</Link>}
                 </div>
                 <dl>
-                  {!paidThrough || needsPayment ? (
+                  {needsPayment ? (
                     <div>
                       <dt>Monthly membership</dt>
                       <dd>{snapshot.membership.priceFormatted}</dd>
                     </div>
-                  ) : (
+                  ) : paidThrough && (
                     <div>
                       <dt>{snapshot.status === "expired" ? "Paid period ended" : "Paid through"}</dt>
                       <dd><time dateTime={paidThrough}>{dateFormat.format(new Date(paidThrough))}</time></dd>

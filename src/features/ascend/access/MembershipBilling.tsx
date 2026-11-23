@@ -108,6 +108,8 @@ export default function MembershipBilling() {
       snapshot.status === "safety");
 
   const isCancelled = snapshot?.membership.cancelAtPeriodEnd || snapshot?.status === "cancelled";
+  const canStartCheckout = snapshot?.status === "payment" ||
+    (snapshot?.status === "expired" && snapshot.capacity.isAvailable);
 
   const formattedDate = snapshot?.membership.paidThrough
     ? new Date(snapshot.membership.paidThrough).toLocaleDateString("en-NG", {
@@ -173,7 +175,7 @@ export default function MembershipBilling() {
               <div className="access-art-kicker" style={{ color: "var(--access-gold)" }}>
                 SUBSCRIPTION MANAGEMENT
               </div>
-              <h3>{isCancelled ? "Your cancellation is recorded" : "Control your renewal"}</h3>
+              <h3 id="membership-renewal">{isCancelled ? "Your cancellation is recorded" : "Control your renewal"}</h3>
               <p>
                 {isCancelled
                   ? "Future billing is disabled. Your paid-period access is retained until your cycle end date."
@@ -181,14 +183,17 @@ export default function MembershipBilling() {
               </p>
 
               <div className="access-button-row">
-                {!isPaidPeriod && (
+                {snapshot?.status === "expired" && !snapshot.capacity.isAvailable && (
+                  <Link href="/waitlist" className="access-btn-secondary">Join the waitlist</Link>
+                )}
+                {canStartCheckout && (
                   <button
                     type="button"
                     className="access-btn-primary"
                     onClick={handleCheckout}
                     disabled={paying}
                   >
-                    {paying ? "Redirecting to checkout..." : "Pay Membership (₦40,000 / month) →"}
+                    {paying ? "Redirecting to checkout…" : snapshot.status === "expired" ? "Rejoin membership" : "Pay membership"}
                   </button>
                 )}
                 {isPaidPeriod && !isCancelled && (
