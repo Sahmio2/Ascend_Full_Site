@@ -18,7 +18,7 @@ export default function DemoLoginPage() {
       return;
     }
     beginGetDivineDemoSession();
-    router.push("/demo/dashboard");
+    router.push("/account");
   }
 
   return (
@@ -29,7 +29,7 @@ export default function DemoLoginPage() {
           <p className="eyebrow">ASCEND by Sahmi El</p>
           <h1>Client Access</h1>
           <p>Sign in to continue your ASCEND coaching experience. The demo remains available for anyone reviewing the complete client workspace.</p>
-          <Link className="button button-ivory client-signin-button" href="/client/dashboard">Client sign in →</Link>
+          <Link className="button button-ivory client-signin-button" href="/account">Client sign in →</Link>
           <small className="client-signin-note">Use the email connected to your ASCEND client record.</small>
           <ul>
             <li>BMI &amp; energy calculators</li>

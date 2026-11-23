@@ -160,9 +160,9 @@ const STATUS_DEFINITIONS: Record<
   },
   active: {
     title: 'Your coaching is active',
-    desc: 'Your approved plan is ready. Open Today to see the next useful action in your programme.',
-    action: 'Open client portal',
-    path: '/client/dashboard',
+    desc: 'Your approved plan is ready. Your membership details and active status are recorded.',
+    action: 'View account',
+    path: '/account',
     badge: 'Active coaching',
     variant: 'green',
   },

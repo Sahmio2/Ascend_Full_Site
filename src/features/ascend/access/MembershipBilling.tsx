@@ -212,13 +212,6 @@ export default function MembershipBilling() {
                 >
                   Update payment method
                 </button>
-                <Link
-                  href="/client/nutrition"
-                  className="access-btn-secondary"
-                  style={{ textDecoration: "none" }}
-                >
-                  🍲 Open Meal Plan (Dev) →
-                </Link>
               </div>
 
               <p className="access-fine-print" style={{ marginTop: "16px" }}>

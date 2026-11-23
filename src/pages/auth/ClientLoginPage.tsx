@@ -33,7 +33,7 @@ export default function ClientLoginPage() {
         clientEmail: email,
         clientName: email.split("@")[0],
       });
-      router.push("/client/dashboard");
+      router.push("/account");
     }
   }
 
@@ -46,7 +46,7 @@ export default function ClientLoginPage() {
       clientEmail: "demo@ascend.co",
       clientName: "Amara Okeke",
     });
-    window.setTimeout(() => router.push("/demo/dashboard"), 450);
+    window.setTimeout(() => router.push("/account"), 450);
   }
 
   return (

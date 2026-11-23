@@ -1,12 +1,5 @@
 import type { ReactNode } from "react";
-import PortalHeader from "@/features/ascend/portal/components/PortalHeader";
-import "@/styles/ascend-portal-clean.css";
 
 export default function DemoLayout({ children }: { children: ReactNode }) {
-  return (
-    <div className="portal-root">
-      <PortalHeader scope="demo" />
-      <main>{children}</main>
-    </div>
-  );
+  return <div style={{ minHeight: "100vh", background: "#050505", color: "#f5f0e9" }}>{children}</div>;
 }

@@ -29,9 +29,9 @@ const STATE_PREVIEWS: Record<
     badge: "Active coaching",
     badgeVariant: "green",
     statusTitle: "Your coaching is active",
-    statusDescription: "Your approved plan is ready. Open Today to see the next useful action in your programme.",
-    statusActionLabel: "Open client portal (Today & Meals)",
-    statusActionPath: "/client/dashboard",
+    statusDescription: "Your approved plan is ready. Your membership details and active status are shown below.",
+    statusActionLabel: "View account overview",
+    statusActionPath: "/account",
   },
   assessment: {
     badge: "Awaiting assessment",
@@ -256,37 +256,6 @@ export default function AccountOverview() {
               <option value="guardian">Guardian Pending</option>
               <option value="waitlist">Capacity Full / Waitlist</option>
             </select>
-          </div>
-
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-            <Link
-              href="/client/dashboard"
-              className="access-btn-secondary"
-              style={{ minHeight: "34px", padding: "0 12px", fontSize: "12px", textDecoration: "none" }}
-            >
-              ⚡ Today
-            </Link>
-            <Link
-              href="/client/workout-logger"
-              className="access-btn-secondary"
-              style={{ minHeight: "34px", padding: "0 12px", fontSize: "12px", textDecoration: "none" }}
-            >
-              🏋️ Workouts
-            </Link>
-            <Link
-              href="/client/nutrition"
-              className="access-btn-secondary"
-              style={{ minHeight: "34px", padding: "0 12px", fontSize: "12px", textDecoration: "none" }}
-            >
-              🍲 Nutrition
-            </Link>
-            <Link
-              href="/client/progress"
-              className="access-btn-secondary"
-              style={{ minHeight: "34px", padding: "0 12px", fontSize: "12px", textDecoration: "none" }}
-            >
-              📈 Progress
-            </Link>
           </div>
         </div>
 

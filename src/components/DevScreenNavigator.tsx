@@ -8,16 +8,10 @@ interface ScreenLink {
   label: string;
   href: string;
   icon: string;
-  category: "portal" | "access" | "coach";
+  category: "access" | "coach";
 }
 
 const SCREENS: ScreenLink[] = [
-  // Client Portal (New Approved Suite)
-  { label: "Today Dashboard", href: "/client/dashboard", icon: "⚡", category: "portal" },
-  { label: "Workouts & Focus Mode", href: "/client/workout-logger", icon: "🏋️", category: "portal" },
-  { label: "Nigerian Nutrition & Meals", href: "/client/nutrition", icon: "🍲", category: "portal" },
-  { label: "Progress & Milestones", href: "/client/progress", icon: "📈", category: "portal" },
-
   // Account & Access
   { label: "Account Overview", href: "/account", icon: "👤", category: "access" },
   { label: "Membership & Billing", href: "/account/membership", icon: "💳", category: "access" },
@@ -34,7 +28,7 @@ const SCREENS: ScreenLink[] = [
 export default function DevScreenNavigator() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<"portal" | "access" | "coach">("portal");
+  const [activeCategory, setActiveCategory] = useState<"access" | "coach">("access");
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -177,24 +171,6 @@ export default function DevScreenNavigator() {
               borderRadius: "8px",
             }}
           >
-            <button
-              type="button"
-              onClick={() => setActiveCategory("portal")}
-              style={{
-                flex: 1,
-                padding: "6px 8px",
-                fontSize: "11.5px",
-                fontWeight: activeCategory === "portal" ? 700 : 500,
-                color: activeCategory === "portal" ? "#0c100e" : "#b0b8ac",
-                background: activeCategory === "portal" ? "#dfbf77" : "transparent",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-                transition: "all 0.15s",
-              }}
-            >
-              🍲 Portal & Meals
-            </button>
             <button
               type="button"
               onClick={() => setActiveCategory("access")}
