@@ -120,97 +120,126 @@ export default function AccountOverview() {
   return (
     <AccessShell title="Account overview" description="" hideSideArt accountOverview>
       <main className="account-overview">
-        <header className="account-overview-content account-overview-header">
-          <div>
-            <h1>Account overview</h1>
-            {snapshot && <p>Welcome back, {snapshot.firstName}.</p>}
-          </div>
-          {snapshot && (
-            <button
-              type="button"
-              className="access-btn-secondary"
-              onClick={handleSignOut}
-              disabled={signingOut || paying}
-            >
-              {signingOut ? "Signing out…" : "Sign out"}
-            </button>
+        <div className="account-overview-container">
+          <header className="account-overview-header">
+            <div>
+              <h1>Account overview</h1>
+              {snapshot && <p>Welcome back, {snapshot.firstName}.</p>}
+            </div>
+            {snapshot && (
+              <button
+                type="button"
+                className="account-overview-signout-btn"
+                onClick={handleSignOut}
+                disabled={signingOut || paying}
+              >
+                {signingOut ? "Signing out…" : "Sign out"}
+              </button>
+            )}
+          </header>
+
+          {signOutError && (
+            <p className="account-overview-error" role="alert">
+              Sign-out failed. Please try again.
+            </p>
           )}
-        </header>
 
-        {signOutError && <p className="account-overview-content account-overview-error" role="alert">Sign-out failed. Please try again.</p>}
-
-        {loading ? (
-          <div className="account-overview-panel">
-            <p className="account-overview-content" role="status">Loading your account…</p>
-          </div>
-        ) : !snapshot ? (
-          <section className="account-overview-panel" aria-labelledby="account-load-error">
-            <div className="account-overview-content">
+          {loading ? (
+            <div className="account-overview-card">
+              <p role="status">Loading your account…</p>
+            </div>
+          ) : !snapshot ? (
+            <section className="account-overview-card" aria-labelledby="account-load-error">
               <h2 id="account-load-error">We couldn’t load your account</h2>
               <p role="alert">Try again to see your coaching and membership details.</p>
-              <button type="button" className="access-btn-main" onClick={retryLoad}>Try again</button>
-            </div>
-          </section>
-        ) : (
-          <>
-            <section className="account-overview-panel" aria-labelledby="coaching-status">
-              <div className="account-overview-content">
+              <div className="account-overview-actions">
+                <button type="button" className="account-overview-btn-primary" onClick={retryLoad}>
+                  Try again
+                </button>
+              </div>
+            </section>
+          ) : (
+            <div className="account-overview-grid">
+              <section className="account-overview-card account-overview-status-card" aria-labelledby="coaching-status">
                 <span className="account-overview-badge" data-variant={snapshot.badgeVariant}>
                   {snapshot.badge}
                 </span>
                 <h2 id="coaching-status">{snapshot.statusTitle}</h2>
                 <p>{snapshot.statusDescription}</p>
                 {needsPayment && (
-                  <p>You can open your assessment before paying.</p>
+                  <p className="account-overview-subnote">You can open your assessment before paying.</p>
                 )}
                 {needsPayment ? (
                   <div className="account-overview-actions">
-                    <button type="button" className="access-btn-main" onClick={handleCheckout} disabled={paying || signingOut}>
+                    <button
+                      type="button"
+                      className="account-overview-btn-primary"
+                      onClick={handleCheckout}
+                      disabled={paying || signingOut}
+                    >
                       {paying ? "Connecting to Paystack…" : "Pay membership"}
                     </button>
-                    <Link className="access-btn-secondary" href="/assessment">Open assessment</Link>
+                    <Link className="account-overview-btn-secondary" href="/assessment">
+                      Open assessment
+                    </Link>
                   </div>
-                ) : action && (
-                  "href" in action ? (
-                    <Link className="access-btn-main" href={action.href}>{action.label}</Link>
-                  ) : (
-                    <details className="account-overview-guidance">
-                      <summary className="access-btn-main">{action.label}</summary>
-                      <p>{action.guidance}</p>
-                    </details>
+                ) : (
+                  action && (
+                    "href" in action ? (
+                      <div className="account-overview-actions">
+                        <Link className="account-overview-btn-primary" href={action.href}>
+                          {action.label}
+                        </Link>
+                      </div>
+                    ) : (
+                      <details className="account-overview-guidance">
+                        <summary className="account-overview-btn-primary">{action.label}</summary>
+                        <p>{action.guidance}</p>
+                      </details>
+                    )
                   )
                 )}
-                {checkoutError && <p className="account-overview-error" role="alert">{checkoutError}</p>}
-              </div>
-            </section>
+                {checkoutError && (
+                  <p className="account-overview-error" role="alert" style={{ marginTop: "12px", marginBottom: "0" }}>
+                    {checkoutError}
+                  </p>
+                )}
+              </section>
 
-            <section className="account-overview-details" aria-labelledby="account-details">
-              <div className="account-overview-content">
+              <section className="account-overview-card account-overview-details-card" aria-labelledby="account-details">
                 <div className="account-overview-details-heading">
                   <h2 id="account-details">Membership &amp; billing</h2>
-                  {actionHref?.split("#")[0] !== membershipPath && <Link href={membershipPath}>View billing</Link>}
-                </div>
-                <dl>
-                  {needsPayment ? (
-                    <div>
-                      <dt>Monthly membership</dt>
-                      <dd>{snapshot.membership.priceFormatted}</dd>
-                    </div>
-                  ) : paidThrough && (
-                    <div>
-                      <dt>{snapshot.status === "expired" ? "Paid period ended" : "Paid through"}</dt>
-                      <dd><time dateTime={paidThrough}>{dateFormat.format(new Date(paidThrough))}</time></dd>
-                    </div>
+                  {actionHref?.split("#")[0] !== membershipPath && (
+                    <Link href={membershipPath}>View billing →</Link>
                   )}
-                  <div>
-                    <dt>Account email</dt>
-                    <dd>{snapshot.email}</dd>
-                  </div>
-                </dl>
-              </div>
-            </section>
-          </>
-        )}
+                </div>
+                <div className="account-overview-details">
+                  <dl>
+                    {needsPayment ? (
+                      <div>
+                        <dt>Monthly membership</dt>
+                        <dd>{snapshot.membership.priceFormatted}</dd>
+                      </div>
+                    ) : (
+                      paidThrough && (
+                        <div>
+                          <dt>{snapshot.status === "expired" ? "Paid period ended" : "Paid through"}</dt>
+                          <dd>
+                            <time dateTime={paidThrough}>{dateFormat.format(new Date(paidThrough))}</time>
+                          </dd>
+                        </div>
+                      )
+                    )}
+                    <div>
+                      <dt>Account email</dt>
+                      <dd>{snapshot.email}</dd>
+                    </div>
+                  </dl>
+                </div>
+              </section>
+            </div>
+          )}
+        </div>
       </main>
     </AccessShell>
   );
